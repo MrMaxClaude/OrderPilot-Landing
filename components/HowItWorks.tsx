@@ -12,7 +12,7 @@ const HowItWorks: React.FC = () => {
     {
       title: 'Connect',
       icon: Mail,
-      description: "Hook up your email inbox and ERP system. OrderPilot has native connectors for SAP, AFAS, Exact, Dynamics, and NetSuite. Setup takes hours, not weeks.",
+      description: "Hook up your email inbox and ERP system. OrderPilot has native connectors for Business Central, Exact Online, Odoo, plus NetSuite and SAP. Setup takes hours, not weeks.",
       illustration: (
         <div className="w-full h-full flex flex-col items-center justify-center p-8 animate-tabFadeIn">
           <div className="flex flex-col md:flex-row items-center justify-center gap-12 w-full max-w-md relative">
@@ -101,9 +101,9 @@ const HowItWorks: React.FC = () => {
 
           {/* ERP Pills */}
           <div className="mt-8 flex flex-wrap justify-center gap-2">
-            {['SAP', 'AFAS', 'Exact', 'Dynamics', 'NetSuite'].map((erp, i) => (
-              <span 
-                key={erp} 
+            {['Business Central', 'Exact Online', 'Odoo', 'NetSuite', 'SAP'].map((erp, i) => (
+              <span
+                key={erp}
                 className="text-[10px] font-bold text-text-muted uppercase tracking-wider animate-tabFadeIn"
                 style={{ animationDelay: `${3.5 + i * 0.1}s` }}
               >
@@ -461,14 +461,14 @@ const HowItWorks: React.FC = () => {
         {/* CTA */}
         <div className="text-center mt-24">
           <a 
-            href="#demo" 
+            href="#contact" 
             className="inline-flex items-center px-10 py-5 bg-rb2-orange text-white rounded-2xl font-bold text-lg hover:bg-rb2-orange-hover hover:shadow-2xl hover:shadow-orange-200 transition-all hover:-translate-y-1"
           >
             See It Work With Your POs
             <ArrowRight className="ml-2" size={20} />
           </a>
           <p className="text-sm text-text-muted mt-6 font-medium">
-            Book a 15-minute demo. We'll process one of your actual purchase orders live.
+            Talk to our team about your PO processing challenges and explore if OrderPilot fits.
           </p>
         </div>
       </div>

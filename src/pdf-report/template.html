@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PO Processing Cost Analysis — {{companyName}}</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<!-- External fonts removed for PDF reliability -->
 <style>
   :root {
     --orange: #FF4500;
@@ -33,7 +33,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
     color: var(--dark);
     background: var(--white);
     font-size: 11px;
@@ -52,7 +52,7 @@
   .page:last-child { page-break-after: avoid; }
 
   /* Typography */
-  .accent { font-family: 'Playfair Display', serif; font-style: italic; }
+  .accent { font-family: Georgia, 'Times New Roman', serif; font-style: italic; }
   h1 { font-size: 28px; font-weight: 800; line-height: 1.15; letter-spacing: -0.5px; }
   h2 { font-size: 20px; font-weight: 700; line-height: 1.25; letter-spacing: -0.3px; }
   h3 { font-size: 14px; font-weight: 700; line-height: 1.3; }

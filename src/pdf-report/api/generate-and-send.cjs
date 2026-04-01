@@ -31,17 +31,10 @@ const path = require('path');
 // ── Serverless PDF generation (Vercel-compatible) ────────────
 
 async function generatePdfBuffer(input) {
-  let chromium, puppeteer;
-
-  try {
-    // Vercel serverless: use lightweight chromium
-    chromium = require('@sparticuz/chromium');
-    puppeteer = require('puppeteer-core');
-  } catch (e) {
-    // Local dev: use full puppeteer
-    puppeteer = require('puppeteer');
-    chromium = null;
-  }
+  // Always use local puppeteer for reliability
+  // Vercel deployment will need puppeteer installed, not puppeteer-core
+  const puppeteer = require('puppeteer');
+  const chromium = null;
 
   const data = calculateCosts(input);
   const templatePath = path.join(__dirname, '..', 'template.html');
@@ -50,33 +43,29 @@ async function generatePdfBuffer(input) {
   // For serverless, we need to inline the logo since file:// won't work
   let renderedHtml = renderTemplate(templateHtml, data);
 
-  // Replace relative logo paths with absolute or inline
-  const logoPath = path.join(__dirname, '..', '..', '..', '..', 'brand', 'assets', 'orderpilot-logo-icon.svg');
-  if (fs.existsSync(logoPath)) {
-    const logoData = fs.readFileSync(logoPath, 'base64');
+  // Safe PNG logo embedding - tiny file size, no HTML bloat
+  const pngLogoPath = path.join(__dirname, '..', '..', '..', 'public', 'orderpilot-logo.png');
+  if (fs.existsSync(pngLogoPath)) {
+    const pngData = fs.readFileSync(pngLogoPath);
+    const pngBase64 = pngData.toString('base64');
+
+    // Replace orderpilot-logo-icon.svg references with PNG logo
     renderedHtml = renderedHtml.replace(
       /src="[^"]*orderpilot-logo-icon\.svg"/g,
-      `src="data:image/svg+xml;base64,${logoData}"`
+      `src="data:image/png;base64,${pngBase64}"`
     );
   }
 
-  const launchOptions = chromium
-    ? {
-        args: chromium.args,
-        defaultViewport: chromium.defaultViewport,
-        executablePath: await chromium.executablePath(),
-        headless: chromium.headless,
-      }
-    : {
-        headless: 'new',
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      };
+  const launchOptions = {
+    headless: 'new',
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  };
 
   const browser = await puppeteer.launch(launchOptions);
   const page = await browser.newPage();
   await page.setViewport({ width: 794, height: 1123 });
 
-  await page.setContent(renderedHtml, { waitUntil: 'networkidle0', timeout: 15000 });
+  await page.setContent(renderedHtml, { waitUntil: 'networkidle0', timeout: 30000 });
   await page.evaluateHandle('document.fonts.ready');
 
   const pdfBuffer = await page.pdf({
@@ -96,8 +85,12 @@ async function sendEmail(email, companyName, pdfBuffer, data) {
   const { Resend } = require('resend');
   const resend = new Resend(process.env.RESEND_API_KEY);
 
+  // Save PDF temporarily for MCP filePath method
+  const tempPdfPath = path.join(__dirname, '..', '..', '..', `temp-${Date.now()}.pdf`);
+  fs.writeFileSync(tempPdfPath, pdfBuffer);
+
   await resend.emails.send({
-    from: 'OrderPilot <reports@orderpilot.nl>',
+    from: 'onboarding@resend.dev',
     to: email,
     subject: `Your PO Processing Cost Analysis — ${data.totalAnnualCost}/year in hidden costs`,
     html: `
@@ -123,22 +116,28 @@ async function sendEmail(email, companyName, pdfBuffer, data) {
           </a>
         </div>
         <p style="font-size: 12px; color: #9CA3AF; line-height: 1.5;">
-          Questions about the report? Reply to this email or reach us at info@orderpilot.nl.
+          Questions about the report? Reply to this email or reach us at info@orderpilot.com.
         </p>
         <hr style="border: none; border-top: 1px solid #E5E7EB; margin: 20px 0;">
         <p style="font-size: 11px; color: #9CA3AF;">
-          OrderPilot &mdash; AI-powered PO processing &middot; orderpilot.nl
+          OrderPilot &mdash; AI-powered PO processing &middot; orderpilot.com
         </p>
       </div>
     `,
     attachments: [
       {
         filename: `OrderPilot-Cost-Report-${(companyName || 'Report').replace(/[^a-zA-Z0-9]/g, '-')}.pdf`,
-        content: pdfBuffer.toString('base64'),
-        type: 'application/pdf',
+        filePath: tempPdfPath,  // Use filePath method like MCP
       },
     ],
   });
+
+  // Clean up temp file
+  try {
+    fs.unlinkSync(tempPdfPath);
+  } catch (e) {
+    // Ignore cleanup errors
+  }
 }
 
 // ── HubSpot CRM ──────────────────────────────────────────────

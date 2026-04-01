@@ -195,10 +195,10 @@ const BentoBenefits: React.FC = () => {
             <Layers className="text-rb2-orange mb-6" size={48} />
             <h3 className="text-xl md:text-2xl font-bold text-text-primary mb-4">Works With Your ERP</h3>
             <p className="text-text-secondary mb-8">
-              Native connectors for SAP, AFAS, Exact, Microsoft Dynamics, and NetSuite. No middleware. No custom development. Plug in and go.
+              Native connectors for Business Central, Exact Online, Odoo, plus NetSuite and SAP. No middleware. No custom development. Plug in and go.
             </p>
             <div className="flex flex-wrap gap-3">
-              {['SAP', 'AFAS', 'Exact', 'Dynamics', 'NetSuite'].map((erp) => (
+              {['Business Central', 'Exact Online', 'Odoo', 'NetSuite', 'SAP'].map((erp) => (
                 <span key={erp} className="bg-warm-bg-alt rounded-lg px-3 py-1 text-sm font-medium text-text-secondary">
                   {erp}
                 </span>

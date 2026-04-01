@@ -1,22 +1,23 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { 
-  ArrowLeft, 
-  ArrowRight, 
-  Users, 
-  AlertTriangle, 
-  Clock, 
-  RefreshCw, 
-  Lightbulb, 
-  Database, 
-  Building2, 
-  Mail, 
+import {
+  ArrowLeft,
+  ArrowRight,
+  Users,
+  AlertTriangle,
+  Clock,
+  RefreshCw,
+  Lightbulb,
+  Database,
+  Building2,
+  Mail,
   CheckCircle,
   Check,
   Search,
   X
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { usePostHogTracking } from '../src/hooks/usePostHogTracking';
 import Logo from './Logo';
 
 // --- CONSTANTS & LOGIC ---
@@ -134,16 +135,16 @@ const questions: Question[] = [
     icon: Database,
     question: 'Which ERP system does your team use?',
     options: [
-      { label: 'SAP', value: 'sap' },
-      { label: 'AFAS', value: 'afas' },
+      { label: 'Business Central', value: 'business-central' },
       { label: 'Exact Online', value: 'exact' },
-      { label: 'Microsoft Dynamics', value: 'dynamics' },
+      { label: 'Odoo', value: 'odoo' },
       { label: 'NetSuite', value: 'netsuite' },
+      { label: 'SAP', value: 'sap' },
       { label: 'Other', value: 'other' }
     ],
     feedback: (val: string) => {
       if (val === 'other') return 'We may be able to connect to your system via API. We\'ll include details in your report.';
-      const names: any = { sap: 'SAP', afas: 'AFAS', exact: 'Exact Online', dynamics: 'Microsoft Dynamics', netsuite: 'NetSuite' };
+      const names: any = { 'business-central': 'Business Central', exact: 'Exact Online', odoo: 'Odoo', netsuite: 'NetSuite', sap: 'SAP' };
       return `OrderPilot has a native ${names[val]} connector. Direct integration, no middleware.`;
     }
   },
@@ -267,6 +268,24 @@ const CalculatorPage: React.FC = () => {
   const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { track, trackPageView, identifyUser } = usePostHogTracking();
+
+  // Track calculator started
+  useEffect(() => {
+    if (phase === 'questions' && currentStep === 0) {
+      track('calculator_started', {
+        entry_point: document.referrer.includes('orderpi') ? 'internal' : 'external',
+      });
+    }
+  }, [phase, currentStep, track]);
+
+  // Track page view
+  useEffect(() => {
+    trackPageView('calculator', {
+      phase: phase,
+      step: currentStep,
+    });
+  }, [trackPageView, phase, currentStep]);
 
   const results = useMemo(() => {
     if (Object.keys(answers).length < 7) return null;
@@ -276,13 +295,25 @@ const CalculatorPage: React.FC = () => {
   const animatedTotal = useCountUp(results?.totalCost || 0);
 
   const handleSelect = (key: string, value: any) => {
-    setAnswers((prev: any) => ({ ...prev, [key]: value }));
+    const newAnswers = { ...answers, [key]: value };
+    setAnswers(newAnswers);
+
     // Auto-advance after a short delay
     setTimeout(() => {
       if (currentStep < 6) {
         setCurrentStep(prev => prev + 1);
       } else {
         setPhase('results');
+        // Track calculator completion
+        const finalResults = calculateCosts(newAnswers);
+        if (finalResults) {
+          track('calculator_completed', {
+            cost_savings: finalResults.potentialSavings || 0,
+            po_volume: newAnswers.volume || 0,
+            processing_time: newAnswers.time || 0,
+            team_size: newAnswers.team || 0,
+          });
+        }
       }
     }, 600);
   };
@@ -297,20 +328,86 @@ const CalculatorPage: React.FC = () => {
     else setPhase('results');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
+
+    try {
+      // Prepare data for PDF generation
+      const reportData = {
+        email,
+        firstName,
+        companyName: answers.company || '',
+        monthlyVolume: answers.volume || 225,
+        timePerPO: answers.time ? Math.round(answers.time * 60) : 18, // Convert hours to minutes
+        errorRate: answers.errors || 12,
+        erpSystem: erpName
+      };
+
+      // Call our PDF generation API
+      const response = await fetch('/api/generate-report', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reportData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      // Track successful completion
+      track('calculator_completed', {
+        cost_savings: parseFloat(result.data?.annualSavings?.replace(/[^0-9.-]+/g, '') || '0'),
+        po_volume: reportData.monthlyVolume * 12,
+        processing_time: reportData.timePerPO,
+        team_size: answers.team || 1,
+      });
+
+      // Track PDF report generation and delivery
+      track('pdf_report_generated', {
+        email: email,
+        company_name: reportData.companyName,
+        annual_savings: parseFloat(result.data?.annualSavings?.replace(/[^0-9.-]+/g, '') || '0'),
+        monthly_po_volume: reportData.monthlyVolume,
+        erp_system: erpName,
+        lead_score: reportData.monthlyVolume * (reportData.timePerPO / 60) * 42 * 12, // Rough lead score based on cost
+      });
+
+      // Identify user in PostHog
+      identifyUser(email, {
+        first_name: firstName,
+        email: email,
+        company_name: reportData.companyName,
+        monthly_po_volume: reportData.monthlyVolume,
+      });
+
       setIsSubmitting(false);
       setShowEmailModal(false);
       setPhase('thankyou');
-    }, 1000);
+
+    } catch (error) {
+      console.error('Error generating PDF report:', error);
+      setIsSubmitting(false);
+
+      // Still show success to user but track the error
+      track('calculator_error', {
+        error_type: 'pdf_generation_failed',
+        error_message: error instanceof Error ? error.message : 'Unknown error',
+      });
+
+      // Show success anyway - better UX
+      setShowEmailModal(false);
+      setPhase('thankyou');
+    }
   };
 
   const erpName = useMemo(() => {
     const val = answers.erp;
-    const names: any = { sap: 'SAP', afas: 'AFAS', exact: 'Exact Online', dynamics: 'Microsoft Dynamics', netsuite: 'NetSuite', other: 'ERP' };
+    const names: any = { 'business-central': 'Business Central', exact: 'Exact Online', odoo: 'Odoo', netsuite: 'NetSuite', sap: 'SAP', other: 'ERP' };
     return names[val] || 'ERP';
   }, [answers.erp]);
 
@@ -724,11 +821,11 @@ const CalculatorPage: React.FC = () => {
 
               <div className="mt-12 bg-gray-800/40 border border-gray-700/30 rounded-3xl p-8 text-left shadow-2xl">
                 <h3 className="text-xl font-[900] text-white leading-tight">
-                  See OrderPilot process your POs live
+                  Talk to a procurement automation expert
                 </h3>
                 <p className="text-sm text-gray-400 mt-4 leading-relaxed">
-                  Book a 15-minute demo. We'll connect to your {erpName} and process
-                  one of your actual purchase orders in real-time.
+                  Get in touch with our team to discuss your PO processing challenges
+                  and see if OrderPilot is the right solution for your {erpName} setup.
                 </p>
                 <div className="flex items-center gap-3 mt-6 text-sm">
                   <span className="text-gray-500">Your cost: <span className="font-bold text-white">€{results.totalCost.toLocaleString()}</span></span>
@@ -736,16 +833,16 @@ const CalculatorPage: React.FC = () => {
                   <span className="text-rb2-orange font-bold">€6,000/yr</span>
                 </div>
                 <a
-                  href="/#demo"
+                  href="/#contact"
                   className="inline-flex items-center justify-center w-full px-6 py-4 bg-rb2-orange text-white rounded-2xl font-bold text-lg mt-8 hover:bg-rb2-orange-hover hover:shadow-lg hover:shadow-orange-500/20 transition-all"
                 >
-                  Book My Demo
+                  Get in Touch
                   <ArrowRight className="ml-2" size={20} />
                 </a>
               </div>
 
               <p className="text-xs text-gray-500 mt-8">
-                No commitment. No credit card. Just 15 minutes.
+                No commitment. No pressure. Just a conversation.
               </p>
             </div>
           )}

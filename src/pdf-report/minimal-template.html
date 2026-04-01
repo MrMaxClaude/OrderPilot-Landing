@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>{{companyName}} - Cost Analysis</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #333;
+  background: white;
+}
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 20mm;
+  page-break-after: always;
+}
+.page:last-child { page-break-after: avoid; }
+h1 { font-size: 24px; color: #FF6321; margin-bottom: 16px; }
+h2 { font-size: 18px; color: #333; margin: 16px 0 8px 0; }
+h3 { font-size: 14px; color: #333; margin: 12px 0 6px 0; }
+.highlight { background: #FFF7ED; padding: 12px; border-left: 3px solid #FF6321; margin: 16px 0; }
+.cost { font-size: 20px; font-weight: bold; color: #FF6321; }
+.savings { font-size: 18px; font-weight: bold; color: #059669; }
+.header { text-align: center; margin-bottom: 32px; }
+.logo { width: 40px; height: 40px; background: #FF6321; border-radius: 8px; margin: 0 auto 16px; }
+.grid { display: flex; flex-wrap: wrap; gap: 16px; margin: 16px 0; }
+.card { flex: 1; min-width: 120px; border: 1px solid #E5E7EB; padding: 12px; border-radius: 6px; }
+.button {
+  background: #FF6321;
+  color: white;
+  padding: 12px 24px;
+  text-decoration: none;
+  border-radius: 6px;
+  display: inline-block;
+  font-weight: bold;
+  margin: 16px 0;
+}
+.footer {
+  position: fixed;
+  bottom: 20mm;
+  left: 20mm;
+  right: 20mm;
+  text-align: center;
+  font-size: 10px;
+  color: #666;
+}
+</style>
+</head>
+<body>
+
+<!-- PAGE 1: EXECUTIVE SUMMARY -->
+<div class="page">
+  <div class="header">
+    <div class="logo"></div>
+    <h1>OrderPilot Cost Analysis</h1>
+    <p><strong>{{companyName}}</strong> | {{monthlyVolume}} POs/month | {{erpSystem}}</p>
+  </div>
+
+  <div class="highlight">
+    <h2>Executive Summary</h2>
+    <p>Your current manual PO processing costs you <span class="cost">{{totalAnnualCost}}</span> per year.</p>
+    <p>With OrderPilot automation, you could save <span class="savings">{{annualSavings}}</span> annually.</p>
+    <p><strong>ROI: {{roiMultiple}} in year one</strong></p>
+  </div>
+
+  <h2>Current State Analysis</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Volume</h3>
+      <p>{{monthlyVolume}} POs/month</p>
+      <p>{{annualVolume}} POs/year</p>
+    </div>
+    <div class="card">
+      <h3>Time Per PO</h3>
+      <p>{{timePerPO}} minutes</p>
+      <p>{{totalHoursMonth}} hours/month</p>
+    </div>
+    <div class="card">
+      <h3>Error Rate</h3>
+      <p>{{errorRate}}%</p>
+      <p>{{errorsPerMonth}} errors/month</p>
+    </div>
+    <div class="card">
+      <h3>Annual Cost</h3>
+      <p class="cost">{{totalAnnualCost}}</p>
+      <p>Hidden inefficiency</p>
+    </div>
+  </div>
+
+  <h2>Cost Breakdown</h2>
+  <ul>
+    <li><strong>Processing Time:</strong> {{processingCost}} ({{processingHours}} hours/year)</li>
+    <li><strong>Error Resolution:</strong> {{errorCost}} ({{errorHours}} hours/year)</li>
+    <li><strong>Administrative Overhead:</strong> {{overheadCost}}</li>
+    <li><strong>Opportunity Cost:</strong> {{opportunityCost}}</li>
+  </ul>
+</div>
+
+<!-- PAGE 2: ROI ANALYSIS -->
+<div class="page">
+  <h1>Return on Investment</h1>
+
+  <div class="highlight">
+    <h2>3-Year Savings Projection</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Year 1</h3>
+        <p class="savings">{{year1Savings}}</p>
+      </div>
+      <div class="card">
+        <h3>Year 2</h3>
+        <p class="savings">{{year2Savings}}</p>
+      </div>
+      <div class="card">
+        <h3>Year 3</h3>
+        <p class="savings">{{year3Savings}}</p>
+      </div>
+    </div>
+    <p><strong>Payback Period:</strong> {{paybackWeeks}} weeks</p>
+  </div>
+
+  <h2>Implementation Benefits</h2>
+  <ul>
+    <li>95% reduction in manual processing time</li>
+    <li>99% error reduction through automation</li>
+    <li>Real-time ERP integration with {{erpSystem}}</li>
+    <li>Complete audit trail and compliance</li>
+    <li>Scalable solution as your business grows</li>
+  </ul>
+
+  <h2>Next Steps</h2>
+  <p>Ready to see OrderPilot in action with your actual PO formats?</p>
+  <a href="http://localhost:3000/pdf-demo?savings={{annualSavings}}&company={{companyName}}&erp={{erpSystem}}&utm_source=pdf&utm_campaign=cost_analysis&utm_content=main_cta" class="button">
+    Book Your Free Demo
+  </a>
+  <p>20-minute personalized demonstration | No commitment required</p>
+</div>
+
+<div class="footer">
+  Confidential — Prepared for {{companyName}} | OrderPilot Cost Analysis
+</div>
+
+</body>
+</html>

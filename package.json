@@ -10,12 +10,19 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
+    "@posthog/react": "^1.8.2",
+    "@sparticuz/chromium": "^143.0.4",
     "@tailwindcss/vite": "^4.2.1",
+    "dotenv": "^17.3.1",
     "lucide-react": "^0.564.0",
     "motion": "^12.35.0",
+    "posthog-js": "^1.364.0",
+    "puppeteer": "^24.40.0",
+    "puppeteer-core": "^24.40.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-router-dom": "^7.13.1",
+    "resend": "^6.9.4",
     "tailwindcss": "^4.2.1"
   },
   "devDependencies": {

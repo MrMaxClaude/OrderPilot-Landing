@@ -1,12 +1,22 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useScrollAnimation } from '../src/hooks/useScrollAnimation';
+import { usePostHogTracking } from '../src/hooks/usePostHogTracking';
 import HeroAnimation from './HeroAnimation';
 
 const Hero: React.FC = () => {
   const sectionRef = useScrollAnimation();
+  const { track, trackPageView } = usePostHogTracking();
+
+  useEffect(() => {
+    // Track homepage view
+    trackPageView('home', {
+      section: 'hero',
+      is_new_visitor: !document.cookie.includes('_posthog'),
+    });
+  }, [trackPageView]);
 
   return (
     <section 
@@ -29,14 +39,24 @@ const Hero: React.FC = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-          <a 
-            href="#demo"
+          <a
+            href="#contact"
+            onClick={() => track('hero_cta_clicked', {
+              cta_type: 'expert_contact',
+              cta_text: 'Get in Touch',
+              location: 'hero_primary'
+            })}
             className="w-full sm:w-auto bg-rb2-orange text-white rounded-2xl font-semibold px-8 py-4 hover:bg-rb2-orange-hover hover:shadow-lg transition-all duration-200"
           >
-            Book a Demo
+            Get in Touch
           </a>
-          <Link 
+          <Link
             to="/calculator"
+            onClick={() => track('hero_cta_clicked', {
+              cta_type: 'calculator',
+              cta_text: 'Calculate your costs',
+              location: 'hero_secondary'
+            })}
             className="w-full sm:w-auto bg-white text-text-primary border border-gray-200 rounded-2xl font-semibold px-8 py-4 shadow-sm hover:bg-gray-50 hover:shadow-md transition-all duration-200 flex items-center justify-center gap-2"
           >
             Calculate your costs <ArrowRight size={18} />
@@ -46,7 +66,7 @@ const Hero: React.FC = () => {
         {/* Trust Strip */}
         <div className="mb-16">
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-text-muted mb-6">
-            Works with: SAP · AFAS · Exact · Microsoft Dynamics · NetSuite
+            Works with: Business Central · Exact Online · Odoo · NetSuite · SAP
           </p>
         </div>
       </div>

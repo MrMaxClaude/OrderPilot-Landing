@@ -4,12 +4,12 @@ import { motion } from 'motion/react';
 
 const Integrations: React.FC = () => {
   const logos = [
+    { name: 'Business Central', url: 'https://upload.wikimedia.org/wikipedia/commons/a/aa/Microsoft_Dynamics_365_logo.svg' },
+    { name: 'Exact', url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Exact_Software_Logo.svg/1200px-Exact_Software_Logo.svg.png' },
+    { name: 'Odoo', url: 'https://upload.wikimedia.org/wikipedia/commons/d/df/Odoo_logo.svg' },
+    { name: 'NetSuite', url: 'https://logos-world.net/wp-content/uploads/2020/09/Oracle-NetSuite-Logo.png' },
     { name: 'SAP', url: 'https://upload.wikimedia.org/wikipedia/commons/5/59/SAP_2011_logo.svg' },
     { name: 'Oracle', url: 'https://upload.wikimedia.org/wikipedia/commons/5/50/Oracle_logo.svg' },
-    { name: 'Odoo', url: 'https://upload.wikimedia.org/wikipedia/commons/d/df/Odoo_logo.svg' },
-    { name: 'MS Dynamics', url: 'https://upload.wikimedia.org/wikipedia/commons/a/aa/Microsoft_Dynamics_365_logo.svg' },
-    { name: 'Exact', url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Exact_Software_Logo.svg/1200px-Exact_Software_Logo.svg.png' },
-    { name: 'AFAS', url: 'https://logos-world.net/wp-content/uploads/2023/12/AFAS-Software-Logo.png' },
   ];
 
   return (
@@ -37,7 +37,7 @@ const Integrations: React.FC = () => {
       >
          <div className="absolute top-0 left-0 w-2 h-full bg-rb2-orange"></div>
          <p className="text-2xl md:text-3xl font-serif font-medium text-gray-900 leading-relaxed mb-10 italic">
-           "Orderpilot was the easiest integration we've ever done. We were live with our SAP S/4HANA instance in under 48 hours."
+           "Orderpilot was the easiest integration we've ever done. We were live with our Business Central instance in under 48 hours."
          </p>
          <div className="flex items-center justify-center space-x-4">
             <img src="https://picsum.photos/seed/marcus/100/100" alt="Avatar" className="w-14 h-14 rounded-2xl shadow-lg" referrerPolicy="no-referrer" />

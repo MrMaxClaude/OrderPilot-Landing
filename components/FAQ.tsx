@@ -13,7 +13,7 @@ const FAQ: React.FC = () => {
     },
     {
       q: "Which ERP systems do you support?",
-      a: "We have pre-built connectors for SAP (S/4HANA & ECC), MS Dynamics 365, Oracle Netsuite, AFAS, and Exact. We also offer a flexible API for custom integrations."
+      a: "We have pre-built connectors for Business Central, Exact Online, and Odoo. We also support NetSuite, SAP (S/4HANA & ECC), plus offer a flexible API for custom integrations."
     },
     {
       q: "How long does implementation take?",
