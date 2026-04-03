@@ -717,7 +717,7 @@ const CalculatorPage: React.FC = () => {
               </div>
 
               <div className="text-center mt-8 pt-8 border-t border-gray-700/30 max-w-xl mx-auto w-full">
-                <a href="/#demo" className="text-sm font-bold text-rb2-orange hover:underline">
+                <a href="/#contact" className="text-sm font-bold text-rb2-orange hover:underline">
                   Skip the report — book a demo instead →
                 </a>
               </div>

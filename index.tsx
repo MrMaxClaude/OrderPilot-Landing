@@ -5,21 +5,22 @@ import { BrowserRouter } from 'react-router-dom';
 import { PostHogProvider } from '@posthog/react';
 import posthog from 'posthog-js';
 import App from './App';
+import { getStoredConsent } from './src/lib/cookieConsent';
 
-// Initialize PostHog
+// Initialize PostHog (analytics off until cookie consent — see CookieConsent + getStoredConsent)
 if (import.meta.env.VITE_PUBLIC_POSTHOG_KEY) {
   posthog.init(import.meta.env.VITE_PUBLIC_POSTHOG_KEY, {
     api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST || 'https://eu.i.posthog.com',
     debug: import.meta.env.VITE_PUBLIC_POSTHOG_DEBUG === 'true',
-    // Disable in development to avoid noise
-    loaded: (posthog) => {
-      if (import.meta.env.DEV) posthog.debug();
+    opt_out_capturing_by_default: true,
+    loaded: (client) => {
+      if (import.meta.env.DEV) client.debug();
+      const consent = getStoredConsent();
+      if (consent?.analytics) client.opt_in_capturing();
     },
-    // Enhanced privacy settings for EU compliance
     persistence: 'localStorage+cookie',
     cross_subdomain_cookie: false,
     secure_cookie: true,
-    // Capture less data by default for privacy
     property_denylist: ['$initial_referrer', '$initial_referring_domain'],
   });
 }

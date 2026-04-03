@@ -22,10 +22,7 @@ const Navbar: React.FC = () => {
 
   const navLinks = [
     { name: 'How It Works', href: '#how-it-works' },
-    { name: 'Results', href: '#results' },
     { name: 'Pricing', href: '/pricing' },
-    { name: 'Cases', href: '/cases' },
-    { name: 'About', href: '#benefits' },
   ];
 
   const handleNavClick = (href: string, linkName: string) => {

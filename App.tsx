@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -14,11 +14,23 @@ import CalculatorPage from './components/CalculatorPage';
 import PricingPage from './components/PricingPage';
 import CasesPage from './components/CasesPage';
 import PdfDemoPage from './components/PdfDemoPage';
+import CookieConsent from './components/CookieConsent';
+import PrivacyPage from './components/PrivacyPage';
 
 const App: React.FC = () => {
   const location = useLocation();
+  const { pathname, hash } = location;
+
+  useLayoutEffect(() => {
+    if (pathname !== '/' || !hash) return;
+    const id = hash.replace(/^#/, '');
+    if (!id) return;
+    requestAnimationFrame(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, [pathname, hash]);
+
   const isCalculatorPage = location.pathname === '/calculator';
-  const isPricingPage = location.pathname === '/pricing';
   const isCasesPage = location.pathname === '/cases';
   const isPdfDemoPage = location.pathname === '/pdf-demo';
 
@@ -42,8 +54,11 @@ const App: React.FC = () => {
           <Route path="/pricing" element={<PricingPage />} />
           <Route path="/cases" element={<CasesPage />} />
           <Route path="/pdf-demo" element={<PdfDemoPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
         </Routes>
       </main>
+
+      <CookieConsent />
 
       {!isCalculatorPage && !isCasesPage && !isPdfDemoPage && <Footer />}
       {!isCalculatorPage && !isCasesPage && !isPdfDemoPage && <CalculatorCTA />}
