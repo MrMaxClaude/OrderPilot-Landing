@@ -34,8 +34,13 @@ const ContactForm: React.FC = () => {
     return () => observer.disconnect();
   }, [track, formStarted, sectionRef]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError(null);
 
     // Get form data
     const formData = new FormData(e.target as HTMLFormElement);
@@ -44,35 +49,70 @@ const ContactForm: React.FC = () => {
     const email = formData.get('email') as string;
     const company = formData.get('company') as string;
     const poVolume = formData.get('poVolume') as string;
+    const message = formData.get('message') as string;
 
-    // Create user and company IDs
+    // Create user and company IDs for tracking
     const userId = email;
     const companyId = `${company.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`;
 
-    // Identify user
-    identifyUser(userId, {
-      first_name: firstName,
-      last_name: lastName,
-      email: email,
-      full_name: `${firstName} ${lastName}`,
-    });
+    try {
+      // Send to backend API
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/api/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          company,
+          poVolume,
+          message,
+        }),
+      });
 
-    // Identify company
-    identifyCompany(companyId, {
-      name: company,
-      po_volume: poVolume,
-      industry: 'unknown', // We could add this to the form later
-      size: poVolume, // Using PO volume as proxy for size
-    });
+      if (!response.ok) {
+        throw new Error('Failed to submit form');
+      }
 
-    // Track form completion
-    track('inquiry_form_completed', {
-      company_size: poVolume,
-      po_volume: poVolume,
-      source_page: window.location.pathname,
-    });
+      // Identify user for PostHog
+      identifyUser(userId, {
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+        full_name: `${firstName} ${lastName}`,
+      });
 
-    setIsSubmitted(true);
+      // Identify company for PostHog
+      identifyCompany(companyId, {
+        name: company,
+        po_volume: poVolume,
+        industry: 'unknown', // We could add this to the form later
+        size: poVolume, // Using PO volume as proxy for size
+      });
+
+      // Track form completion
+      track('inquiry_form_completed', {
+        company_size: poVolume,
+        po_volume: poVolume,
+        source_page: window.location.pathname,
+      });
+
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setSubmitError('Failed to submit form. Please try again or email us directly at info@orderpilot.com');
+
+      // Track form error
+      track('inquiry_form_error', {
+        error_message: error instanceof Error ? error.message : 'Unknown error',
+        source_page: window.location.pathname,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isSubmitted) {
@@ -84,7 +124,7 @@ const ContactForm: React.FC = () => {
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">Inquiry Received!</h2>
           <p className="text-text-secondary text-lg mb-8">
-            Our procurement automation expert will reach out within 2 hours to discuss your specific needs and see if OrderPilot is a good fit.
+            We typically answer our enquiries within 24 hours to discuss your specific needs and see if OrderPilot is a good fit.
           </p>
           <button
             onClick={() => setIsSubmitted(false)}
@@ -210,11 +250,17 @@ const ContactForm: React.FC = () => {
                   className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-rb2-orange focus:ring-1 focus:ring-rb2-orange outline-none transition-all resize-none"
                 />
               </div>
+              {submitError && (
+                <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+                  {submitError}
+                </div>
+              )}
               <button
                 type="submit"
-                className="w-full bg-rb2-orange text-white rounded-2xl font-bold py-4 hover:bg-rb2-orange-hover hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
+                disabled={isSubmitting}
+                className="w-full bg-rb2-orange text-white rounded-2xl font-bold py-4 hover:bg-rb2-orange-hover hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Get in Touch <ArrowRight size={18} />
+                {isSubmitting ? 'Sending...' : 'Get in Touch'} {!isSubmitting && <ArrowRight size={18} />}
               </button>
               <p className="text-[10px] text-center text-text-muted font-bold uppercase tracking-widest">Free consultation. No obligation. No pressure.</p>
             </form>
