@@ -4,22 +4,59 @@
  *
  * Generates personalized PDF cost analysis and sends via email
  * Phase 1: Resend email only (no CRM integration yet)
+ *
+ * ESM default export (package.json has "type": "module"); CJS deps via createRequire.
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'node:fs';
+import path from 'node:path';
+import { createRequire } from 'node:module';
 
-// Import calculation functions
+const require = createRequire(import.meta.url);
 const { calculateCosts, renderTemplate } = require('../src/pdf-report/generate-report.cjs');
 
-// Enable CORS for frontend calls
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-};
+/** Vercel can pass JSON as string or Buffer depending on runtime; normalize to an object */
+function parseJsonBody(req) {
+  const raw = req.body;
+  if (raw == null) return {};
+  if (typeof raw === 'string') {
+    try {
+      return JSON.parse(raw || '{}');
+    } catch {
+      return {};
+    }
+  }
+  if (Buffer.isBuffer(raw)) {
+    try {
+      return JSON.parse(raw.toString('utf8') || '{}');
+    } catch {
+      return {};
+    }
+  }
+  return typeof raw === 'object' ? raw : {};
+}
 
-module.exports = async function handler(req, res) {
+/** Public site URL for links in the transactional email (set SITE_URL on Vercel for custom domain) */
+function getSiteUrl() {
+  if (process.env.SITE_URL) {
+    return String(process.env.SITE_URL).replace(/\/$/, '');
+  }
+  if (process.env.VERCEL_URL) {
+    const host = String(process.env.VERCEL_URL).replace(/^https?:\/\//, '');
+    return `https://${host}`;
+  }
+  return 'https://orderpilot.com';
+}
+
+function siteHostLabel(siteUrl) {
+  try {
+    return new URL(siteUrl).hostname;
+  } catch {
+    return 'orderpilot.com';
+  }
+}
+
+export default async function handler(req, res) {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return res.status(200).json({});
@@ -30,6 +67,7 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    const body = parseJsonBody(req);
     const {
       email,
       companyName,
@@ -39,7 +77,7 @@ module.exports = async function handler(req, res) {
       timePerPO,
       errorRate,
       erpSystem
-    } = req.body;
+    } = body;
 
     // Validate required fields
     if (!email || !monthlyVolume || !timePerPO || !errorRate) {
@@ -53,22 +91,20 @@ module.exports = async function handler(req, res) {
     // Generate PDF
     const { pdfBuffer, data } = await generatePdfBuffer({
       companyName: companyName || 'Your Company',
-      monthlyVolume: parseInt(monthlyVolume),
-      timePerPO: parseInt(timePerPO),
-      errorRate: parseInt(errorRate),
+      monthlyVolume: parseInt(monthlyVolume, 10),
+      timePerPO: parseInt(timePerPO, 10),
+      errorRate: parseInt(errorRate, 10),
       erpSystem: erpSystem || 'ERP'
     });
 
     // Send email with Resend
-    await sendEmail(email, companyName, firstName, pdfBuffer, data);
-
-    // Track completion in PostHog (if available)
-    // This would be done client-side after successful response
+    const emailResult = await sendEmail(email, companyName, firstName, pdfBuffer, data);
 
     res.status(200).json({
       success: true,
       message: 'PDF generated and sent successfully',
       data: {
+        emailId: emailResult?.data?.id,
         totalAnnualCost: data.totalAnnualCost,
         annualSavings: data.annualSavings,
         roiMultiple: data.roiMultiple
@@ -154,10 +190,15 @@ async function sendEmail(email, companyName, firstName, pdfBuffer, data) {
   const personalGreeting = firstName ? `Hi ${firstName}` : (companyName ? `Hi ${companyName} team` : 'Hi');
 
   // Convert PDF buffer to base64 for Resend attachment
-  const pdfBase64 = pdfBuffer.toString('base64');
+  const pdfBase64 = Buffer.from(pdfBuffer).toString('base64');
 
-  await resend.emails.send({
-    from: 'OrderPilot <hello@orderpilot.com>',
+  const siteUrl = getSiteUrl();
+  const siteHost = siteHostLabel(siteUrl);
+  const fromAddress =
+    process.env.RESEND_FROM || 'OrderPilot <hello@orderpilot.com>';
+
+  return await resend.emails.send({
+    from: fromAddress,
     to: email,
     subject: `Your PO Cost Analysis — €${data.totalAnnualCost}/year in hidden costs`,
     html: `
@@ -543,16 +584,16 @@ async function sendEmail(email, companyName, firstName, pdfBuffer, data) {
               <div class="cta-subtext">
                 Book a 20-minute demo to see OrderPilot process your actual PO formats
               </div>
-              <a href="http://localhost:3000/pdf-demo?savings=${data.annualSavings}&company=${encodeURIComponent(companyName || 'Your Company')}&erp=${encodeURIComponent(data.erpSystem)}&utm_source=pdf&utm_campaign=cost_analysis&utm_content=email_cta" class="cta-button">
+              <a href="${siteUrl}/pdf-demo?savings=${data.annualSavings}&company=${encodeURIComponent(companyName || 'Your Company')}&erp=${encodeURIComponent(data.erpSystem)}&utm_source=pdf&utm_campaign=cost_analysis&utm_content=email_cta" class="cta-button">
                 Book Your Personalized Demo
               </a>
             </div>
 
             <!-- Secondary Links -->
             <div class="secondary-links">
-              <a href="http://localhost:3000/cases" class="secondary-link">View Case Studies</a>
+              <a href="${siteUrl}/cases" class="secondary-link">View Case Studies</a>
               <a href="mailto:info@orderpilot.com" class="secondary-link">Ask Questions</a>
-              <a href="http://localhost:3000/#contact" class="secondary-link">Just Get in Touch</a>
+              <a href="${siteUrl}/#contact" class="secondary-link">Just Get in Touch</a>
             </div>
 
             <p style="font-size: 14px; color: #8E8E8E; text-align: center; margin-top: 24px;">
@@ -566,7 +607,7 @@ async function sendEmail(email, companyName, firstName, pdfBuffer, data) {
             <div class="footer-brand">OrderPilot</div>
             <div>AI-powered PO processing automation</div>
             <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #E5E7EB;">
-              <a href="http://localhost:3000" style="color: #FF6321; text-decoration: none;">localhost:3000</a>
+              <a href="${siteUrl}" style="color: #FF6321; text-decoration: none;">${siteHost}</a>
               &nbsp;•&nbsp;
               <a href="mailto:info@orderpilot.com" style="color: #8E8E8E; text-decoration: none;">info@orderpilot.com</a>
             </div>

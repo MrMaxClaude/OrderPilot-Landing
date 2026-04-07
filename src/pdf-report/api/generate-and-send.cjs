@@ -43,13 +43,13 @@ async function generatePdfBuffer(input) {
   // For serverless, we need to inline the logo since file:// won't work
   let renderedHtml = renderTemplate(templateHtml, data);
 
-  // Safe PNG logo embedding - tiny file size, no HTML bloat
+  // Safe PNG logo embedding - tiny file size, no HTML bloat (109 bytes)
   const pngLogoPath = path.join(__dirname, '..', '..', '..', 'public', 'orderpilot-logo.png');
   if (fs.existsSync(pngLogoPath)) {
     const pngData = fs.readFileSync(pngLogoPath);
     const pngBase64 = pngData.toString('base64');
 
-    // Replace orderpilot-logo-icon.svg references with PNG logo
+    // Replace orderpilot-logo-icon.svg references with tiny PNG logo
     renderedHtml = renderedHtml.replace(
       /src="[^"]*orderpilot-logo-icon\.svg"/g,
       `src="data:image/png;base64,${pngBase64}"`
@@ -89,8 +89,8 @@ async function sendEmail(email, companyName, pdfBuffer, data) {
   const tempPdfPath = path.join(__dirname, '..', '..', '..', `temp-${Date.now()}.pdf`);
   fs.writeFileSync(tempPdfPath, pdfBuffer);
 
-  await resend.emails.send({
-    from: 'onboarding@resend.dev',
+  const emailResult = await resend.emails.send({
+    from: 'OrderPilot <noreply@resend.dev>',
     to: email,
     subject: `Your PO Processing Cost Analysis — ${data.totalAnnualCost}/year in hidden costs`,
     html: `
@@ -127,9 +127,18 @@ async function sendEmail(email, companyName, pdfBuffer, data) {
     attachments: [
       {
         filename: `OrderPilot-Cost-Report-${(companyName || 'Report').replace(/[^a-zA-Z0-9]/g, '-')}.pdf`,
-        filePath: tempPdfPath,  // Use filePath method like MCP
+        content: Buffer.from(pdfBuffer).toString('base64'),
+        contentType: 'application/pdf',
       },
     ],
+  });
+
+  console.log('Resend response:', emailResult);
+  console.log('PDF email sent successfully:', {
+    emailId: emailResult.data?.id,
+    error: emailResult.error,
+    to: email,
+    subject: `Your PO Processing Cost Analysis — ${data.totalAnnualCost}/year in hidden costs`
   });
 
   // Clean up temp file
@@ -232,3 +241,4 @@ async function handler(req, res) {
 
 module.exports = handler;
 module.exports.generatePdfBuffer = generatePdfBuffer;
+module.exports.sendEmail = sendEmail;
