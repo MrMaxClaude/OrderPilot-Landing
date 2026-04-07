@@ -104,7 +104,7 @@ const ContactForm: React.FC = () => {
     } catch (error) {
       console.error('Error submitting form:', error);
       setSubmitError(
-        'Failed to submit form. Please try again or email us directly at info@order-pilot.com'
+        'Failed to submit form. Please try again or email us directly at info@order-pilot.ai'
       );
 
       // Track form error

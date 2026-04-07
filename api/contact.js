@@ -5,7 +5,7 @@
 
 import { Resend } from 'resend';
 
-const CONTACT_EMAIL = 'info@order-pilot.com';
+const CONTACT_EMAIL = 'info@order-pilot.ai';
 
 function parseJsonBody(req) {
   const raw = req.body;

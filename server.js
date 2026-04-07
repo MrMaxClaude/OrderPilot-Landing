@@ -27,7 +27,7 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-const CONTACT_EMAIL = 'info@order-pilot.com';
+const CONTACT_EMAIL = 'info@order-pilot.ai';
 
 // Contact form endpoint
 app.post('/api/contact', async (req, res) => {

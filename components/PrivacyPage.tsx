@@ -49,8 +49,8 @@ const PrivacyPage: React.FC = () => {
         <ul className="list-disc pl-5 space-y-2">
           <li>
             <strong className="text-text-primary">Email:</strong>{' '}
-            <a href="mailto:info@order-pilot.com" className="text-rb2-orange font-semibold hover:underline">
-              info@order-pilot.com
+            <a href="mailto:info@order-pilot.ai" className="text-rb2-orange font-semibold hover:underline">
+              info@order-pilot.ai
             </a>
           </li>
           <li>
@@ -173,8 +173,8 @@ const PrivacyPage: React.FC = () => {
         </ul>
         <p className="mt-4">
           To exercise any of these rights, contact us at{' '}
-          <a href="mailto:info@order-pilot.com" className="text-rb2-orange font-semibold hover:underline">
-            info@order-pilot.com
+          <a href="mailto:info@order-pilot.ai" className="text-rb2-orange font-semibold hover:underline">
+            info@order-pilot.ai
           </a>
           . We will respond within 30 days.
         </p>
@@ -382,8 +382,8 @@ const PrivacyPage: React.FC = () => {
         <ul className="list-disc pl-5 space-y-2">
           <li>
             <strong className="text-text-primary">Email:</strong>{' '}
-            <a href="mailto:info@order-pilot.com" className="text-rb2-orange font-semibold hover:underline">
-              info@order-pilot.com
+            <a href="mailto:info@order-pilot.ai" className="text-rb2-orange font-semibold hover:underline">
+              info@order-pilot.ai
             </a>
           </li>
           <li>
