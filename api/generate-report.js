@@ -592,7 +592,7 @@ async function sendEmail(email, companyName, firstName, pdfBuffer, data) {
             <!-- Secondary Links -->
             <div class="secondary-links">
               <a href="${siteUrl}/cases" class="secondary-link">View Case Studies</a>
-              <a href="mailto:info@orderpilot.com" class="secondary-link">Ask Questions</a>
+              <a href="mailto:info@order-pilot.com" class="secondary-link">Ask Questions</a>
               <a href="${siteUrl}/#contact" class="secondary-link">Just Get in Touch</a>
             </div>
 
@@ -609,7 +609,7 @@ async function sendEmail(email, companyName, firstName, pdfBuffer, data) {
             <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #E5E7EB;">
               <a href="${siteUrl}" style="color: #FF6321; text-decoration: none;">${siteHost}</a>
               &nbsp;•&nbsp;
-              <a href="mailto:info@orderpilot.com" style="color: #8E8E8E; text-decoration: none;">info@orderpilot.com</a>
+              <a href="mailto:info@order-pilot.com" style="color: #8E8E8E; text-decoration: none;">info@order-pilot.com</a>
             </div>
           </div>
         </div>

@@ -56,9 +56,9 @@ const ContactForm: React.FC = () => {
     const companyId = `${company.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`;
 
     try {
-      // Send to backend API
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-      const response = await fetch(`${apiUrl}/api/contact`, {
+      // Same-origin on Vercel (`/api/contact`); override with VITE_API_URL for local split dev (e.g. :3000 + :3001)
+      const apiBase = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+      const response = await fetch(`${apiBase}/api/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +103,9 @@ const ContactForm: React.FC = () => {
       setIsSubmitted(true);
     } catch (error) {
       console.error('Error submitting form:', error);
-      setSubmitError('Failed to submit form. Please try again or email us directly at info@orderpilot.com');
+      setSubmitError(
+        'Failed to submit form. Please try again or email us directly at info@order-pilot.com'
+      );
 
       // Track form error
       track('inquiry_form_error', {

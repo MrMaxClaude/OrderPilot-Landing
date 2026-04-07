@@ -27,6 +27,8 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+const CONTACT_EMAIL = 'info@order-pilot.com';
+
 // Contact form endpoint
 app.post('/api/contact', async (req, res) => {
   const { firstName, lastName, email, company, poVolume, message } = req.body;
@@ -36,12 +38,18 @@ app.post('/api/contact', async (req, res) => {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
+  const contactFrom =
+    process.env.RESEND_CONTACT_FROM ||
+    process.env.RESEND_FROM ||
+    'OrderPilot <onboarding@resend.dev>';
+  const notifyTo = process.env.CONTACT_NOTIFY_TO || CONTACT_EMAIL;
+
   try {
     // 1. Send notification email to sales team
     const notificationEmail = await resend.emails.send({
-      from: 'OrderPilot <noreply@resend.dev>',  // Using Resend's test domain for now
-      to: 'eros@rb2.nl',
-      reply_to: email,
+      from: contactFrom,
+      to: notifyTo,
+      replyTo: email,
       subject: `New OrderPilot Lead - ${company}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -68,7 +76,7 @@ app.post('/api/contact', async (req, res) => {
 
     // 2. Send confirmation email to the lead
     const confirmationEmail = await resend.emails.send({
-      from: 'OrderPilot <noreply@resend.dev>',  // Using Resend's test domain for now
+      from: contactFrom,
       to: email,
       subject: 'Thank you for your interest in OrderPilot',
       html: `
@@ -96,6 +104,10 @@ app.post('/api/contact', async (req, res) => {
 
             <p style="font-size: 16px; line-height: 1.6;">
               In the meantime, feel free to explore our <a href="https://orderpilot.com/calculator" style="color: #FF6B35;">ROI Calculator</a> to see potential savings for your business.
+            </p>
+
+            <p style="font-size: 16px; line-height: 1.6;">
+              Questions? Email us at <a href="mailto:${CONTACT_EMAIL}" style="color: #FF6B35;">${CONTACT_EMAIL}</a>.
             </p>
 
             <p style="font-size: 16px; line-height: 1.6;">
