@@ -7,6 +7,10 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
 const require = createRequire(import.meta.url);
+const {
+  buildReportDeliveryEmailHtml,
+  reportDeliveryEmailSubject,
+} = require('./src/pdf-report/report-delivery-email.cjs');
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -225,145 +229,8 @@ app.post('/api/generate-report', async (req, res) => {
     const emailResult = await resend.emails.send({
       from: 'OrderPilot <noreply@resend.dev>',
       to: email,
-      subject: `Your PO Processing Cost Analysis — €${data.totalAnnualCost}/year in hidden costs`,
-      html: `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Your OrderPilot Cost Analysis</title>
-          <style>
-            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            body {
-              font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-              line-height: 1.6;
-              background-color: #FDFCFB;
-              padding: 20px;
-            }
-            .email-container {
-              max-width: 600px;
-              margin: 0 auto;
-              background: #FFFFFF;
-              border-radius: 24px;
-              overflow: hidden;
-              box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            }
-            .header {
-              background: #141414;
-              color: #FFFFFF;
-              padding: 32px 40px;
-              text-align: center;
-            }
-            .logo {
-              width: 48px;
-              height: 48px;
-              background: #FF6321;
-              border-radius: 12px;
-              margin: 0 auto 16px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              font-weight: 800;
-              font-size: 18px;
-              color: white;
-            }
-            .header h1 {
-              font-size: 28px;
-              font-weight: 800;
-              margin-bottom: 8px;
-            }
-            .content {
-              padding: 40px;
-            }
-            .insight-box {
-              background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
-              border: 1px solid #FED7AA;
-              border-radius: 16px;
-              padding: 24px;
-              margin: 24px 0;
-            }
-            .cost-highlight {
-              font-size: 24px;
-              font-weight: 800;
-              color: #FF6321;
-              margin: 8px 0;
-            }
-            .savings-highlight {
-              font-size: 20px;
-              font-weight: 700;
-              color: #10B981;
-              margin: 8px 0;
-            }
-            .cta-button {
-              display: inline-block;
-              background: #FF6321;
-              color: #FFFFFF !important;
-              font-size: 16px;
-              font-weight: 700;
-              padding: 16px 32px;
-              border-radius: 12px;
-              text-decoration: none;
-              margin: 20px 0;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="email-container">
-            <div class="header">
-              <div class="logo">OP</div>
-              <h1>Your Report is Ready</h1>
-              <p>Personalized cost breakdown attached</p>
-            </div>
-
-            <div class="content">
-              <p style="font-size: 16px; margin-bottom: 24px;">
-                ${personalGreeting},
-              </p>
-
-              <p style="font-size: 15px; color: #4A4A4A; margin-bottom: 24px;">
-                Your personalized PO Processing Cost Analysis is complete and attached to this email.
-                Based on your inputs, we've calculated some eye-opening numbers.
-              </p>
-
-              <div class="insight-box">
-                <div style="font-size: 14px; font-weight: 700; color: #7C2D12; margin-bottom: 12px;">
-                  KEY FINDING
-                </div>
-                <div>
-                  Your manual PO processing costs you
-                  <div class="cost-highlight">€${data.totalAnnualCost}/year</div>
-                </div>
-                <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #FED7AA;">
-                  With OrderPilot automation, you could save
-                  <div class="savings-highlight">€${data.annualSavings}/year</div>
-                  <div style="font-size: 13px; color: #7C2D12; margin-top: 4px;">
-                    That's ${data.roiMultiple}x ROI in year one
-                  </div>
-                </div>
-              </div>
-
-              <p style="font-size: 15px; color: #4A4A4A; margin-bottom: 32px;">
-                The attached report includes a detailed breakdown, industry benchmarks,
-                ROI model, and a 90-day implementation plan.
-              </p>
-
-              <div style="text-align: center;">
-                <a href="https://orderpilot.com/demo" class="cta-button">
-                  Book Your Personalized Demo
-                </a>
-              </div>
-
-              <p style="font-size: 14px; color: #8E8E8E; text-align: center; margin-top: 24px;">
-                Questions about your analysis? Simply reply to this email.<br>
-                Our team typically responds within 2 hours.
-              </p>
-            </div>
-          </div>
-        </body>
-        </html>
-      `,
+      subject: reportDeliveryEmailSubject(data),
+      html: buildReportDeliveryEmailHtml({ personalGreeting, data }),
       attachments: [
         {
           filename: `OrderPilot-Cost-Analysis-${(companyName || 'Report').replace(/[^a-zA-Z0-9]/g, '-')}.pdf`,
