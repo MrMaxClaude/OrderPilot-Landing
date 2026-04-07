@@ -43,7 +43,15 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
-  const resend = new Resend(process.env.RESEND_API_KEY);
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.error('Contact form: RESEND_API_KEY is not set (Vercel → Environment Variables)');
+    return res.status(503).json({
+      error: 'Email service is not configured',
+      code: 'missing_resend_key',
+    });
+  }
+
   const notifyTo = process.env.CONTACT_NOTIFY_TO || CONTACT_EMAIL;
   const fromAddress =
     process.env.RESEND_CONTACT_FROM ||
@@ -51,6 +59,8 @@ export default async function handler(req, res) {
     'OrderPilot <onboarding@resend.dev>';
 
   try {
+    const resend = new Resend(apiKey);
+
     const notificationEmail = await resend.emails.send({
       from: fromAddress,
       to: notifyTo,
@@ -78,6 +88,14 @@ export default async function handler(req, res) {
         </div>
       `,
     });
+
+    if (notificationEmail.error) {
+      console.error('Resend notification error:', notificationEmail.error);
+      return res.status(502).json({
+        error: 'Failed to send notification email',
+        details: notificationEmail.error.message || String(notificationEmail.error),
+      });
+    }
 
     const confirmationEmail = await resend.emails.send({
       from: fromAddress,
@@ -129,6 +147,14 @@ export default async function handler(req, res) {
         </div>
       `,
     });
+
+    if (confirmationEmail.error) {
+      console.error('Resend confirmation error:', confirmationEmail.error);
+      return res.status(502).json({
+        error: 'Failed to send confirmation email',
+        details: confirmationEmail.error.message || String(confirmationEmail.error),
+      });
+    }
 
     console.log('Contact form emails sent:', {
       notification: notificationEmail.data?.id,
