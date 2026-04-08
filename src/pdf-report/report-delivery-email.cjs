@@ -13,7 +13,7 @@ function getSiteUrl() {
     const host = String(process.env.VERCEL_URL).replace(/^https?:\/\//, '');
     return `https://${host}`;
   }
-  return 'https://orderpilot.com';
+  return 'https://order-pilot.ai';
 }
 
 /** Footer website (display + canonical URL) */

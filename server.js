@@ -45,7 +45,7 @@ app.post('/api/contact', async (req, res) => {
   const contactFrom =
     process.env.RESEND_CONTACT_FROM ||
     process.env.RESEND_FROM ||
-    'OrderPilot <onboarding@resend.dev>';
+    'OrderPilot <info@order-pilot.ai>';
   const notifyTo = process.env.CONTACT_NOTIFY_TO || CONTACT_EMAIL;
 
   try {
@@ -107,7 +107,7 @@ app.post('/api/contact', async (req, res) => {
             </div>
 
             <p style="font-size: 16px; line-height: 1.6;">
-              In the meantime, feel free to explore our <a href="https://orderpilot.com/calculator" style="color: #FF6B35;">ROI Calculator</a> to see potential savings for your business.
+              In the meantime, feel free to explore our <a href="https://order-pilot.ai/calculator" style="color: #FF6B35;">ROI Calculator</a> to see potential savings for your business.
             </p>
 
             <p style="font-size: 16px; line-height: 1.6;">
@@ -123,7 +123,7 @@ app.post('/api/contact', async (req, res) => {
           <div style="padding: 20px; background: #f8f9fa; text-align: center; border-radius: 0 0 8px 8px;">
             <p style="color: #666; font-size: 14px; margin: 0;">
               OrderPilot - Automating Purchase Order Processing<br>
-              <a href="https://orderpilot.com" style="color: #FF6B35;">orderpilot.com</a>
+              <a href="https://order-pilot.ai" style="color: #FF6B35;">order-pilot.ai</a>
             </p>
           </div>
         </div>
@@ -227,7 +227,7 @@ app.post('/api/generate-report', async (req, res) => {
     const personalGreeting = firstName ? `Hi ${firstName}` : (companyName ? `Hi ${companyName} team` : 'Hi');
 
     const emailResult = await resend.emails.send({
-      from: 'OrderPilot <noreply@resend.dev>',
+      from: process.env.RESEND_FROM || 'OrderPilot <info@order-pilot.ai>',
       to: email,
       subject: reportDeliveryEmailSubject(data),
       html: buildReportDeliveryEmailHtml({ personalGreeting, data }),

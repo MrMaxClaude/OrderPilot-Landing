@@ -90,7 +90,7 @@ async function sendEmail(email, companyName, pdfBuffer, data) {
   fs.writeFileSync(tempPdfPath, pdfBuffer);
 
   const emailResult = await resend.emails.send({
-    from: 'OrderPilot <noreply@resend.dev>',
+    from: process.env.RESEND_FROM || 'OrderPilot <info@order-pilot.ai>',
     to: email,
     subject: `Your PO Processing Cost Analysis — ${data.totalAnnualCost}/year in hidden costs`,
     html: `
@@ -116,11 +116,11 @@ async function sendEmail(email, companyName, pdfBuffer, data) {
           </a>
         </div>
         <p style="font-size: 12px; color: #9CA3AF; line-height: 1.5;">
-          Questions about the report? Reply to this email or reach us at info@orderpilot.com.
+          Questions about the report? Reply to this email or reach us at info@order-pilot.ai.
         </p>
         <hr style="border: none; border-top: 1px solid #E5E7EB; margin: 20px 0;">
         <p style="font-size: 11px; color: #9CA3AF;">
-          OrderPilot &mdash; AI-powered PO processing &middot; orderpilot.com
+          OrderPilot &mdash; AI-powered PO processing &middot; order-pilot.ai
         </p>
       </div>
     `,
