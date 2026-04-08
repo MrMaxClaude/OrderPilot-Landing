@@ -1,39 +1,33 @@
 ---
-const steps = [
-  {
-    title: 'Connect',
-    description: "Hook up your email inbox and ERP system. OrderPilot has native connectors for Business Central, Exact Online, Odoo, plus NetSuite and SAP. Setup takes hours, not weeks.",
-  },
-  {
-    title: 'Process',
-    descriptionHtml: '<p class="mb-4">Purchase orders arrive by email. OrderPilot reads the document — whatever the format — and extracts every field: vendor, PO number, line items, quantities, prices, delivery dates.</p><p>No templates to configure. No rules to maintain. It reads the document the way your best team member would. Faster.</p>',
-  },
-  {
-    title: 'Validate & Deliver',
-    descriptionHtml: '<p class="mb-4">Every extracted data point gets checked against your ERP master data. Vendor names matched. Product codes verified. Prices validated.</p><p>Clean, validated data lands in your ERP automatically. Your team reviews exceptions only. The routine work is done.</p>',
-  }
-];
+interface Step {
+  title: string;
+  description?: string;
+  descriptionHtml?: string;
+  illustrationType: 'connect' | 'process' | 'validate';
+}
 
-const erps = ['Business Central', 'Exact Online', 'Odoo', 'NetSuite', 'SAP'];
+interface Props {
+  label: string;
+  headline: string;
+  subheadline: string;
+  steps: Step[];
+  extractedFields: { label: string; value: string }[];
+  validationBadges: string[];
+  erps: string[];
+  cta: { text: string; href: string; subtitle: string };
+}
 
-const extractedFields = [
-  { label: 'Customer', value: 'Breman Groep' },
-  { label: 'PO #', value: 'PO-2024-0847' },
-  { label: 'Items', value: '3' },
-  { label: 'Total', value: '€12,450.00' }
-];
-
-const validationBadges = ['Vendor Match ✓', 'Price Check ✓', 'SKU Verified ✓'];
+const { label, headline, subheadline, steps, extractedFields, validationBadges, erps, cta } = Astro.props;
 ---
 
 <section id="how-it-works" class="py-32 lg:py-40 bg-[#F5F3EF] fade-in" data-how-it-works>
   <div class="max-w-6xl mx-auto px-6 mb-16">
-    <span class="text-xs font-medium uppercase tracking-[0.2em] text-text-muted mb-4 block">/ HOW IT WORKS</span>
+    <span class="text-xs font-medium uppercase tracking-[0.2em] text-text-muted mb-4 block">{label}</span>
     <h2 class="text-4xl md:text-5xl lg:text-6xl font-[800] tracking-tight text-text-primary mb-6">
       Three steps. Zero <span class="font-serif italic text-rb2-orange">manual entry.</span>
     </h2>
     <p class="text-lg md:text-xl text-text-secondary max-w-2xl leading-relaxed">
-      AI handles the processing. Your team handles the exceptions.
+      {subheadline}
     </p>
   </div>
 
@@ -353,14 +347,14 @@ const validationBadges = ['Vendor Match ✓', 'Price Check ✓', 'SKU Verified �
     <!-- CTA -->
     <div class="text-center mt-24">
       <a
-        href="#contact"
+        href={cta.href}
         class="inline-flex items-center px-10 py-5 bg-rb2-orange text-white rounded-2xl font-bold text-lg hover:bg-rb2-orange-hover hover:shadow-2xl hover:shadow-orange-200 transition-all hover:-translate-y-1"
       >
-        See It Work With Your POs
+        {cta.text}
         <svg class="ml-2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
       <p class="text-sm text-text-muted mt-6 font-medium">
-        Talk to our team about your PO processing challenges and explore if OrderPilot fits.
+        {cta.subtitle}
       </p>
     </div>
   </div>

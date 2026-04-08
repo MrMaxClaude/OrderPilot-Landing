@@ -1,0 +1,13 @@
+{
+  "headline": "Enterprise-Grade Security",
+  "description": "Your data is encrypted at rest and in transit. We are ISO 27001 certified and GDPR compliant. We never use your data to train public AI models.",
+  "badges": [
+    { "label": "ISO 27001", "icon": "shield" },
+    { "label": "GDPR Ready", "icon": "lock" },
+    { "label": "SOC2 Type II", "icon": "check-circle" },
+    { "label": "SLA 99.9%", "icon": "shield" }
+  ],
+  "quote": "Security was our #1 concern when moving to AI. OrderPilot\u2019s private cloud infrastructure and RB2\u2019s reputation made it an easy choice.",
+  "quoteAuthor": "Mark van den Broek",
+  "quoteRole": "CISO, Nedcargo Logistics"
+}

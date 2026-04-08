@@ -1,8 +1,28 @@
 ---
+import { getCollection, getEntry } from 'astro:content';
+import { createMarkdownProcessor } from '@astrojs/markdown-remark';
 import PageLayout from '../layouts/PageLayout.astro';
 import PricingPage from '../components/astro/PricingPage.astro';
+
+const pageMeta = await getEntry('pages', 'pricing');
+
+const planEntries = await getCollection('plans');
+const plans = planEntries
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((p) => p.data);
+
+const mdProcessor = await createMarkdownProcessor({});
+const faqEntries = await getCollection('pricingFaqs');
+const faqs = await Promise.all(
+  faqEntries
+    .sort((a, b) => a.data.order - b.data.order)
+    .map(async (entry) => {
+      const { code } = await mdProcessor.render(entry.body);
+      return { question: entry.data.question, answerHtml: code };
+    }),
+);
 ---
 
-<PageLayout title="Pricing | Orderpilot" description="Simple, transparent pricing for automated PO processing. Start free, scale as you grow.">
-  <PricingPage />
+<PageLayout title={pageMeta.data.title} description={pageMeta.data.description} ogImage={pageMeta.data.ogImage}>
+  <PricingPage plans={plans} faqs={faqs} />
 </PageLayout>

@@ -1,10 +1,13 @@
 ---
+import { getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CalculatorPage from '../components/react/CalculatorPage.tsx';
 import CookieConsent from '../components/astro/CookieConsent.astro';
+
+const pageMeta = await getEntry('pages', 'calculator');
 ---
 
-<BaseLayout title="ROI Calculator | Orderpilot" description="Calculate how much you could save with automated PO processing. Get a personalised cost analysis report.">
+<BaseLayout title={pageMeta.data.title} description={pageMeta.data.description} ogImage={pageMeta.data.ogImage}>
   <CalculatorPage client:load />
   <CookieConsent />
 </BaseLayout>

@@ -1,0 +1,19 @@
+{
+  "name": "Enterprise",
+  "description": "For large organizations with complex needs",
+  "monthlyPrice": null,
+  "yearlyPrice": null,
+  "orderLimit": "Unlimited orders",
+  "iconId": "shield",
+  "features": [
+    "Everything in Growth",
+    "Dedicated customer success manager",
+    "Custom integrations",
+    "Enterprise accuracy (99.9%+)",
+    "On-premise deployment option",
+    "24/7 phone support"
+  ],
+  "popular": false,
+  "ctaText": "Talk to Expert",
+  "order": 3
+}

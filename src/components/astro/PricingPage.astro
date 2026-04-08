@@ -1,59 +1,27 @@
 ---
-const plans = [
-  {
-    name: 'Starter',
-    description: 'Perfect for small teams getting started',
-    monthlyPrice: 349,
-    yearlyPrice: 279,
-    orderLimit: '1,000 orders/month',
-    iconId: 'users',
-    features: [
-      'AI-powered order processing',
-      'Email support',
-      'Basic ERP integrations',
-      'Standard accuracy (99%+)',
-      'Mobile dashboard access'
-    ],
-    cta: 'Talk to Expert',
-    popular: false
-  },
-  {
-    name: 'Growth',
-    description: 'Most popular for scaling businesses',
-    monthlyPrice: 899,
-    yearlyPrice: 719,
-    orderLimit: '5,000 orders/month',
-    iconId: 'zap',
-    features: [
-      'Everything in Starter',
-      'Priority email support',
-      'Advanced workflow automation',
-      'Premium accuracy (99.5%+)',
-      'Custom approval rules',
-      'Advanced analytics & reporting'
-    ],
-    cta: 'Talk to Expert',
-    popular: true
-  },
-  {
-    name: 'Enterprise',
-    description: 'For large organizations with complex needs',
-    monthlyPrice: null,
-    yearlyPrice: null,
-    orderLimit: 'Unlimited orders',
-    iconId: 'shield',
-    features: [
-      'Everything in Growth',
-      'Dedicated customer success manager',
-      'Custom integrations',
-      'Enterprise accuracy (99.9%+)',
-      'On-premise deployment option',
-      '24/7 phone support'
-    ],
-    cta: 'Talk to Expert',
-    popular: false
-  }
-];
+interface Plan {
+  name: string;
+  description: string;
+  monthlyPrice: number | null;
+  yearlyPrice: number | null;
+  orderLimit: string;
+  iconId: string;
+  features: string[];
+  ctaText: string;
+  popular: boolean;
+}
+
+interface FaqEntry {
+  question: string;
+  answerHtml: string;
+}
+
+interface Props {
+  plans: Plan[];
+  faqs: FaqEntry[];
+}
+
+const { plans, faqs } = Astro.props;
 
 function formatPrice(price: number | null) {
   if (price === null) return 'Custom';
@@ -63,33 +31,6 @@ function formatPrice(price: number | null) {
 function getSavings(monthly: number, yearly: number) {
   return (monthly * 12) - (yearly * 12);
 }
-
-const faqs = [
-  {
-    q: "How quickly can I get started?",
-    a: "Setup takes just 15 minutes. Connect your email, configure basic settings, and start processing orders immediately with our AI."
-  },
-  {
-    q: "Do I need technical knowledge?",
-    a: "No coding required. Our intuitive interface and DIY integration kit make setup simple for any team member."
-  },
-  {
-    q: "What if I exceed my order limit?",
-    a: "You'll get notifications at 80% usage. Overage is just €0.10 per order, and you can upgrade anytime."
-  },
-  {
-    q: "Can I cancel anytime?",
-    a: "Yes, cancel anytime with no penalties. Your data remains accessible for 90 days after cancellation."
-  },
-  {
-    q: "Which ERPs do you support?",
-    a: "Business Central, Exact Online, Odoo, plus NetSuite, SAP, and 50+ others through our universal API connector."
-  },
-  {
-    q: "How accurate is the AI processing?",
-    a: "99.5% accuracy guaranteed. Our AI improves over time by learning from your specific order patterns and requirements."
-  }
-];
 ---
 
 <div class="min-h-screen bg-gradient-to-br from-warm-bg via-warm-bg-alt to-orange-50/30 pt-24" data-pricing-toggle>
@@ -232,7 +173,7 @@ const faqs = [
                   : 'bg-text-primary text-white hover:bg-black'
               }`}
             >
-              <span>{plan.cta}</span>
+              <span>{plan.ctaText}</span>
               <!-- ArrowRight 20 -->
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </a>
@@ -297,12 +238,12 @@ const faqs = [
         {faqs.map((faq) => (
           <details class="group bg-white rounded-2xl border border-gray-100 hover:border-rb2-orange/30 transition-all duration-200 overflow-hidden">
             <summary class="w-full p-6 text-left flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden focus:outline-none hover:bg-gray-50 transition-colors">
-              <h3 class="font-bold text-text-primary text-lg pr-4">{faq.q}</h3>
+              <h3 class="font-bold text-text-primary text-lg pr-4">{faq.question}</h3>
               <!-- ChevronDown -->
               <svg class="text-rb2-orange transition-transform duration-200 flex-shrink-0 group-open:rotate-180" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
             </summary>
-            <div class="px-6 pb-6 animate-fadeIn">
-              <p class="text-text-secondary leading-relaxed">{faq.a}</p>
+            <div class="px-6 pb-6 animate-fadeIn text-text-secondary leading-relaxed">
+              <Fragment set:html={faq.answerHtml} />
             </div>
           </details>
         ))}

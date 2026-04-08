@@ -1,31 +1,17 @@
 ---
-const testimonials = [
-  {
-    pill: "WhatsApp to ERP",
-    quote: "We get orders via WhatsApp, fax and email, all processed manually. Orderpilot finally turns that chaos into one automated flow. From napkin to order, literally.",
-    author: "Operations Manager",
-    company: "B2B Technical Wholesaler, The Netherlands",
-    featured: true
-  },
-  {
-    pill: "Four systems unified",
-    quote: "Our quote-to-order process ran across four different systems. Errors and delays always came from transferring data between them. That problem is now solved.",
-    author: "Sales Manager",
-    company: "Industrial Food Manufacturer (5,000+ employees), USA"
-  },
-  {
-    pill: "30 min to 3 min",
-    quote: "What used to take 30 minutes of manual entry per order now takes under 3. We finally spend our time on customers instead of copying data between screens.",
-    author: "Customer Service Lead",
-    company: "Building Materials Distributor, Germany"
-  },
-  {
-    pill: "Future-proof value",
-    quote: "What Orderpilot built works. It's measurable, future-proof, and designed to add real business value from day one.",
-    author: "Sander van Duijn, Digital Transformation Expert",
-    company: "INSPIRED Pet Nutrition"
-  }
-];
+interface Testimonial {
+  pill?: string;
+  quote: string;
+  author: string;
+  company: string;
+  featured?: boolean;
+}
+
+interface Props {
+  testimonials: Testimonial[];
+}
+
+const { testimonials } = Astro.props;
 ---
 
 <section
