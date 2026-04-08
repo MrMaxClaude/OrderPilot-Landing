@@ -125,14 +125,14 @@ async function generatePdfBuffer(input) {
 
   let renderedHtml = renderTemplate(templateHtml, data);
 
-  // Handle logo for serverless
+  // Handle logo for serverless — inline SVG as base64 data URI
   const logoPath = path.join(process.cwd(), 'public', 'logo.svg');
   if (fs.existsSync(logoPath)) {
     const logoData = fs.readFileSync(logoPath, 'base64');
-    renderedHtml = renderedHtml.replace(
-      /src="[^"]*logo\.svg"/g,
-      `src="data:image/svg+xml;base64,${logoData}"`
-    );
+    const logoDataUri = `src="data:image/svg+xml;base64,${logoData}"`;
+    // Replace both logo.svg and orderpilot-logo-icon.svg references
+    renderedHtml = renderedHtml.replace(/src="[^"]*logo\.svg"/g, logoDataUri);
+    renderedHtml = renderedHtml.replace(/src="[^"]*orderpilot-logo-icon\.svg"/g, logoDataUri);
   }
 
   const launchOptions = chromium
