@@ -2,7 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
     "api/generate-report.js": {
-      "memory": 3008,
       "maxDuration": 60
     }
   }

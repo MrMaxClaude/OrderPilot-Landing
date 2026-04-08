@@ -12,8 +12,6 @@ import {
   Building2,
   Mail,
   CheckCircle,
-  Check,
-  Search,
   X
 } from 'lucide-react';
 import { usePostHogTracking } from '../../hooks/usePostHogTracking';

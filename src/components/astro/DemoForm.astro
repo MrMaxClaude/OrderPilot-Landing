@@ -78,8 +78,8 @@ const benefits = [
       <div class="bg-warm-bg rounded-[2.5rem] p-8 md:p-12 border border-gray-100 shadow-xl">
         <form data-submit-form class="space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-2">
-              <label class="text-xs font-bold text-text-muted uppercase tracking-wider">First Name</label>
+            <label class="space-y-2 block">
+              <span class="text-xs font-bold text-text-muted uppercase tracking-wider">First Name</span>
               <input
                 type="text"
                 name="firstName"
@@ -87,9 +87,9 @@ const benefits = [
                 placeholder="First Name"
                 class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-rb2-orange focus:ring-1 focus:ring-rb2-orange outline-none transition-all"
               />
-            </div>
-            <div class="space-y-2">
-              <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Last Name</label>
+            </label>
+            <label class="space-y-2 block">
+              <span class="text-xs font-bold text-text-muted uppercase tracking-wider">Last Name</span>
               <input
                 type="text"
                 name="lastName"
@@ -97,10 +97,10 @@ const benefits = [
                 placeholder="Last Name"
                 class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-rb2-orange focus:ring-1 focus:ring-rb2-orange outline-none transition-all"
               />
-            </div>
+            </label>
           </div>
-          <div class="space-y-2">
-            <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Work Email</label>
+          <label class="space-y-2 block">
+            <span class="text-xs font-bold text-text-muted uppercase tracking-wider">Work Email</span>
             <input
               type="email"
               name="email"
@@ -108,9 +108,9 @@ const benefits = [
               placeholder="your.email@company.com"
               class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-rb2-orange focus:ring-1 focus:ring-rb2-orange outline-none transition-all"
             />
-          </div>
-          <div class="space-y-2">
-            <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Company Name</label>
+          </label>
+          <label class="space-y-2 block">
+            <span class="text-xs font-bold text-text-muted uppercase tracking-wider">Company Name</span>
             <input
               type="text"
               name="company"
@@ -118,25 +118,25 @@ const benefits = [
               placeholder="Acme Corp"
               class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-rb2-orange focus:ring-1 focus:ring-rb2-orange outline-none transition-all"
             />
-          </div>
-          <div class="space-y-2">
-            <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Monthly PO Volume</label>
+          </label>
+          <label class="space-y-2 block">
+            <span class="text-xs font-bold text-text-muted uppercase tracking-wider">Monthly PO Volume</span>
             <select name="poVolume" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-rb2-orange focus:ring-1 focus:ring-rb2-orange outline-none transition-all appearance-none">
               <option>100 - 500 orders</option>
               <option>500 - 2,000 orders</option>
               <option>2,000 - 10,000 orders</option>
               <option>10,000+ orders</option>
             </select>
-          </div>
-          <div class="space-y-2">
-            <label class="text-xs font-bold text-text-muted uppercase tracking-wider">Message (Optional)</label>
+          </label>
+          <label class="space-y-2 block">
+            <span class="text-xs font-bold text-text-muted uppercase tracking-wider">Message (Optional)</span>
             <textarea
               name="message"
               rows="4"
               placeholder="Tell us about your current PO processing challenges or specific questions you have..."
               class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-rb2-orange focus:ring-1 focus:ring-rb2-orange outline-none transition-all resize-none"
             ></textarea>
-          </div>
+          </label>
           <div data-error class="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm hidden"></div>
           <button
             type="submit"
