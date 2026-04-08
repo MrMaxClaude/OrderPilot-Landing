@@ -170,7 +170,7 @@ const { costSection, before, after, calculatorCta, whySection, cards } = Astro.p
     <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
       {cards.map((card) => {
         if (card.variant === 'standout') return (
-          <div class={`md:col-span-${card.colSpan} bg-rb2-orange text-white rounded-2xl p-8 hover:translate-y-[-2px] hover:shadow-lg transition-all duration-300 relative overflow-hidden flex flex-col justify-between`}>
+          <div class={`${card.colSpan === 3 ? 'md:col-span-3' : 'md:col-span-2'} bg-rb2-orange text-white rounded-2xl p-8 hover:translate-y-[-2px] hover:shadow-lg transition-all duration-300 relative overflow-hidden flex flex-col justify-between`}>
             <!-- Zap icon (large decorative) -->
             <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute -bottom-10 -right-10 text-white opacity-10"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
             <div class="relative z-10">
@@ -188,7 +188,7 @@ const { costSection, before, after, calculatorCta, whySection, cards } = Astro.p
         );
 
         if (card.variant === 'wide') return (
-          <div class={`md:col-span-${card.colSpan} bg-card-white rounded-2xl p-8 border border-gray-100 hover:translate-y-[-2px] hover:shadow-lg transition-all duration-300`}>
+          <div class={`${card.colSpan === 3 ? 'md:col-span-3' : 'md:col-span-2'} bg-card-white rounded-2xl p-8 border border-gray-100 hover:translate-y-[-2px] hover:shadow-lg transition-all duration-300`}>
             <!-- Layers icon -->
             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rb2-orange mb-6"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="m2 12 8.58 3.91a2 2 0 0 0 1.66 0L20.83 12"/><path d="m2 17 8.58 3.91a2 2 0 0 0 1.66 0L20.83 17"/></svg>
             <h3 class="text-xl md:text-2xl font-bold text-text-primary mb-4">{card.title}</h3>
@@ -206,7 +206,7 @@ const { costSection, before, after, calculatorCta, whySection, cards } = Astro.p
         );
 
         if (card.variant === 'compact') return (
-          <div class={`md:col-span-${card.colSpan} bg-card-white rounded-2xl p-8 border border-gray-100 hover:translate-y-[-2px] hover:shadow-lg transition-all duration-300 flex flex-col justify-center group`}>
+          <div class={`${card.colSpan === 3 ? 'md:col-span-3' : 'md:col-span-2'} bg-card-white rounded-2xl p-8 border border-gray-100 hover:translate-y-[-2px] hover:shadow-lg transition-all duration-300 flex flex-col justify-center group`}>
             <h3 class="text-xl font-bold text-text-primary mb-2">{card.title}</h3>
             <p class="text-text-secondary text-sm">{card.description}</p>
           </div>
@@ -214,7 +214,7 @@ const { costSection, before, after, calculatorCta, whySection, cards } = Astro.p
 
         /* default variant */
         return (
-          <div class={`md:col-span-${card.colSpan} bg-card-white rounded-2xl p-8 border border-gray-100 hover:translate-y-[-2px] hover:shadow-lg transition-all duration-300 flex flex-col justify-between`}>
+          <div class={`${card.colSpan === 3 ? 'md:col-span-3' : 'md:col-span-2'} bg-card-white rounded-2xl p-8 border border-gray-100 hover:translate-y-[-2px] hover:shadow-lg transition-all duration-300 flex flex-col justify-between`}>
             <div>
               <!-- ShieldCheck icon -->
               <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rb2-orange mb-6"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>

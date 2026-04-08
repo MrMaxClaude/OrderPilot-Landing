@@ -1022,7 +1022,7 @@ import Logo from './Logo.astro';
       companyName: '',
       monthlyVolume: (answers.volume as number) || 225,
       timePerPO: answers.time ? Math.round((answers.time as number) * 60) : 18,
-      errorRate: answers.errors || 12,
+      errorRate: answers.errors ? Math.round(answers.errors * 100) : 12,
       erpSystem: erpName
     };
 
