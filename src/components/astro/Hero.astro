@@ -1,5 +1,5 @@
 ---
-import HeroAnimation from '../react/HeroAnimation.tsx';
+import HeroAnimation from './HeroAnimation.astro';
 
 interface Props {
   badge: string;
@@ -58,7 +58,7 @@ const headlineLines = headline.split('\n');
 
   <!-- Processing Animation -->
   <div class="max-w-[1200px] mx-auto mt-8">
-    <HeroAnimation client:load />
+    <HeroAnimation />
   </div>
 </section>
 

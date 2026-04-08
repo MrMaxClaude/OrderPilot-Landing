@@ -8,6 +8,10 @@ yarn-error.log*
 dist/
 build/
 
+# Astro generated
+.astro/
+.vercel/
+
 # Environment variables
 .env
 .env.local
@@ -48,3 +52,5 @@ temp/
 
 # Logs
 *.log
+/.playwright-mcp
+/.superset
