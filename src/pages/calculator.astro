@@ -1,0 +1,13 @@
+---
+import { getEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CalculatorPage from '../components/astro/CalculatorPage.astro';
+import CookieConsent from '../components/astro/CookieConsent.astro';
+
+const pageMeta = await getEntry('pages', 'calculator');
+---
+
+<BaseLayout title={pageMeta.data.title} description={pageMeta.data.description} ogImage={pageMeta.data.ogImage}>
+  <CalculatorPage />
+  <CookieConsent />
+</BaseLayout>

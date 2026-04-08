@@ -1,0 +1,51 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import { getMarkdownProcessor } from '../lib/markdown';
+import PageLayout from '../layouts/PageLayout.astro';
+import Hero from '../components/astro/Hero.astro';
+import BentoBenefits from '../components/astro/BentoBenefits.astro';
+import POTransformation from '../components/astro/POTransformation.astro';
+import HowItWorks from '../components/astro/HowItWorks.astro';
+import SocialProof from '../components/astro/SocialProof.astro';
+import TrustSecurity from '../components/astro/TrustSecurity.astro';
+import Integrations from '../components/astro/Integrations.astro';
+import FAQ from '../components/astro/FAQ.astro';
+import ContactForm from '../components/astro/DemoForm.astro';
+
+const [pageMeta, hero, benefits, howItWorks, trust, integrationsData, testimonials, faqEntries] = await Promise.all([
+  getEntry('pages', 'home'),
+  getEntry('hero', 'default'),
+  getEntry('benefits', 'default'),
+  getEntry('howItWorks', 'default'),
+  getEntry('trust', 'default'),
+  getEntry('integrations', 'default'),
+  getCollection('testimonials'),
+  getCollection('faqs'),
+]);
+
+const sortedTestimonials = testimonials
+  .sort((a, b) => a.data.order - b.data.order)
+  .map((t) => t.data);
+
+const mdProcessor = await getMarkdownProcessor();
+const faqs = await Promise.all(
+  faqEntries
+    .sort((a, b) => a.data.order - b.data.order)
+    .map(async (entry) => {
+      const { code } = await mdProcessor.render(entry.body);
+      return { question: entry.data.question, answerHtml: code };
+    }),
+);
+---
+
+<PageLayout title={pageMeta.data.title} description={pageMeta.data.description} ogImage={pageMeta.data.ogImage}>
+  <Hero {...hero.data} />
+  <BentoBenefits {...benefits.data} />
+  <POTransformation />
+  <HowItWorks {...howItWorks.data} />
+  <SocialProof testimonials={sortedTestimonials} />
+  <TrustSecurity {...trust.data} />
+  <Integrations {...integrationsData.data} />
+  <FAQ faqs={faqs} />
+  <ContactForm />
+</PageLayout>

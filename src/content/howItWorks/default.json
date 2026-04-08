@@ -1,0 +1,35 @@
+{
+  "label": "/ HOW IT WORKS",
+  "headline": "Three steps. Zero <span class=\"font-serif italic text-rb2-orange\">manual entry.</span>",
+  "subheadline": "AI handles the processing. Your team handles the exceptions.",
+  "steps": [
+    {
+      "title": "Connect",
+      "description": "Hook up your email inbox and ERP system. OrderPilot has native connectors for Business Central, Exact Online, Odoo, plus NetSuite and SAP. Setup takes hours, not weeks.",
+      "illustrationType": "connect"
+    },
+    {
+      "title": "Process",
+      "descriptionHtml": "<p class=\"mb-4\">Purchase orders arrive by email. OrderPilot reads the document \u2014 whatever the format \u2014 and extracts every field: vendor, PO number, line items, quantities, prices, delivery dates.</p><p>No templates to configure. No rules to maintain. It reads the document the way your best team member would. Faster.</p>",
+      "illustrationType": "process"
+    },
+    {
+      "title": "Validate & Deliver",
+      "descriptionHtml": "<p class=\"mb-4\">Every extracted data point gets checked against your ERP master data. Vendor names matched. Product codes verified. Prices validated.</p><p>Clean, validated data lands in your ERP automatically. Your team reviews exceptions only. The routine work is done.</p>",
+      "illustrationType": "validate"
+    }
+  ],
+  "extractedFields": [
+    { "label": "Customer", "value": "Breman Groep" },
+    { "label": "PO #", "value": "PO-2024-0847" },
+    { "label": "Items", "value": "3" },
+    { "label": "Total", "value": "\u20ac12,450.00" }
+  ],
+  "validationBadges": ["Vendor Match \u2713", "Price Check \u2713", "SKU Verified \u2713"],
+  "erps": ["Business Central", "Exact Online", "Odoo", "NetSuite", "SAP"],
+  "cta": {
+    "text": "See It Work With Your POs",
+    "href": "#contact",
+    "subtitle": "Talk to our team about your PO processing challenges and explore if OrderPilot fits."
+  }
+}

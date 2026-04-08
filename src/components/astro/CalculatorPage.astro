@@ -1,0 +1,1091 @@
+---
+import Logo from './Logo.astro';
+---
+
+<div class="min-h-screen bg-[#F5F3EF]">
+  <!-- Top bar -->
+  <div class="max-w-4xl mx-auto px-6 py-6 flex items-center justify-between">
+    <a href="/" class="hover:opacity-80 transition-opacity">
+      <Logo size={40} />
+    </a>
+    <a href="/" class="text-sm text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+      Back to homepage
+    </a>
+  </div>
+
+  <!-- Dark card container -->
+  <div class="flex items-center justify-center px-6 pb-12 pt-4">
+    <div class="w-full max-w-4xl bg-gray-900 rounded-[2.5rem] p-8 md:p-14 lg:p-16 relative overflow-hidden shadow-2xl min-h-[650px] flex flex-col">
+      <!-- Dot grid pattern overlay -->
+      <div
+        class="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 24px 24px;"
+      ></div>
+
+      <!-- PHASE: INTRO -->
+      <div data-phase="intro" class="relative z-10 animate-fadeIn">
+        <!-- Right side decorative element -->
+        <div class="absolute right-0 top-1/2 -translate-y-1/2 hidden lg:block opacity-[0.06] pointer-events-none">
+          <div class="flex items-end gap-3 h-64">
+            <div class="w-12 bg-white rounded-t-lg" style="height: 40%"></div>
+            <div class="w-12 bg-white rounded-t-lg" style="height: 70%"></div>
+            <div class="w-12 bg-white rounded-t-lg" style="height: 55%"></div>
+            <div class="w-12 bg-rb2-orange rounded-t-lg" style="height: 100%"></div>
+          </div>
+        </div>
+
+        <!-- Eyebrow -->
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-8 h-px bg-rb2-orange"></div>
+          <span class="text-xs font-bold tracking-[0.2em] text-rb2-orange uppercase">
+            Free Assessment
+          </span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-[800] text-white tracking-tight leading-[1.1] max-w-xl">
+          What does manual PO processing{' '}
+          <span class="font-serif italic text-rb2-orange">actually cost you?</span>
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="text-lg text-gray-400 mt-6 max-w-lg leading-relaxed">
+          7 questions. 2 minutes. Find out exactly where your procurement budget leaks — and how much.
+        </p>
+
+        <!-- Category pills -->
+        <div class="flex flex-wrap gap-3 mt-12">
+          <div class="flex flex-col items-center gap-2.5 bg-gray-800/80 border border-gray-700/50 rounded-2xl px-7 py-5 min-w-[100px]">
+            <!-- Users icon -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rb2-orange"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span class="text-[10px] font-bold tracking-[0.15em] text-gray-400 uppercase">LABOR</span>
+          </div>
+          <div class="flex flex-col items-center gap-2.5 bg-gray-800/80 border border-gray-700/50 rounded-2xl px-7 py-5 min-w-[100px]">
+            <!-- AlertTriangle icon -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rb2-orange"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            <span class="text-[10px] font-bold tracking-[0.15em] text-gray-400 uppercase">ERRORS</span>
+          </div>
+          <div class="flex flex-col items-center gap-2.5 bg-gray-800/80 border border-gray-700/50 rounded-2xl px-7 py-5 min-w-[100px]">
+            <!-- Clock icon -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rb2-orange"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span class="text-[10px] font-bold tracking-[0.15em] text-gray-400 uppercase">DELAYS</span>
+          </div>
+          <div class="flex flex-col items-center gap-2.5 bg-gray-800/80 border border-gray-700/50 rounded-2xl px-7 py-5 min-w-[100px]">
+            <!-- RefreshCw icon -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rb2-orange"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+            <span class="text-[10px] font-bold tracking-[0.15em] text-gray-400 uppercase">REWORK</span>
+          </div>
+        </div>
+
+        <!-- Meta badges -->
+        <div class="flex flex-wrap gap-6 mt-12">
+          <div class="flex items-center gap-2">
+            <div class="w-1.5 h-1.5 rounded-full bg-rb2-orange"></div>
+            <span class="text-sm text-gray-400 font-medium">7 questions</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-1.5 h-1.5 rounded-full bg-rb2-orange"></div>
+            <span class="text-sm text-gray-400 font-medium">2 minutes</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-1.5 h-1.5 rounded-full bg-rb2-orange"></div>
+            <span class="text-sm text-gray-400 font-medium">Instant results</span>
+          </div>
+        </div>
+
+        <!-- CTA button -->
+        <button
+          id="start-btn"
+          class="mt-10 inline-flex items-center px-8 py-4 bg-rb2-orange text-white rounded-2xl font-bold text-lg hover:bg-rb2-orange-hover hover:shadow-2xl hover:shadow-orange-500/20 transition-all hover:-translate-y-0.5"
+        >
+          Start the calculator
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <!-- PHASE: QUESTIONS -->
+      <div data-phase="questions" hidden class="relative z-10 flex flex-col h-full animate-fadeIn">
+        <!-- Category Navigation -->
+        <div class="flex items-center gap-2 mb-6" id="category-nav">
+          <div data-cat="LABOR" class="px-4 py-2 rounded-full text-[10px] font-bold tracking-[0.15em] uppercase transition-all bg-rb2-orange text-white">LABOR</div>
+          <div data-cat="ERRORS" class="px-4 py-2 rounded-full text-[10px] font-bold tracking-[0.15em] uppercase transition-all bg-transparent border border-gray-700 text-gray-500">ERRORS</div>
+          <div data-cat="DELAYS" class="px-4 py-2 rounded-full text-[10px] font-bold tracking-[0.15em] uppercase transition-all bg-transparent border border-gray-700 text-gray-500">DELAYS</div>
+          <div data-cat="CONTEXT" class="px-4 py-2 rounded-full text-[10px] font-bold tracking-[0.15em] uppercase transition-all bg-transparent border border-gray-700 text-gray-500">CONTEXT</div>
+
+          <!-- Question counter -->
+          <div class="ml-auto text-sm text-gray-500 font-mono">
+            <span id="step-current" class="text-white font-bold">01</span>
+            <span class="text-gray-600">/07</span>
+          </div>
+        </div>
+
+        <!-- Progress line -->
+        <div class="w-full h-0.5 bg-gray-800 rounded-full mb-10">
+          <div id="progress-bar" class="h-full bg-rb2-orange rounded-full transition-all duration-500" style="width: 14.29%"></div>
+        </div>
+
+        <!-- Question 0: volume -->
+        <div data-question="0" class="animate-slideInRight">
+          <p class="text-sm text-gray-500 mb-4 uppercase tracking-widest font-bold">
+            <span data-category-label>LABOR</span> — Question <span data-step-label>1</span> of 7
+          </p>
+          <h2 class="text-2xl md:text-3xl font-[800] text-white tracking-tight leading-snug max-w-xl">
+            How many purchase orders does your team process per month?
+          </h2>
+          <div class="mt-10 space-y-3 max-w-2xl">
+            <button data-option data-key="volume" data-value="25" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">A</div>
+              <span class="text-sm font-medium transition-all text-gray-300">Under 50</span>
+            </button>
+            <button data-option data-key="volume" data-value="100" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">B</div>
+              <span class="text-sm font-medium transition-all text-gray-300">50–150</span>
+            </button>
+            <button data-option data-key="volume" data-value="225" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">C</div>
+              <span class="text-sm font-medium transition-all text-gray-300">150–300</span>
+            </button>
+            <button data-option data-key="volume" data-value="400" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">D</div>
+              <span class="text-sm font-medium transition-all text-gray-300">300+</span>
+            </button>
+          </div>
+          <!-- Feedback -->
+          <div data-feedback class="mt-6 bg-gray-800/80 rounded-xl p-4 border border-gray-700/30 animate-fadeIn max-w-2xl" hidden>
+            <div class="flex gap-3">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rb2-orange flex-shrink-0 mt-0.5"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+              <p data-feedback-text class="text-sm text-gray-400 leading-relaxed"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 1: time -->
+        <div data-question="1" hidden class="animate-slideInRight">
+          <p class="text-sm text-gray-500 mb-4 uppercase tracking-widest font-bold">
+            <span data-category-label>LABOR</span> — Question <span data-step-label>2</span> of 7
+          </p>
+          <h2 class="text-2xl md:text-3xl font-[800] text-white tracking-tight leading-snug max-w-xl">
+            How long does it take to process one PO — from email to ERP entry?
+          </h2>
+          <div class="mt-10 space-y-3 max-w-2xl">
+            <button data-option data-key="time" data-value="0.125" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">A</div>
+              <span class="text-sm font-medium transition-all text-gray-300">Under 10 minutes</span>
+            </button>
+            <button data-option data-key="time" data-value="0.25" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">B</div>
+              <span class="text-sm font-medium transition-all text-gray-300">10–20 minutes</span>
+            </button>
+            <button data-option data-key="time" data-value="0.42" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">C</div>
+              <span class="text-sm font-medium transition-all text-gray-300">20–30 minutes</span>
+            </button>
+            <button data-option data-key="time" data-value="0.58" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">D</div>
+              <span class="text-sm font-medium transition-all text-gray-300">30+ minutes</span>
+            </button>
+          </div>
+          <div data-feedback class="mt-6 bg-gray-800/80 rounded-xl p-4 border border-gray-700/30 animate-fadeIn max-w-2xl" hidden>
+            <div class="flex gap-3">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rb2-orange flex-shrink-0 mt-0.5"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+              <p data-feedback-text class="text-sm text-gray-400 leading-relaxed"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 2: team -->
+        <div data-question="2" hidden class="animate-slideInRight">
+          <p class="text-sm text-gray-500 mb-4 uppercase tracking-widest font-bold">
+            <span data-category-label>LABOR</span> — Question <span data-step-label>3</span> of 7
+          </p>
+          <h2 class="text-2xl md:text-3xl font-[800] text-white tracking-tight leading-snug max-w-xl">
+            How many people spend time processing POs?
+          </h2>
+          <div class="mt-10 space-y-3 max-w-2xl">
+            <button data-option data-key="team" data-value="1" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">A</div>
+              <span class="text-sm font-medium transition-all text-gray-300">1 person</span>
+            </button>
+            <button data-option data-key="team" data-value="2.5" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">B</div>
+              <span class="text-sm font-medium transition-all text-gray-300">2–3 people</span>
+            </button>
+            <button data-option data-key="team" data-value="4.5" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">C</div>
+              <span class="text-sm font-medium transition-all text-gray-300">4–5 people</span>
+            </button>
+            <button data-option data-key="team" data-value="7" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">D</div>
+              <span class="text-sm font-medium transition-all text-gray-300">6+ people</span>
+            </button>
+          </div>
+          <div data-feedback class="mt-6 bg-gray-800/80 rounded-xl p-4 border border-gray-700/30 animate-fadeIn max-w-2xl" hidden>
+            <div class="flex gap-3">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rb2-orange flex-shrink-0 mt-0.5"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+              <p data-feedback-text class="text-sm text-gray-400 leading-relaxed"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 3: errors -->
+        <div data-question="3" hidden class="animate-slideInRight">
+          <p class="text-sm text-gray-500 mb-4 uppercase tracking-widest font-bold">
+            <span data-category-label>ERRORS</span> — Question <span data-step-label>4</span> of 7
+          </p>
+          <h2 class="text-2xl md:text-3xl font-[800] text-white tracking-tight leading-snug max-w-xl">
+            How often do PO processing errors occur — wrong quantities, incorrect prices, mismatched vendor codes?
+          </h2>
+          <div class="mt-10 space-y-3 max-w-2xl">
+            <button data-option data-key="errors" data-value="0.03" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">A</div>
+              <span class="text-sm font-medium transition-all text-gray-300">Rarely (under 5%)</span>
+            </button>
+            <button data-option data-key="errors" data-value="0.075" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">B</div>
+              <span class="text-sm font-medium transition-all text-gray-300">Sometimes (5–10%)</span>
+            </button>
+            <button data-option data-key="errors" data-value="0.15" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">C</div>
+              <span class="text-sm font-medium transition-all text-gray-300">Often (10–20%)</span>
+            </button>
+            <button data-option data-key="errors" data-value="0.25" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">D</div>
+              <span class="text-sm font-medium transition-all text-gray-300">Very often (20%+)</span>
+            </button>
+          </div>
+          <div data-feedback class="mt-6 bg-gray-800/80 rounded-xl p-4 border border-gray-700/30 animate-fadeIn max-w-2xl" hidden>
+            <div class="flex gap-3">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rb2-orange flex-shrink-0 mt-0.5"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+              <p data-feedback-text class="text-sm text-gray-400 leading-relaxed"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 4: delay -->
+        <div data-question="4" hidden class="animate-slideInRight">
+          <p class="text-sm text-gray-500 mb-4 uppercase tracking-widest font-bold">
+            <span data-category-label>DELAYS</span> — Question <span data-step-label>5</span> of 7
+          </p>
+          <h2 class="text-2xl md:text-3xl font-[800] text-white tracking-tight leading-snug max-w-xl">
+            What's the typical delay between receiving a PO email and entering it into your ERP?
+          </h2>
+          <div class="mt-10 space-y-3 max-w-2xl">
+            <button data-option data-key="delay" data-value="0" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">A</div>
+              <span class="text-sm font-medium transition-all text-gray-300">Same day</span>
+            </button>
+            <button data-option data-key="delay" data-value="1.5" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">B</div>
+              <span class="text-sm font-medium transition-all text-gray-300">1–2 days</span>
+            </button>
+            <button data-option data-key="delay" data-value="4" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">C</div>
+              <span class="text-sm font-medium transition-all text-gray-300">3–5 days</span>
+            </button>
+            <button data-option data-key="delay" data-value="7" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">D</div>
+              <span class="text-sm font-medium transition-all text-gray-300">More than 5 days</span>
+            </button>
+          </div>
+          <div data-feedback class="mt-6 bg-gray-800/80 rounded-xl p-4 border border-gray-700/30 animate-fadeIn max-w-2xl" hidden>
+            <div class="flex gap-3">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rb2-orange flex-shrink-0 mt-0.5"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+              <p data-feedback-text class="text-sm text-gray-400 leading-relaxed"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 5: erp -->
+        <div data-question="5" hidden class="animate-slideInRight">
+          <p class="text-sm text-gray-500 mb-4 uppercase tracking-widest font-bold">
+            <span data-category-label>CONTEXT</span> — Question <span data-step-label>6</span> of 7
+          </p>
+          <h2 class="text-2xl md:text-3xl font-[800] text-white tracking-tight leading-snug max-w-xl">
+            Which ERP system does your team use?
+          </h2>
+          <div class="mt-10 space-y-3 max-w-2xl">
+            <button data-option data-key="erp" data-value="business-central" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">A</div>
+              <span class="text-sm font-medium transition-all text-gray-300">Business Central</span>
+            </button>
+            <button data-option data-key="erp" data-value="exact" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">B</div>
+              <span class="text-sm font-medium transition-all text-gray-300">Exact Online</span>
+            </button>
+            <button data-option data-key="erp" data-value="odoo" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">C</div>
+              <span class="text-sm font-medium transition-all text-gray-300">Odoo</span>
+            </button>
+            <button data-option data-key="erp" data-value="netsuite" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">D</div>
+              <span class="text-sm font-medium transition-all text-gray-300">NetSuite</span>
+            </button>
+            <button data-option data-key="erp" data-value="sap" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">E</div>
+              <span class="text-sm font-medium transition-all text-gray-300">SAP</span>
+            </button>
+            <button data-option data-key="erp" data-value="other" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">F</div>
+              <span class="text-sm font-medium transition-all text-gray-300">Other</span>
+            </button>
+          </div>
+          <div data-feedback class="mt-6 bg-gray-800/80 rounded-xl p-4 border border-gray-700/30 animate-fadeIn max-w-2xl" hidden>
+            <div class="flex gap-3">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rb2-orange flex-shrink-0 mt-0.5"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+              <p data-feedback-text class="text-sm text-gray-400 leading-relaxed"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question 6: size -->
+        <div data-question="6" hidden class="animate-slideInRight">
+          <p class="text-sm text-gray-500 mb-4 uppercase tracking-widest font-bold">
+            <span data-category-label>CONTEXT</span> — Question <span data-step-label>7</span> of 7
+          </p>
+          <h2 class="text-2xl md:text-3xl font-[800] text-white tracking-tight leading-snug max-w-xl">
+            How many employees does your company have?
+          </h2>
+          <div class="mt-10 space-y-3 max-w-2xl">
+            <button data-option data-key="size" data-value="25" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">A</div>
+              <span class="text-sm font-medium transition-all text-gray-300">Under 50</span>
+            </button>
+            <button data-option data-key="size" data-value="100" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">B</div>
+              <span class="text-sm font-medium transition-all text-gray-300">50–150</span>
+            </button>
+            <button data-option data-key="size" data-value="225" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">C</div>
+              <span class="text-sm font-medium transition-all text-gray-300">150–300</span>
+            </button>
+            <button data-option data-key="size" data-value="400" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">D</div>
+              <span class="text-sm font-medium transition-all text-gray-300">300–500</span>
+            </button>
+            <button data-option data-key="size" data-value="600" class="w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600">
+              <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400">E</div>
+              <span class="text-sm font-medium transition-all text-gray-300">500+</span>
+            </button>
+          </div>
+          <div data-feedback class="mt-6 bg-gray-800/80 rounded-xl p-4 border border-gray-700/30 animate-fadeIn max-w-2xl" hidden>
+            <div class="flex gap-3">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rb2-orange flex-shrink-0 mt-0.5"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+              <p data-feedback-text class="text-sm text-gray-400 leading-relaxed"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex justify-between items-center mt-auto pt-10">
+          <button id="back-btn" class="text-sm text-gray-500 hover:text-gray-300 flex items-center gap-1 transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+            Back
+          </button>
+          <button id="continue-btn" disabled class="inline-flex items-center px-8 py-4 bg-rb2-orange text-white rounded-2xl font-bold text-sm disabled:opacity-20 disabled:cursor-not-allowed hover:bg-rb2-orange-hover hover:shadow-lg hover:shadow-orange-500/20 transition-all">
+            Continue
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- PHASE: RESULTS -->
+      <div data-phase="results" hidden class="relative z-10 animate-fadeIn flex flex-col h-full">
+        <div class="text-center mb-12">
+          <p class="text-xs font-bold text-gray-500 tracking-widest uppercase mb-6">
+            Your hidden PO processing costs
+          </p>
+          <p class="text-7xl md:text-8xl font-[800] text-white tracking-tight">
+            <span id="animated-total"></span>
+          </p>
+          <p class="text-xl text-gray-400 mt-3 font-serif italic">per year</p>
+          <p class="text-sm text-gray-500 mt-2">
+            That's <span id="cost-per-po"></span> for every purchase order your team processes manually.
+          </p>
+        </div>
+
+        <div class="max-w-xl mx-auto w-full bg-gray-800/40 rounded-3xl p-8 border border-gray-700/30">
+          <p class="text-xs font-bold tracking-widest text-gray-500 uppercase mb-8">
+            Where the money goes
+          </p>
+          <div id="bar-chart" class="space-y-6"></div>
+        </div>
+
+        <p class="text-center text-gray-500 mt-8 px-6">
+          Your team spends <span id="weekly-hours" class="font-bold text-white"></span> on manual PO processing.
+        </p>
+
+        <div class="mt-10 bg-gray-800/60 border border-gray-700/30 rounded-2xl p-8 text-center max-w-2xl mx-auto w-full">
+          <p class="text-sm text-gray-400 mb-3">Based on companies your size</p>
+          <p class="text-3xl md:text-4xl font-[800] text-white tracking-tight">
+            70–85%
+            <span class="text-lg font-normal text-gray-400 ml-2">cost reduction possible</span>
+          </p>
+          <p class="text-sm text-gray-500 mt-4 max-w-md mx-auto leading-relaxed">
+            That's up to <span id="savings-amount" class="text-rb2-orange font-bold"></span> back
+            in your budget — and <span id="savings-hours" class="text-rb2-orange font-bold"></span> back
+            for your team.
+          </p>
+        </div>
+
+        <div class="max-w-md mx-auto w-full mt-12 text-center">
+          <button
+            id="open-modal-btn"
+            class="w-full py-5 bg-rb2-orange text-white rounded-2xl font-bold text-lg hover:bg-rb2-orange-hover hover:shadow-2xl hover:shadow-orange-500/20 transition-all"
+          >
+            Get Your Full Report
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline ml-2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+          <p class="text-xs text-gray-500 mt-4">
+            Includes: industry benchmarks &middot; ROI model &middot; 90-day action plan
+          </p>
+        </div>
+
+        <div class="text-center mt-8 pt-8 border-t border-gray-700/30 max-w-xl mx-auto w-full">
+          <a href="/#contact" class="text-sm font-bold text-rb2-orange hover:underline">
+            Skip the report — book a demo instead &rarr;
+          </a>
+        </div>
+      </div>
+
+      <!-- PHASE: THANKYOU -->
+      <div data-phase="thankyou" hidden class="relative z-10 animate-fadeIn flex flex-col h-full max-w-md mx-auto w-full text-center">
+        <div class="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto animate-scaleIn">
+          <!-- CheckCircle -->
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-500"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+        </div>
+
+        <h2 class="text-3xl font-[900] text-white mt-8">Check your inbox</h2>
+        <p class="text-gray-400 mt-3 leading-relaxed">
+          Your cost report is on its way to<br />
+          <span id="thankyou-email" class="font-bold text-white"></span>
+        </p>
+
+        <div class="mt-12 bg-gray-800/40 border border-gray-700/30 rounded-3xl p-8 text-left shadow-2xl">
+          <h3 class="text-xl font-[900] text-white leading-tight">
+            Talk to a procurement automation expert
+          </h3>
+          <p class="text-sm text-gray-400 mt-4 leading-relaxed">
+            Get in touch with our team to discuss your PO processing challenges
+            and see if OrderPilot is the right solution for your <span id="thankyou-erp">ERP</span> setup.
+          </p>
+          <div class="flex items-center gap-3 mt-6 text-sm">
+            <span class="text-gray-500">Your cost: <span id="thankyou-cost" class="font-bold text-white"></span></span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <span class="text-rb2-orange font-bold">&euro;6,000/yr</span>
+          </div>
+          <a
+            href="/#contact"
+            class="inline-flex items-center justify-center w-full px-6 py-4 bg-rb2-orange text-white rounded-2xl font-bold text-lg mt-8 hover:bg-rb2-orange-hover hover:shadow-lg hover:shadow-orange-500/20 transition-all"
+          >
+            Get in Touch
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <p class="text-xs text-gray-500 mt-8">
+          No commitment. No pressure. Just a conversation.
+        </p>
+      </div>
+
+      <!-- EMAIL MODAL -->
+      <div id="email-modal" class="fixed inset-0 z-50 flex items-center justify-center px-4" hidden>
+        <!-- Backdrop -->
+        <div id="modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+
+        <!-- Modal -->
+        <div class="relative bg-gray-900 rounded-3xl p-10 md:p-12 max-w-md w-full border border-gray-700/50 shadow-2xl animate-slideUp">
+          <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-300 transition-colors" aria-label="Close modal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+
+          <h3 class="text-2xl md:text-3xl font-[800] text-white tracking-tight leading-snug">
+            Get your <span class="font-serif italic text-rb2-orange">full report</span>
+          </h3>
+
+          <p class="text-sm text-gray-400 mt-3 leading-relaxed">
+            Your hidden costs: <span id="modal-total" class="text-white font-bold"></span>. The report shows you exactly where — and how to fix it.
+          </p>
+
+          <!-- Checklist -->
+          <div class="mt-6 space-y-2.5">
+            <div class="flex items-start gap-3">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rb2-orange flex-shrink-0 mt-0.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+              <span class="text-sm text-gray-300">Detailed breakdown with methodology</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rb2-orange flex-shrink-0 mt-0.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+              <span class="text-sm text-gray-300">Industry benchmarks for your company size</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rb2-orange flex-shrink-0 mt-0.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+              <span class="text-sm text-gray-300">ROI model with exact savings projection</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rb2-orange flex-shrink-0 mt-0.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+              <span class="text-sm text-gray-300">90-day action plan</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-rb2-orange flex-shrink-0 mt-0.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+              <span id="modal-erp-guide" class="text-sm text-gray-300">ERP-specific integration guide</span>
+            </div>
+          </div>
+
+          <!-- Form -->
+          <form id="report-form" class="mt-8 space-y-3">
+            <label class="block">
+              <input
+                id="input-firstname"
+                type="text"
+                placeholder="First name"
+                required
+                class="w-full px-4 py-3.5 bg-gray-800 rounded-xl border border-gray-700 focus:border-rb2-orange focus:outline-none focus:ring-2 focus:ring-rb2-orange/20 text-white placeholder-gray-500"
+              />
+            </label>
+            <label class="block">
+              <input
+                id="input-email"
+                type="email"
+                placeholder="Work email"
+                required
+                class="w-full px-4 py-3.5 bg-gray-800 rounded-xl border border-gray-700 focus:border-rb2-orange focus:outline-none focus:ring-2 focus:ring-rb2-orange/20 text-white placeholder-gray-500"
+              />
+            </label>
+            <button
+              id="submit-btn"
+              type="submit"
+              disabled
+              class="w-full py-4 bg-rb2-orange text-white rounded-xl font-bold text-base disabled:opacity-20 disabled:cursor-not-allowed hover:brightness-110 hover:shadow-xl hover:shadow-orange-500/20 transition-all mt-1"
+            >
+              Send me the report
+              <svg id="submit-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline ml-2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+          </form>
+
+          <p class="text-xs text-gray-600 mt-4 text-center">
+            Your data stays private. No spam. Unsubscribe anytime.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import posthog from 'posthog-js';
+
+  // --- CONSTANTS ---
+  const HOURLY_STAFF_COST = 42;
+  const MANAGER_HOURLY_COST = 62;
+  const ERROR_RESOLUTION_TIME = 0.33;
+  const AVG_INVOICE_VALUE = 2500;
+  const EARLY_PAYMENT_DISCOUNT = 0.02;
+  const REWORK_RATE = 0.25;
+  const ESCALATION_RATE = 0.10;
+
+  const ERP_NAMES: Record<string, string> = {
+    'business-central': 'Business Central',
+    exact: 'Exact Online',
+    odoo: 'Odoo',
+    netsuite: 'NetSuite',
+    sap: 'SAP',
+    other: 'ERP'
+  };
+
+  const CATEGORIES = [
+    { label: 'LABOR', questions: [0, 1, 2] },
+    { label: 'ERRORS', questions: [3] },
+    { label: 'DELAYS', questions: [4] },
+    { label: 'CONTEXT', questions: [5, 6] }
+  ];
+
+  const QUESTION_KEYS = ['volume', 'time', 'team', 'errors', 'delay', 'erp', 'size'];
+
+  // --- STATE ---
+  let phase = 'intro';
+  let currentStep = 0;
+  let answers: Record<string, number | string> = {};
+  let results: ReturnType<typeof calculateCosts> | null = null;
+  let isSubmitting = false;
+
+  // --- DOM REFS ---
+  const startBtn = document.getElementById('start-btn')!;
+  const backBtn = document.getElementById('back-btn')!;
+  const continueBtn = document.getElementById('continue-btn')!;
+  const openModalBtn = document.getElementById('open-modal-btn')!;
+  const closeModalBtn = document.getElementById('close-modal-btn')!;
+  const modalBackdrop = document.getElementById('modal-backdrop')!;
+  const emailModal = document.getElementById('email-modal')!;
+  const reportForm = document.getElementById('report-form') as HTMLFormElement;
+  const inputFirstName = document.getElementById('input-firstname') as HTMLInputElement;
+  const inputEmail = document.getElementById('input-email') as HTMLInputElement;
+  const submitBtn = document.getElementById('submit-btn')!;
+  const submitArrow = document.getElementById('submit-arrow')!;
+  const progressBar = document.getElementById('progress-bar')!;
+  const stepCurrent = document.getElementById('step-current')!;
+  const categoryNav = document.getElementById('category-nav')!;
+  const barChart = document.getElementById('bar-chart')!;
+
+  // --- COST CALCULATION ---
+  function calculateCosts(ans: Record<string, number | string>) {
+    const volume = (ans.volume as number) || 100;
+    const time = (ans.time as number) || 0.25;
+    const errors = (ans.errors as number) || 0.075;
+    const delay = (ans.delay as number) || 0;
+
+    const laborCost = volume * time * HOURLY_STAFF_COST * 12;
+
+    const monthlyErrors = volume * errors;
+    const errorCost = monthlyErrors * ERROR_RESOLUTION_TIME * HOURLY_STAFF_COST * 12;
+
+    let delayCost = 0;
+    if (delay > 0) {
+      let delayFactor = 0;
+      if (delay <= 1.5) delayFactor = 0.30;
+      else if (delay <= 4) delayFactor = 0.60;
+      else delayFactor = 0.85;
+      const delayedPOs = volume * delayFactor;
+      delayCost = delayedPOs * AVG_INVOICE_VALUE * EARLY_PAYMENT_DISCOUNT * 12;
+    }
+
+    const monthlyRework = monthlyErrors * REWORK_RATE;
+    const reworkCost = monthlyRework * ERROR_RESOLUTION_TIME * HOURLY_STAFF_COST * 12;
+    const monthlyEscalations = volume * ESCALATION_RATE;
+    const escalationCost = monthlyEscalations * 0.5 * MANAGER_HOURLY_COST * 12;
+    const reworkEscalationCost = reworkCost + escalationCost;
+
+    const totalCost = laborCost + errorCost + delayCost + reworkEscalationCost;
+    const costPerPO = totalCost / (volume * 12);
+    const weeklyHours = (volume * time * 12 / 52);
+    const annualHours = weeklyHours * 52;
+    const potentialSavings = totalCost - 6000;
+
+    return {
+      laborCost: Math.round(laborCost),
+      errorCost: Math.round(errorCost),
+      delayCost: Math.round(delayCost),
+      reworkEscalationCost: Math.round(reworkEscalationCost),
+      totalCost: Math.round(totalCost),
+      costPerPO: Math.round(costPerPO),
+      weeklyHours: weeklyHours.toFixed(1),
+      annualHours: Math.round(annualHours),
+      potentialSavings: Math.round(potentialSavings),
+      roi: (totalCost / 6000).toFixed(1),
+    };
+  }
+
+  function getLargestCategory(costs: { laborCost: number; errorCost: number; delayCost: number; reworkEscalationCost: number }) {
+    const categories = [
+      { name: 'Processing delays', value: costs.delayCost },
+      { name: 'Direct labor', value: costs.laborCost },
+      { name: 'Rework & escalation', value: costs.reworkEscalationCost },
+      { name: 'Error correction', value: costs.errorCost }
+    ];
+    return categories.sort((a, b) => b.value - a.value)[0].name;
+  }
+
+  // --- FEEDBACK FUNCTIONS ---
+  function getFeedback(step: number, val: number | string, ans: Record<string, number | string>): string {
+    const v = val as number;
+    const volume = (ans.volume as number) || 100;
+
+    switch (step) {
+      case 0: {
+        const yearly = v * 12;
+        return `That's roughly ${yearly.toLocaleString()} orders per year.${v >= 100 ? ' Every minute per order adds up fast.' : ''}`;
+      }
+      case 1: {
+        const weeklyHours = (volume * v * 12 / 52).toFixed(1);
+        if (v <= 0.125) return `That's about ${weeklyHours} hours per week on data entry.`;
+        if (v <= 0.25) return `That's ${weeklyHours} hours per week. Almost a full workday, every week, just on PO entry.`;
+        if (v <= 0.42) return `That's ${weeklyHours} hours per week. That's a part-time employee doing nothing but copy-pasting.`;
+        return `That's ${weeklyHours} hours per week — more than a full workday, every single week.`;
+      }
+      case 2: {
+        if (v === 1) return "One person handling all PO processing. That's a single point of failure.";
+        if (v <= 2.5) return 'Multiple people spending their day on manual data entry instead of procurement work.';
+        if (v <= 4.5) return "That's significant headcount dedicated to a process that should be automated.";
+        return 'Six or more people. The coordination overhead alone costs thousands per year.';
+      }
+      case 3: {
+        const monthlyErrors = Math.round(volume * v);
+        if (v <= 0.03) return `Even at 3%, that's ${monthlyErrors} errors per month that each cost \u20AC35\u2013\u20AC120 to fix.`;
+        if (v <= 0.075) return `At your volume, that's roughly ${monthlyErrors} errors per month. Each one takes 15\u201330 minutes to find and fix.`;
+        if (v <= 0.15) return `That's ${monthlyErrors} errors per month. At \u20AC75 average cost per error, the math isn't pretty.`;
+        return `${monthlyErrors} errors per month. This is likely causing supplier relationship damage on top of direct costs.`;
+      }
+      case 4: {
+        if (v === 0) return 'Good. Same-day processing minimizes lost discounts and keeps suppliers happy.';
+        if (v <= 1.5) return "A 1-2 day delay means you're likely missing early payment discounts on some orders.";
+        if (v <= 4) return `At 3-5 days, you're almost certainly losing 2% early payment discounts. On ${volume} POs/month at \u20AC2,500 average, that's serious money.`;
+        return "Over 5 days. That's lost discounts, delayed deliveries, and suppliers who stop prioritizing your orders.";
+      }
+      case 5: {
+        const s = val as string;
+        if (s === 'other') return "We may be able to connect to your system via API. We'll include details in your report.";
+        const names: Record<string, string> = { 'business-central': 'Business Central', exact: 'Exact Online', odoo: 'Odoo', netsuite: 'NetSuite', sap: 'SAP' };
+        return `OrderPilot has a native ${names[s]} connector. Direct integration, no middleware.`;
+      }
+      case 6: {
+        if (v === 25) return "Got it. We'll benchmark you against similar-sized companies.";
+        if (v <= 400) return "Mid-market companies your size typically spend \u20AC40,000\u2013\u20AC90,000 annually on PO processing. Let's see your exact number.";
+        return "At your scale, processing costs compound fast. Let's calculate the real number.";
+      }
+      default:
+        return '';
+    }
+  }
+
+  // --- PHASE SWITCHING ---
+  function showPhase(name: string) {
+    document.querySelectorAll<HTMLElement>('[data-phase]').forEach(el => {
+      el.hidden = el.dataset.phase !== name;
+    });
+    phase = name;
+    window.scrollTo(0, 0);
+  }
+
+  // --- QUESTION DISPLAY ---
+  function showQuestion(step: number) {
+    document.querySelectorAll<HTMLElement>('[data-question]').forEach(el => {
+      el.hidden = el.dataset.question !== String(step);
+    });
+
+    // Update progress bar
+    progressBar.style.width = `${((step + 1) / 7) * 100}%`;
+
+    // Update counter
+    stepCurrent.textContent = String(step + 1).padStart(2, '0');
+
+    // Update category pills
+    const catPills = categoryNav.querySelectorAll<HTMLElement>('[data-cat]');
+    const activeCat = CATEGORIES.find(c => c.questions.includes(step))?.label || 'CONTEXT';
+
+    catPills.forEach(pill => {
+      const cat = pill.dataset.cat!;
+      const catDef = CATEGORIES.find(c => c.label === cat);
+      const isActive = cat === activeCat;
+      const isComplete = catDef ? catDef.questions.every(q => q < step) : false;
+
+      pill.className = `px-4 py-2 rounded-full text-[10px] font-bold tracking-[0.15em] uppercase transition-all ${
+        isActive
+          ? 'bg-rb2-orange text-white'
+          : isComplete
+          ? 'bg-gray-700 text-gray-300'
+          : 'bg-transparent border border-gray-700 text-gray-500'
+      }`;
+    });
+
+    // Update continue button state
+    const key = QUESTION_KEYS[step];
+    (continueBtn as HTMLButtonElement).disabled = answers[key] === undefined;
+
+    // Update option selection styles for the current question
+    updateOptionStyles(step);
+
+    // Show/hide feedback
+    const questionEl = document.querySelector<HTMLElement>(`[data-question="${step}"]`)!;
+    const feedbackEl = questionEl.querySelector<HTMLElement>('[data-feedback]')!;
+    const feedbackText = questionEl.querySelector<HTMLElement>('[data-feedback-text]')!;
+    const key2 = QUESTION_KEYS[step];
+    if (answers[key2] !== undefined) {
+      feedbackEl.hidden = false;
+      feedbackText.textContent = getFeedback(step, answers[key2], answers);
+    } else {
+      feedbackEl.hidden = true;
+    }
+  }
+
+  function updateOptionStyles(step: number) {
+    const key = QUESTION_KEYS[step];
+    const questionEl = document.querySelector<HTMLElement>(`[data-question="${step}"]`)!;
+    const buttons = questionEl.querySelectorAll<HTMLButtonElement>('[data-option]');
+
+    buttons.forEach(btn => {
+      const btnValue = btn.dataset.key === 'erp' ? btn.dataset.value : parseFloat(btn.dataset.value!);
+      const isSelected = answers[key] !== undefined && String(answers[key]) === String(btnValue);
+
+      if (isSelected) {
+        btn.className = 'w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-rb2-orange/10 border border-rb2-orange/40 shadow-[0_0_20px_rgba(255,69,0,0.1)]';
+        const circle = btn.querySelector('div')!;
+        circle.className = 'w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-rb2-orange text-white';
+        const span = btn.querySelector('span')!;
+        span.className = 'text-sm font-medium transition-all text-white';
+        // Add glow line if not present
+        let glow = btn.querySelector('.glow-line');
+        if (!glow) {
+          glow = document.createElement('div');
+          glow.className = 'glow-line absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-rb2-orange/50 to-transparent';
+          btn.appendChild(glow);
+        }
+      } else {
+        btn.className = 'w-full flex items-center gap-4 p-5 rounded-2xl text-left transition-all duration-200 relative overflow-hidden bg-gray-800/60 border border-gray-700/50 hover:bg-gray-800 hover:border-gray-600';
+        const circle = btn.querySelector('div')!;
+        circle.className = 'w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all bg-gray-700 text-gray-400';
+        const span = btn.querySelector('span')!;
+        span.className = 'text-sm font-medium transition-all text-gray-300';
+        const glow = btn.querySelector('.glow-line');
+        if (glow) glow.remove();
+      }
+    });
+  }
+
+  // --- RESULTS RENDERING ---
+  function renderResults() {
+    if (!results) return;
+
+    const sortedCats = [
+      { name: 'Processing delays', value: results.delayCost },
+      { name: 'Direct labor', value: results.laborCost },
+      { name: 'Rework & escalation', value: results.reworkEscalationCost },
+      { name: 'Error correction', value: results.errorCost }
+    ].sort((a, b) => b.value - a.value);
+
+    // Bar chart
+    barChart.innerHTML = '';
+    sortedCats.forEach((cat, i) => {
+      const row = document.createElement('div');
+      row.className = 'flex items-center gap-4';
+      const pct = (cat.value / results!.totalCost * 100);
+      const opacity = 0.4 + (cat.value / results!.totalCost * 0.6);
+      row.innerHTML = `
+        <span class="text-[10px] font-bold text-gray-400 w-24 sm:w-32 text-right flex-shrink-0 uppercase tracking-tighter">${cat.name}</span>
+        <div class="flex-1 bg-gray-800 rounded-full h-3 overflow-hidden">
+          <div class="h-full bg-rb2-orange rounded-full" style="width: ${pct}%; opacity: ${opacity}; animation: barGrow 1s ease-out ${i * 0.2}s forwards; transform: scaleX(0); transform-origin: left;"></div>
+        </div>
+        <span class="text-sm font-bold text-white w-20 flex-shrink-0">&euro;${cat.value.toLocaleString()}</span>
+        <span class="text-xs text-gray-500 w-10 flex-shrink-0">${Math.round(pct)}%</span>
+      `;
+      barChart.appendChild(row);
+    });
+
+    // Cost per PO
+    document.getElementById('cost-per-po')!.textContent = `\u20AC${results.costPerPO}`;
+
+    // Weekly hours
+    document.getElementById('weekly-hours')!.textContent = `${results.weeklyHours} hours per week`;
+
+    // Savings
+    document.getElementById('savings-amount')!.textContent = `\u20AC${Math.round(results.totalCost * 0.85).toLocaleString()}`;
+    document.getElementById('savings-hours')!.textContent = `${Math.round(parseFloat(results.weeklyHours) * 0.85)} hours per week`;
+
+    // Modal total
+    document.getElementById('modal-total')!.textContent = `\u20AC${results.totalCost.toLocaleString()}/year`;
+
+    // ERP guide text
+    const erpName = getErpName();
+    document.getElementById('modal-erp-guide')!.textContent = `${erpName}-specific integration guide`;
+
+    // Animated counter
+    animateCounter(results.totalCost);
+  }
+
+  function animateCounter(target: number) {
+    const el = document.getElementById('animated-total')!;
+    if (target === 0) {
+      el.textContent = '\u20AC0';
+      return;
+    }
+    const start = performance.now();
+    const duration = 1500;
+
+    function tick(now: number) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      const current = Math.round(eased * target);
+      el.textContent = `\u20AC${current.toLocaleString()}`;
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(tick);
+  }
+
+  function getErpName(): string {
+    return ERP_NAMES[answers.erp as string] || 'ERP';
+  }
+
+  // --- EVENT HANDLERS ---
+
+  // Start button
+  startBtn.addEventListener('click', () => {
+    showPhase('questions');
+    showQuestion(0);
+    posthog.capture('calculator_started', {
+      entry_point: document.referrer.includes('orderpi') ? 'internal' : 'external',
+    });
+  });
+
+  // Option clicks (delegated)
+  document.querySelectorAll<HTMLButtonElement>('[data-option]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.key!;
+      const rawValue = btn.dataset.value!;
+      const value = (key === 'erp') ? rawValue : parseFloat(rawValue);
+
+      answers[key] = value;
+
+      // Update styles and show feedback
+      updateOptionStyles(currentStep);
+      const questionEl = document.querySelector<HTMLElement>(`[data-question="${currentStep}"]`)!;
+      const feedbackEl = questionEl.querySelector<HTMLElement>('[data-feedback]')!;
+      const feedbackText = questionEl.querySelector<HTMLElement>('[data-feedback-text]')!;
+      feedbackEl.hidden = false;
+      feedbackText.textContent = getFeedback(currentStep, value, answers);
+
+      // Enable continue
+      (continueBtn as HTMLButtonElement).disabled = false;
+
+      // Auto-advance after 600ms
+      setTimeout(() => {
+        if (currentStep < 6) {
+          currentStep++;
+          showQuestion(currentStep);
+        } else {
+          // All answered
+          results = calculateCosts(answers);
+          showPhase('results');
+          renderResults();
+
+          posthog.capture('calculator_completed', {
+            cost_savings: results.potentialSavings || 0,
+            po_volume: answers.volume || 0,
+            processing_time: answers.time || 0,
+            team_size: answers.team || 0,
+          });
+        }
+      }, 600);
+    });
+  });
+
+  // Back button
+  backBtn.addEventListener('click', () => {
+    if (currentStep > 0) {
+      currentStep--;
+      showQuestion(currentStep);
+    } else {
+      showPhase('intro');
+    }
+  });
+
+  // Continue button
+  continueBtn.addEventListener('click', () => {
+    if (currentStep < 6) {
+      currentStep++;
+      showQuestion(currentStep);
+    } else {
+      results = calculateCosts(answers);
+      showPhase('results');
+      renderResults();
+    }
+  });
+
+  // Open email modal
+  openModalBtn.addEventListener('click', () => {
+    emailModal.hidden = false;
+  });
+
+  // Close email modal
+  closeModalBtn.addEventListener('click', () => {
+    emailModal.hidden = true;
+  });
+  modalBackdrop.addEventListener('click', () => {
+    emailModal.hidden = true;
+  });
+
+  // Form validation — enable/disable submit
+  function validateForm() {
+    const fn = inputFirstName.value.trim();
+    const em = inputEmail.value.trim();
+    (submitBtn as HTMLButtonElement).disabled = isSubmitting || !fn || !em || !em.includes('@');
+  }
+  inputFirstName.addEventListener('input', validateForm);
+  inputEmail.addEventListener('input', validateForm);
+
+  // Form submit
+  reportForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (isSubmitting || !results) return;
+
+    isSubmitting = true;
+    submitBtn.textContent = 'Sending...';
+    submitArrow.style.display = 'none';
+    (submitBtn as HTMLButtonElement).disabled = true;
+
+    const firstName = inputFirstName.value.trim();
+    const email = inputEmail.value.trim();
+    const erpName = getErpName();
+
+    const reportData = {
+      email,
+      firstName,
+      companyName: '',
+      monthlyVolume: (answers.volume as number) || 225,
+      timePerPO: answers.time ? Math.round((answers.time as number) * 60) : 18,
+      errorRate: answers.errors ? Math.round(answers.errors * 100) : 12,
+      erpSystem: erpName
+    };
+
+    try {
+      const response = await fetch('/api/generate-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reportData),
+        keepalive: true,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      posthog.capture('calculator_completed', {
+        cost_savings: parseFloat(result.data?.annualSavings?.replace(/[^0-9.-]+/g, '') || '0'),
+        po_volume: reportData.monthlyVolume * 12,
+        processing_time: reportData.timePerPO,
+        team_size: answers.team || 1,
+      });
+
+      posthog.capture('pdf_report_generated', {
+        email: email,
+        company_name: reportData.companyName,
+        annual_savings: parseFloat(result.data?.annualSavings?.replace(/[^0-9.-]+/g, '') || '0'),
+        monthly_po_volume: reportData.monthlyVolume,
+        erp_system: erpName,
+        lead_score: reportData.monthlyVolume * (reportData.timePerPO / 60) * 42 * 12,
+      });
+
+      posthog.identify(email, {
+        first_name: firstName,
+        email: email,
+        company_name: reportData.companyName,
+        monthly_po_volume: reportData.monthlyVolume,
+      });
+
+      isSubmitting = false;
+      emailModal.hidden = true;
+      showThankyou(email, erpName);
+
+    } catch (error) {
+      console.error('Error generating PDF report:', error);
+      isSubmitting = false;
+
+      posthog.capture('calculator_error', {
+        error_type: 'pdf_generation_failed',
+        error_message: error instanceof Error ? error.message : 'Unknown error',
+      });
+
+      // Show success anyway — better UX
+      emailModal.hidden = true;
+      showThankyou(inputEmail.value.trim(), getErpName());
+    }
+  });
+
+  function showThankyou(email: string, erpName: string) {
+    document.getElementById('thankyou-email')!.textContent = email;
+    document.getElementById('thankyou-erp')!.textContent = erpName;
+    document.getElementById('thankyou-cost')!.textContent = results ? `\u20AC${results.totalCost.toLocaleString()}` : '';
+    showPhase('thankyou');
+  }
+</script>

@@ -1,0 +1,426 @@
+---
+const rows = [
+  { r: "1", a: "VDL Ind", b: "", c: "", aBold: true },
+  { r: "2", a: "PO#", b: "2024", c: "-0591", highlight: true },
+  { r: "3", a: "Widget", b: "30", c: "€850" },
+  { r: "4", a: "Bolt", b: "150", c: "€3" },
+  { r: "5", a: "Frame", b: "12", c: "€1200" },
+  { r: "6", a: "", b: "Tot", c: "€23.1k", cBold: true }
+];
+---
+
+<section class="py-20 lg:py-32 bg-warm-bg overflow-hidden border-t border-gray-100 fade-in">
+  <div class="max-w-5xl mx-auto px-6 mb-12">
+    <p class="text-xs font-medium uppercase tracking-[0.2em] text-gray-400 mb-4 fade-in">
+      / ANY FORMAT. ONE OUTPUT.
+    </p>
+    <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-text-primary leading-tight fade-in" style="animation-delay: 100ms">
+      Every supplier sends POs differently.<br />
+      OrderPilot reads <span class="font-serif italic text-rb2-orange">them all.</span>
+    </h2>
+  </div>
+
+  <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
+    <div class="relative">
+      <!-- Desktop/Tablet Layout -->
+      <div class="hidden sm:flex items-end justify-center gap-4 md:gap-6 lg:gap-8">
+
+        <!-- Card 1: Plain text email -->
+        <div class="flex flex-col items-center fade-in" style="animation-delay: 100ms">
+          <div class="w-48 md:w-52 h-64 md:h-72 bg-white rounded-xl shadow-md border border-gray-200 p-4 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-lg rotate-[-3deg]">
+            <div class="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100">
+              <!-- Mail icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#FF4500]"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              <span class="text-[9px] font-bold uppercase tracking-wider text-[#FF4500]">INCOMING EMAIL</span>
+            </div>
+            <div class="space-y-2">
+              <p class="text-[11px] text-gray-600 font-medium">Hey Marco,</p>
+              <p class="text-[10px] text-gray-500 leading-relaxed">
+                Can you process this?<br />
+                We need:
+              </p>
+              <ul class="text-[10px] text-gray-600 space-y-0.5">
+                <li>- <span class="text-[#FF4500] font-medium">200x</span> Blue Widget A</li>
+                <li>- <span class="text-[#FF4500] font-medium">50x</span> Red Connector B</li>
+                <li>- <span class="text-[#FF4500] font-medium">75x</span> Steel Bracket C</li>
+              </ul>
+              <p class="text-[10px] text-gray-500 leading-relaxed">
+                Ship to our Utrecht<br />
+                warehouse please.
+              </p>
+              <div class="pt-2 border-t border-gray-50">
+                <p class="text-[10px] font-medium text-gray-600">Jan de Vries</p>
+                <p class="text-[10px] text-[#FF4500]/70 font-bold uppercase tracking-tighter">Breman Groep</p>
+              </div>
+            </div>
+          </div>
+          <p class="text-xs font-medium text-gray-400 text-center mt-4">Plain text email</p>
+        </div>
+
+        <!-- Chevron -->
+        <div class="mb-32 hidden md:block fade-in" style="animation-delay: 150ms">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-300"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
+
+        <!-- Card 2: PDF attachment -->
+        <div class="flex flex-col items-center fade-in" style="animation-delay: 200ms">
+          <div class="w-48 md:w-52 h-64 md:h-72 bg-white rounded-xl shadow-md border border-gray-200 p-4 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-lg rotate-[-1deg]">
+            <div class="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100">
+              <!-- FileText icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+              <span class="text-[9px] font-bold uppercase tracking-wider text-blue-600">PURCHASE ORDER</span>
+            </div>
+            <div class="space-y-3">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="text-[11px] font-bold text-gray-700">Nedcargo Logistics</p>
+                  <p class="text-[10px] text-[#FF4500] font-medium">PO-2024-1203</p>
+                  <p class="text-[10px] text-gray-500">Date: 15-02-2024</p>
+                </div>
+                <div class="w-8 h-8 bg-blue-50 rounded flex items-center justify-center">
+                  <div class="w-4 h-1 bg-blue-200 rounded-full"></div>
+                </div>
+              </div>
+              <table class="w-full text-[9px]">
+                <thead>
+                  <tr class="bg-blue-50/50 text-blue-600 font-bold uppercase">
+                    <th class="px-2 py-1 text-left">Item</th>
+                    <th class="px-2 py-1 text-center">Qty</th>
+                    <th class="px-2 py-1 text-right">Price</th>
+                  </tr>
+                </thead>
+                <tbody class="text-gray-600">
+                  <tr class="border-b border-gray-100">
+                    <td class="px-2 py-1 font-medium">A</td>
+                    <td class="px-2 py-1 text-center text-[#FF4500]">100</td>
+                    <td class="px-2 py-1 text-right">&euro;45.00</td>
+                  </tr>
+                  <tr class="border-b border-gray-100">
+                    <td class="px-2 py-1 font-medium">B</td>
+                    <td class="px-2 py-1 text-center text-[#FF4500]">250</td>
+                    <td class="px-2 py-1 text-right">&euro;12.50</td>
+                  </tr>
+                  <tr class="border-b border-gray-100">
+                    <td class="px-2 py-1 font-medium">C</td>
+                    <td class="px-2 py-1 text-center text-[#FF4500]">75</td>
+                    <td class="px-2 py-1 text-right">&euro;89.00</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p class="text-[10px] font-bold text-gray-900 text-right">Total: <span class="text-[#FF4500]">&euro;12,450.00</span></p>
+            </div>
+          </div>
+          <p class="text-xs font-medium text-gray-400 text-center mt-4">PDF attachment</p>
+        </div>
+
+        <!-- Chevron -->
+        <div class="mb-32 hidden md:block fade-in" style="animation-delay: 250ms">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-300"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
+
+        <!-- Card 3: Excel spreadsheet -->
+        <div class="flex flex-col items-center fade-in" style="animation-delay: 300ms">
+          <div class="w-48 md:w-52 h-64 md:h-72 bg-white rounded-xl shadow-md border border-gray-200 p-4 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-lg">
+            <div class="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100">
+              <!-- Table icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></svg>
+              <span class="text-[9px] font-bold uppercase tracking-wider text-emerald-600">SPREADSHEET</span>
+            </div>
+            <div class="w-full border border-gray-200 text-[9px] overflow-hidden rounded-sm">
+              <div class="flex bg-emerald-50 text-emerald-700 font-bold border-b border-gray-200">
+                <div class="w-6 border-r border-gray-200 text-center py-0.5 bg-emerald-100/50"></div>
+                <div class="flex-1 px-1.5 py-0.5 border-l border-gray-200 text-center">A</div>
+                <div class="flex-1 px-1.5 py-0.5 border-l border-gray-200 text-center">B</div>
+                <div class="flex-1 px-1.5 py-0.5 border-l border-gray-200 text-center">C</div>
+              </div>
+              {rows.map((row) => (
+                <div class:list={['flex border-b border-gray-100 last:border-0', row.highlight ? 'bg-emerald-50/30' : '']}>
+                  <div class="w-6 bg-gray-50 text-gray-400 text-center py-1 border-r border-gray-200">{row.r}</div>
+                  <div class:list={['flex-1 px-1.5 py-1 text-gray-600 border-l border-gray-100 truncate', row.aBold ? 'font-bold text-emerald-800' : '']}>{row.a}</div>
+                  <div class="flex-1 px-1.5 py-1 text-gray-600 border-l border-gray-100 truncate text-center">{row.b}</div>
+                  <div class:list={['flex-1 px-1.5 py-1 border-l border-gray-100 truncate text-right', row.cBold ? 'font-bold text-[#FF4500]' : 'text-gray-600']}>{row.c}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <p class="text-xs font-medium text-gray-400 text-center mt-4">Excel spreadsheet</p>
+        </div>
+
+        <!-- Chevron -->
+        <div class="mb-32 hidden md:block fade-in" style="animation-delay: 350ms">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-300"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
+
+        <!-- Card 4: Extracted data -->
+        <div class="flex flex-col items-center fade-in" style="animation-delay: 400ms">
+          <div class="w-48 md:w-52 h-64 md:h-72 bg-white rounded-xl shadow-md border border-gray-200 p-4 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-lg">
+            <div class="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100">
+              <div class="w-2 h-2 rounded-full bg-[#FF4500] shadow-[0_0_8px_rgba(255,69,0,0.4)]"></div>
+              <span class="text-[9px] font-bold uppercase tracking-wider text-gray-700">EXTRACTED DATA</span>
+            </div>
+            <div class="space-y-1">
+              <div class="p-2 bg-gray-50 rounded-lg border border-gray-100">
+                <p class="text-[9px] uppercase tracking-wider text-[#FF4500] font-bold">Customer</p>
+                <p class="text-[11px] font-bold text-gray-800">VDL Industrial Modules</p>
+              </div>
+              <div class="p-2">
+                <p class="text-[9px] uppercase tracking-wider text-gray-400 mt-1">PO Number</p>
+                <p class="text-[11px] font-bold text-[#FF4500]">PO-2024-0591</p>
+              </div>
+              <div class="p-2">
+                <p class="text-[9px] uppercase tracking-wider text-gray-400 mt-1">Items</p>
+                <div class="text-[10px] text-gray-600 space-y-0.5">
+                  <p class="flex justify-between"><span>Widget A</span> <span class="font-bold">30</span></p>
+                  <p class="flex justify-between"><span>Steel Bolt</span> <span class="font-bold">150</span></p>
+                  <p class="flex justify-between"><span>Frame Assembly</span> <span class="font-bold">12</span></p>
+                </div>
+              </div>
+              <div class="pt-2 px-2 flex justify-between items-end">
+                <p class="text-[9px] uppercase tracking-wider text-gray-400">Total</p>
+                <p class="text-[12px] font-black text-gray-900">&euro;23,100.00</p>
+              </div>
+            </div>
+          </div>
+          <p class="text-xs font-medium text-gray-400 text-center mt-4">Extracted data</p>
+        </div>
+
+        <!-- Chevron -->
+        <div class="mb-32 hidden md:block fade-in" style="animation-delay: 450ms">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-300"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
+
+        <!-- Card 5: Validated & ERP ready -->
+        <div class="flex flex-col items-center fade-in" style="animation-delay: 500ms">
+          <div class="w-48 md:w-52 h-64 md:h-72 bg-white rounded-xl shadow-md border-2 border-[#FF4500]/30 shadow-lg p-4 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-lg">
+            <div class="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100">
+              <!-- CheckCircle icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#FF4500]"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+              <span class="text-[9px] font-bold uppercase tracking-wider text-[#FF4500]">VALIDATED</span>
+            </div>
+            <div class="space-y-1 relative">
+              <div class="flex items-center gap-2 mb-2">
+                <div class="h-1 flex-1 bg-[#FF4500]/10 rounded-full overflow-hidden">
+                  <div class="h-full w-full bg-[#FF4500]"></div>
+                </div>
+                <p class="text-[9px] font-black text-[#FF4500] whitespace-nowrap">100% MATCH</p>
+              </div>
+
+              <div class="flex justify-between items-start p-1.5 bg-orange-50/50 rounded border border-[#FF4500]/10">
+                <div>
+                  <p class="text-[9px] uppercase tracking-wider text-[#FF4500]/70 font-bold">Customer</p>
+                  <p class="text-[11px] font-bold text-gray-800">VDL Industrial Modules</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,69,0,0.1)" stroke="#FF4500" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+              </div>
+
+              <div class="flex justify-between items-start mt-2 px-1.5">
+                <div>
+                  <p class="text-[9px] uppercase tracking-wider text-gray-400">PO Number</p>
+                  <p class="text-[11px] font-bold text-[#FF4500]">PO-2024-0591</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,69,0,0.1)" stroke="#FF4500" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+              </div>
+
+              <div class="flex justify-between items-start mt-2 px-1.5">
+                <div>
+                  <p class="text-[9px] uppercase tracking-wider text-gray-400">Line Items (3)</p>
+                  <p class="text-[10px] text-gray-700 font-medium">All matched to catalog</p>
+                  <p class="text-[9px] text-[#FF4500] font-medium italic">Verified SKU &amp; Price</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,69,0,0.1)" stroke="#FF4500" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+              </div>
+
+              <div class="flex justify-between items-start pt-2 px-1.5">
+                <div>
+                  <p class="text-[9px] uppercase tracking-wider text-gray-400">Total</p>
+                  <p class="text-[12px] font-black text-gray-900">&euro;23,100.00</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="rgba(255,69,0,0.1)" stroke="#FF4500" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+              </div>
+
+              <div class="border-t border-[#FF4500]/20 pt-2 mt-2 flex items-center justify-center gap-1.5 bg-[#FF4500] text-white py-1 rounded shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                <p class="text-[10px] font-black uppercase tracking-tighter">SYNCED TO ERP</p>
+              </div>
+
+              <!-- Floating Badge -->
+              <div class="absolute -bottom-10 -right-10 w-20 h-20 rounded-full bg-[#FF4500] shadow-xl border-4 border-white flex flex-col items-center justify-center z-10 transform rotate-12">
+                <span class="text-lg font-black text-white leading-none">99.9%</span>
+                <span class="text-[7px] uppercase tracking-wider text-white/90 font-bold text-center leading-tight">ACCURATE</span>
+              </div>
+            </div>
+          </div>
+          <p class="text-xs font-medium text-gray-400 text-center mt-4">Validated &amp; ERP ready</p>
+        </div>
+      </div>
+
+      <!-- Mobile Horizontal Scroll Layout -->
+      <div class="sm:hidden flex overflow-x-auto snap-x snap-mandatory gap-6 pb-12 px-4 -mx-4 no-scrollbar">
+        <!-- Mobile Card 1: Plain text email -->
+        <div class="snap-center flex-shrink-0 flex flex-col items-center">
+          <div class="w-64 h-80 bg-white rounded-xl shadow-md border border-gray-200 p-5">
+            <div class="flex items-center gap-2 mb-4 pb-2 border-b border-gray-100">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#FF4500]"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-[#FF4500]">INCOMING EMAIL</span>
+            </div>
+            <div class="scale-110 origin-top-left">
+              <div class="space-y-2">
+                <p class="text-[11px] text-gray-600 font-medium">Hey Marco,</p>
+                <p class="text-[10px] text-gray-500 leading-relaxed">Can you process this?<br />We need:</p>
+                <ul class="text-[10px] text-gray-600 space-y-0.5">
+                  <li>- <span class="text-[#FF4500] font-medium">200x</span> Blue Widget A</li>
+                  <li>- <span class="text-[#FF4500] font-medium">50x</span> Red Connector B</li>
+                  <li>- <span class="text-[#FF4500] font-medium">75x</span> Steel Bracket C</li>
+                </ul>
+                <p class="text-[10px] text-gray-500 leading-relaxed">Ship to our Utrecht<br />warehouse please.</p>
+                <div class="pt-2 border-t border-gray-50">
+                  <p class="text-[10px] font-medium text-gray-600">Jan de Vries</p>
+                  <p class="text-[10px] text-[#FF4500]/70 font-bold uppercase tracking-tighter">Breman Groep</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="text-sm font-medium text-gray-400 text-center mt-4">Plain text email</p>
+        </div>
+
+        <!-- Mobile Card 2: PDF attachment -->
+        <div class="snap-center flex-shrink-0 flex flex-col items-center">
+          <div class="w-64 h-80 bg-white rounded-xl shadow-md border border-gray-200 p-5">
+            <div class="flex items-center gap-2 mb-4 pb-2 border-b border-gray-100">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600">PURCHASE ORDER</span>
+            </div>
+            <div class="scale-110 origin-top-left">
+              <div class="space-y-3">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p class="text-[11px] font-bold text-gray-700">Nedcargo Logistics</p>
+                    <p class="text-[10px] text-[#FF4500] font-medium">PO-2024-1203</p>
+                    <p class="text-[10px] text-gray-500">Date: 15-02-2024</p>
+                  </div>
+                  <div class="w-8 h-8 bg-blue-50 rounded flex items-center justify-center">
+                    <div class="w-4 h-1 bg-blue-200 rounded-full"></div>
+                  </div>
+                </div>
+                <table class="w-full text-[9px]">
+                  <thead><tr class="bg-blue-50/50 text-blue-600 font-bold uppercase"><th class="px-2 py-1 text-left">Item</th><th class="px-2 py-1 text-center">Qty</th><th class="px-2 py-1 text-right">Price</th></tr></thead>
+                  <tbody class="text-gray-600">
+                    <tr class="border-b border-gray-100"><td class="px-2 py-1 font-medium">A</td><td class="px-2 py-1 text-center text-[#FF4500]">100</td><td class="px-2 py-1 text-right">&euro;45.00</td></tr>
+                    <tr class="border-b border-gray-100"><td class="px-2 py-1 font-medium">B</td><td class="px-2 py-1 text-center text-[#FF4500]">250</td><td class="px-2 py-1 text-right">&euro;12.50</td></tr>
+                    <tr class="border-b border-gray-100"><td class="px-2 py-1 font-medium">C</td><td class="px-2 py-1 text-center text-[#FF4500]">75</td><td class="px-2 py-1 text-right">&euro;89.00</td></tr>
+                  </tbody>
+                </table>
+                <p class="text-[10px] font-bold text-gray-900 text-right">Total: <span class="text-[#FF4500]">&euro;12,450.00</span></p>
+              </div>
+            </div>
+          </div>
+          <p class="text-sm font-medium text-gray-400 text-center mt-4">PDF attachment</p>
+        </div>
+
+        <!-- Mobile Card 3: Excel spreadsheet -->
+        <div class="snap-center flex-shrink-0 flex flex-col items-center">
+          <div class="w-64 h-80 bg-white rounded-xl shadow-md border border-gray-200 p-5">
+            <div class="flex items-center gap-2 mb-4 pb-2 border-b border-gray-100">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></svg>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600">SPREADSHEET</span>
+            </div>
+            <div class="scale-110 origin-top-left">
+              <div class="w-full border border-gray-200 text-[9px] overflow-hidden rounded-sm">
+                <div class="flex bg-emerald-50 text-emerald-700 font-bold border-b border-gray-200">
+                  <div class="w-6 border-r border-gray-200 text-center py-0.5 bg-emerald-100/50"></div>
+                  <div class="flex-1 px-1.5 py-0.5 border-l border-gray-200 text-center">A</div>
+                  <div class="flex-1 px-1.5 py-0.5 border-l border-gray-200 text-center">B</div>
+                  <div class="flex-1 px-1.5 py-0.5 border-l border-gray-200 text-center">C</div>
+                </div>
+                {rows.map((row) => (
+                  <div class:list={['flex border-b border-gray-100 last:border-0', row.highlight ? 'bg-emerald-50/30' : '']}>
+                    <div class="w-6 bg-gray-50 text-gray-400 text-center py-1 border-r border-gray-200">{row.r}</div>
+                    <div class:list={['flex-1 px-1.5 py-1 text-gray-600 border-l border-gray-100 truncate', row.aBold ? 'font-bold text-emerald-800' : '']}>{row.a}</div>
+                    <div class="flex-1 px-1.5 py-1 text-gray-600 border-l border-gray-100 truncate text-center">{row.b}</div>
+                    <div class:list={['flex-1 px-1.5 py-1 border-l border-gray-100 truncate text-right', row.cBold ? 'font-bold text-[#FF4500]' : 'text-gray-600']}>{row.c}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <p class="text-sm font-medium text-gray-400 text-center mt-4">Excel spreadsheet</p>
+        </div>
+
+        <!-- Mobile Card 4: Extracted data -->
+        <div class="snap-center flex-shrink-0 flex flex-col items-center">
+          <div class="w-64 h-80 bg-white rounded-xl shadow-md border border-gray-200 p-5">
+            <div class="flex items-center gap-2 mb-4 pb-2 border-b border-gray-100">
+              <div class="w-2 h-2 rounded-full bg-[#FF4500] shadow-[0_0_8px_rgba(255,69,0,0.4)]"></div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-gray-700">EXTRACTED DATA</span>
+            </div>
+            <div class="scale-110 origin-top-left">
+              <div class="space-y-1">
+                <div class="p-2 bg-gray-50 rounded-lg border border-gray-100">
+                  <p class="text-[9px] uppercase tracking-wider text-[#FF4500] font-bold">Customer</p>
+                  <p class="text-[11px] font-bold text-gray-800">VDL Industrial Modules</p>
+                </div>
+                <div class="p-2">
+                  <p class="text-[9px] uppercase tracking-wider text-gray-400 mt-1">PO Number</p>
+                  <p class="text-[11px] font-bold text-[#FF4500]">PO-2024-0591</p>
+                </div>
+                <div class="p-2">
+                  <p class="text-[9px] uppercase tracking-wider text-gray-400 mt-1">Items</p>
+                  <div class="text-[10px] text-gray-600 space-y-0.5">
+                    <p class="flex justify-between"><span>Widget A</span> <span class="font-bold">30</span></p>
+                    <p class="flex justify-between"><span>Steel Bolt</span> <span class="font-bold">150</span></p>
+                    <p class="flex justify-between"><span>Frame Assembly</span> <span class="font-bold">12</span></p>
+                  </div>
+                </div>
+                <div class="pt-2 px-2 flex justify-between items-end">
+                  <p class="text-[9px] uppercase tracking-wider text-gray-400">Total</p>
+                  <p class="text-[12px] font-black text-gray-900">&euro;23,100.00</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="text-sm font-medium text-gray-400 text-center mt-4">Extracted data</p>
+        </div>
+
+        <!-- Mobile Card 5: Validated -->
+        <div class="snap-center flex-shrink-0 flex flex-col items-center">
+          <div class="w-64 h-80 bg-white rounded-xl shadow-md border-2 border-[#FF4500]/30 shadow-lg p-5">
+            <div class="flex items-center gap-2 mb-4 pb-2 border-b border-gray-100">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#FF4500]"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-[#FF4500]">VALIDATED</span>
+            </div>
+            <div class="scale-110 origin-top-left">
+              <div class="space-y-1 relative">
+                <div class="flex items-center gap-2 mb-2">
+                  <div class="h-1 flex-1 bg-[#FF4500]/10 rounded-full overflow-hidden">
+                    <div class="h-full w-full bg-[#FF4500]"></div>
+                  </div>
+                  <p class="text-[9px] font-black text-[#FF4500] whitespace-nowrap">100% MATCH</p>
+                </div>
+                <div class="flex justify-between items-start p-1.5 bg-orange-50/50 rounded border border-[#FF4500]/10">
+                  <div>
+                    <p class="text-[9px] uppercase tracking-wider text-[#FF4500]/70 font-bold">Customer</p>
+                    <p class="text-[11px] font-bold text-gray-800">VDL Industrial Modules</p>
+                  </div>
+                </div>
+                <div class="flex justify-between items-start mt-2 px-1.5">
+                  <div>
+                    <p class="text-[9px] uppercase tracking-wider text-gray-400">PO Number</p>
+                    <p class="text-[11px] font-bold text-[#FF4500]">PO-2024-0591</p>
+                  </div>
+                </div>
+                <div class="border-t border-[#FF4500]/20 pt-2 mt-2 flex items-center justify-center gap-1.5 bg-[#FF4500] text-white py-1 rounded shadow-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+                  <p class="text-[10px] font-black uppercase tracking-tighter">SYNCED TO ERP</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="text-sm font-medium text-gray-400 text-center mt-4">Validated &amp; ERP ready</p>
+        </div>
+      </div>
+
+      <!-- Mobile Scroll Hint -->
+      <div class="sm:hidden absolute right-0 top-1/2 -translate-y-1/2 w-12 h-32 bg-gradient-to-l from-warm-bg to-transparent pointer-events-none"></div>
+    </div>
+  </div>
+</section>

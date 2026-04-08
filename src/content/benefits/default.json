@@ -1,0 +1,76 @@
+{
+  "costSection": {
+    "label": "/ The real cost",
+    "headline": "Manual PO processing is more expensive than you think.",
+    "mathRows": [
+      { "label": "Purchase orders per month", "value": "200", "highlight": false },
+      { "label": "Minutes per PO (email \u2192 ERP entry)", "value": "\u00d7 15 min", "highlight": false },
+      { "label": "Hours per year on manual processing", "value": "= 600 hours", "highlight": true },
+      { "label": "Average procurement staff cost", "value": "\u00d7 \u20ac42/hour", "highlight": false }
+    ],
+    "summaryLabel": "Direct labor cost alone",
+    "summaryValue": "\u20ac25,200/year",
+    "sidebar": "That\u2019s just labor. Add error correction (3-5% of POs need rework), lost early-payment discounts (2% per delayed invoice), and manager escalation time \u2014 and the real number is 2-3\u00d7 higher.",
+    "sidebarFootnote": "* Based on APQC procurement benchmarks and Ardent Partners research."
+  },
+  "before": {
+    "label": "What happens today",
+    "items": [
+      { "metric": "15\u201330m", "description": "manually entering each purchase order" },
+      { "metric": "3\u20135%", "description": "error rate on manual data entry" },
+      { "metric": "1\u20135 days", "description": "delay between email and ERP entry" },
+      { "metric": "10%", "description": "of POs escalated to managers" },
+      { "metric": "0%", "description": "visibility into processing bottlenecks" }
+    ]
+  },
+  "after": {
+    "label": "With OrderPilot",
+    "items": [
+      { "metric": "60 sec", "description": "from email to validated ERP entry" },
+      { "metric": "99.9%", "description": "extraction accuracy, every format" },
+      { "metric": "Instant", "description": "processing \u2014 no backlog, no delays" },
+      { "metric": "5%", "description": "of POs need human review (the real exceptions)" },
+      { "metric": "Full", "description": "dashboard with processing status and bottlenecks" }
+    ]
+  },
+  "calculatorCta": {
+    "headline": "Want your actual number?",
+    "description": "Most teams are surprised \u2014 it\u2019s usually higher than they expect. Our calculator uses your specific volume and labor rates to find the real cost of manual processing.",
+    "buttonText": "Calculate your costs",
+    "buttonHref": "/calculator"
+  },
+  "whySection": {
+    "label": "/ WHY ORDERPILOT",
+    "headline": "Built for procurement teams that can\u2019t afford mistakes."
+  },
+  "cards": [
+    {
+      "title": "99.9% Accuracy. Consistently.",
+      "description": "Every competitor claims \u2018high accuracy.\u2019 95%. 98%. Sounds good until you realize that means 2-5 errors per 100 POs \u2014 every single month.",
+      "secondDescription": "OrderPilot consistently delivers 99.9% accuracy across all document formats. The remaining edge cases? Flagged for your team to review. Not silently pushed through with bad data.",
+      "badge": "Proven Accuracy",
+      "variant": "default",
+      "colSpan": 3
+    },
+    {
+      "title": "60-Second Processing",
+      "description": "From the moment a PO email hits your inbox to validated data in your ERP: under 60 seconds. Your team used to spend 15-20 minutes per order. Now they spend zero.",
+      "badge": "Fastest in Market",
+      "variant": "standout",
+      "colSpan": 2
+    },
+    {
+      "title": "Works With Your ERP",
+      "description": "Native connectors for Business Central, Exact Online, Odoo, plus NetSuite and SAP. No middleware. No custom development. Plug in and go.",
+      "erps": ["Business Central", "Exact Online", "Odoo", "NetSuite", "SAP"],
+      "variant": "wide",
+      "colSpan": 3
+    },
+    {
+      "title": "Handles the Exceptions",
+      "description": "Unclear line items. Missing vendor codes. Weird formatting. OrderPilot flags what needs human attention and processes everything else. Your team handles the 5% that actually requires judgment.",
+      "variant": "compact",
+      "colSpan": 2
+    }
+  ]
+}

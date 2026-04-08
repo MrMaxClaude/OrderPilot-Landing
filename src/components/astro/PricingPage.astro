@@ -1,0 +1,388 @@
+---
+interface Plan {
+  name: string;
+  description: string;
+  monthlyPrice: number | null;
+  yearlyPrice: number | null;
+  orderLimit: string;
+  iconId: string;
+  features: string[];
+  ctaText: string;
+  popular: boolean;
+}
+
+interface FaqEntry {
+  question: string;
+  answerHtml: string;
+}
+
+interface Props {
+  plans: Plan[];
+  faqs: FaqEntry[];
+}
+
+const { plans, faqs } = Astro.props;
+
+function formatPrice(price: number | null) {
+  if (price === null) return 'Custom';
+  return `€${price.toLocaleString()}`;
+}
+
+function getSavings(monthly: number, yearly: number) {
+  return (monthly * 12) - (yearly * 12);
+}
+---
+
+<div class="min-h-screen bg-gradient-to-br from-warm-bg via-warm-bg-alt to-orange-50/30 pt-24" data-pricing-toggle>
+  <!-- Header -->
+  <section class="px-6 mb-20">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="mb-8">
+        <span class="inline-flex items-center px-4 py-2 bg-orange-50 text-rb2-orange text-sm font-bold rounded-full border border-orange-200/50">
+          <!-- Sparkles -->
+          <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+          Choose Your Growth Plan
+        </span>
+      </div>
+      <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-text-primary mb-6">
+        Simple, Powerful <span class="font-serif italic text-rb2-orange">Pricing</span>
+      </h1>
+      <p class="text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed mb-12">
+        Transform your order processing with AI-powered automation. No setup fees, no hidden costs—just transparent pricing that grows with your business.
+      </p>
+
+      <!-- Billing Toggle -->
+      <div class="flex items-center justify-center mb-4">
+        <span class="text-lg font-bold transition-colors text-text-primary" data-monthly-label>
+          Monthly
+        </span>
+        <button
+          data-toggle-btn
+          data-yearly="false"
+          class="mx-4 relative w-16 h-8 rounded-full transition-colors duration-300 focus:outline-none focus:ring-4 focus:ring-rb2-orange/20 bg-gray-200"
+        >
+          <div
+            data-toggle-knob
+            class="absolute top-1 w-6 h-6 bg-white rounded-full shadow-lg transition-transform duration-300 translate-x-1"
+          ></div>
+        </button>
+        <span class="text-lg font-bold transition-colors text-text-muted" data-yearly-label>
+          Yearly
+        </span>
+      </div>
+      <div data-yearly-badge hidden class="inline-flex items-center px-3 py-1 bg-green-50 text-green-700 text-sm font-bold rounded-full border border-green-200/50 animate-fadeIn">
+        <!-- Star -->
+        <svg class="mr-1" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Save 20% with yearly billing
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Cards -->
+  <section class="px-6 mb-20 fade-in">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {plans.map((plan) => (
+          <div
+            class={`relative rounded-[2.5rem] p-8 lg:p-10 border-2 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 ${
+              plan.popular
+                ? 'border-rb2-orange bg-white shadow-xl scale-105 lg:scale-110 z-10'
+                : 'border-gray-200 bg-white hover:border-gray-300'
+            }`}
+          >
+            {/* Popular Badge */}
+            {plan.popular && (
+              <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <div class="bg-gradient-to-r from-rb2-orange to-amber-accent px-6 py-2 rounded-full text-white text-sm font-bold shadow-lg">
+                  Most Popular
+                </div>
+              </div>
+            )}
+
+            {/* Header */}
+            <div class="text-center mb-8">
+              <div class={`inline-flex p-4 rounded-2xl mb-4 ${plan.popular ? 'bg-orange-50' : 'bg-gray-50'}`}>
+                {plan.iconId === 'users' && (
+                  <svg class="text-gray-600" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                )}
+                {plan.iconId === 'zap' && (
+                  <svg class="text-rb2-orange" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                )}
+                {plan.iconId === 'shield' && (
+                  <svg class="text-gray-600" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                )}
+              </div>
+              <h3 class="text-2xl font-extrabold text-text-primary mb-3">{plan.name}</h3>
+              <p class="text-text-secondary leading-relaxed">{plan.description}</p>
+            </div>
+
+            {/* Pricing - Monthly (default visible) */}
+            <div class="text-center mb-8" data-monthly>
+              <div class="flex items-baseline justify-center mb-2">
+                <span class="text-5xl font-black text-text-primary">
+                  {formatPrice(plan.monthlyPrice)}
+                </span>
+                {plan.monthlyPrice && (
+                  <span class="text-lg text-text-muted font-bold ml-2">/month</span>
+                )}
+              </div>
+              <div class="text-sm text-text-muted font-medium mt-2">
+                {plan.orderLimit}
+              </div>
+            </div>
+
+            {/* Pricing - Yearly (hidden by default) */}
+            <div class="text-center mb-8" data-yearly hidden>
+              <div class="flex items-baseline justify-center mb-2">
+                <span class="text-5xl font-black text-text-primary">
+                  {formatPrice(plan.yearlyPrice)}
+                </span>
+                {plan.yearlyPrice && (
+                  <span class="text-lg text-text-muted font-bold ml-2">/year</span>
+                )}
+              </div>
+              {plan.monthlyPrice && plan.yearlyPrice && (
+                <div class="text-sm text-green-700 font-medium">
+                  Save €{getSavings(plan.monthlyPrice, plan.yearlyPrice).toLocaleString()} per year
+                </div>
+              )}
+              <div class="text-sm text-text-muted font-medium mt-2">
+                {plan.orderLimit}
+              </div>
+            </div>
+
+            {/* Features */}
+            <div class="space-y-4 mb-10">
+              {plan.features.map((feature) => (
+                <div class="flex items-start space-x-3">
+                  <div class="flex-shrink-0 w-5 h-5 mt-0.5 bg-green-100 rounded-full flex items-center justify-center">
+                    <!-- Check 12 -->
+                    <svg class="text-green-600" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span class="text-text-primary font-medium leading-relaxed">{feature}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* CTA Button */}
+            <a
+              href="/#contact"
+              class={`w-full py-4 px-6 rounded-2xl font-bold text-lg transition-all duration-200 flex items-center justify-center space-x-2 ${
+                plan.popular
+                  ? 'bg-rb2-orange text-white hover:bg-rb2-orange-hover shadow-lg hover:shadow-xl'
+                  : 'bg-text-primary text-white hover:bg-black'
+              }`}
+            >
+              <span>{plan.ctaText}</span>
+              <!-- ArrowRight 20 -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+
+            <p class="text-xs text-text-muted text-center mt-4">
+              Free consultation &bull; No pressure &bull; Custom pricing available
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Social Proof & Guarantee -->
+  <section class="px-6 mb-20">
+    <div class="max-w-6xl mx-auto">
+      <div class="bg-gradient-to-r from-text-primary to-gray-800 rounded-[2.5rem] p-12 lg:p-16 text-white text-center">
+        <div class="max-w-4xl mx-auto">
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-6">
+            Trusted by <span class="font-serif italic text-rb2-orange">500+</span> Companies
+          </h2>
+          <p class="text-xl text-gray-300 mb-8">
+            From startups to enterprises, teams choose OrderPilot to eliminate manual order processing and reduce errors by 99.5%
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div class="text-center">
+              <div class="text-4xl font-black text-rb2-orange mb-2">99.5%</div>
+              <div class="text-gray-300">Accuracy Rate</div>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl font-black text-rb2-orange mb-2">10x</div>
+              <div class="text-gray-300">Faster Processing</div>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl font-black text-rb2-orange mb-2">85%</div>
+              <div class="text-gray-300">Time Saved</div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-center space-x-2 text-green-400">
+            <!-- Shield 24 -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span class="text-lg font-bold">30-Day Money-Back Guarantee</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="px-6 mb-20">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-text-primary mb-6">
+          Have <span class="font-serif italic text-rb2-orange">Questions?</span>
+        </h2>
+        <p class="text-xl text-text-secondary">Everything you need to know about getting started</p>
+      </div>
+
+      <div class="space-y-4" data-faq-accordion>
+        {faqs.map((faq) => (
+          <details class="group bg-white rounded-2xl border border-gray-100 hover:border-rb2-orange/30 transition-all duration-200 overflow-hidden">
+            <summary class="w-full p-6 text-left flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden focus:outline-none hover:bg-gray-50 transition-colors">
+              <h3 class="font-bold text-text-primary text-lg pr-4">{faq.question}</h3>
+              <!-- ChevronDown -->
+              <svg class="text-rb2-orange transition-transform duration-200 flex-shrink-0 group-open:rotate-180" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <div class="px-6 pb-6 animate-fadeIn text-text-secondary leading-relaxed">
+              <Fragment set:html={faq.answerHtml} />
+            </div>
+          </details>
+        ))}
+      </div>
+
+      <div class="text-center mt-12">
+        <p class="text-text-secondary mb-4">Still have questions?</p>
+        <a
+          href="/#contact"
+          class="px-8 py-3 bg-orange-50 text-rb2-orange font-bold rounded-2xl hover:bg-orange-100 transition-colors inline-block"
+        >
+          Talk to Expert
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA Section -->
+  <section class="px-6 mb-20">
+    <div class="max-w-6xl mx-auto">
+      <div class="bg-gradient-to-br from-rb2-orange via-amber-accent to-rb2-orange-hover rounded-[2.5rem] p-12 lg:p-16 text-center text-white relative overflow-hidden">
+        <!-- Background Logo Icon Watermark -->
+        <div class="absolute bottom-8 right-8 opacity-10">
+          <img
+            src="/logo.svg"
+            alt="Orderpilot Icon"
+            class="w-32 h-32"
+          />
+        </div>
+
+        <div class="relative z-10 max-w-4xl mx-auto">
+          <div class="mb-8">
+            <div class="inline-flex items-center px-4 py-2 bg-white/20 text-white text-sm font-bold rounded-full border border-white/30 mb-6">
+              <!-- Zap 16 -->
+              <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              Limited Time: 50% Off First 3 Months
+            </div>
+            <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6">
+              Stop Wrestling with <span class="font-serif italic">Order Processing</span>
+            </h2>
+            <p class="text-xl lg:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
+              Join 500+ companies who've eliminated manual data entry forever. Start your 14-day free trial and process your first order in minutes.
+            </p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-6 justify-center items-center mb-8">
+            <a
+              href="/#contact"
+              class="px-10 py-5 bg-white text-rb2-orange rounded-2xl font-bold text-lg hover:bg-gray-50 transition-all duration-200 flex items-center justify-center shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
+            >
+              <span>Talk to Expert</span>
+              <!-- ArrowRight 20 -->
+              <svg class="ml-3" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+            <a
+              href="/calculator"
+              class="px-10 py-5 bg-transparent text-white border-2 border-white rounded-2xl font-bold text-lg hover:bg-white/10 transition-all duration-200 inline-block"
+            >
+              Calculate ROI
+            </a>
+          </div>
+
+          <div class="flex items-center justify-center space-x-8 text-sm text-white/80">
+            <div class="flex items-center">
+              <!-- Check 16 -->
+              <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Free consultation
+            </div>
+            <div class="flex items-center">
+              <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Custom pricing
+            </div>
+            <div class="flex items-center">
+              <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              No obligation
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  import posthog from 'posthog-js';
+
+  posthog.capture('page_viewed', { page: 'pricing' });
+
+  const toggleBtn = document.querySelector('[data-toggle-btn]') as HTMLButtonElement;
+  const toggleKnob = document.querySelector('[data-toggle-knob]') as HTMLElement;
+  const monthlyLabel = document.querySelector('[data-monthly-label]') as HTMLElement;
+  const yearlyLabel = document.querySelector('[data-yearly-label]') as HTMLElement;
+  const yearlyBadge = document.querySelector('[data-yearly-badge]') as HTMLElement;
+  const monthlyEls = document.querySelectorAll('[data-monthly]');
+  const yearlyEls = document.querySelectorAll('[data-yearly]');
+
+  toggleBtn?.addEventListener('click', () => {
+    const isYearly = toggleBtn.dataset.yearly === 'true';
+    const newYearly = !isYearly;
+    toggleBtn.dataset.yearly = String(newYearly);
+
+    if (newYearly) {
+      toggleBtn.classList.remove('bg-gray-200');
+      toggleBtn.classList.add('bg-rb2-orange');
+      toggleKnob.classList.remove('translate-x-1');
+      toggleKnob.classList.add('translate-x-9');
+      monthlyLabel.classList.remove('text-text-primary');
+      monthlyLabel.classList.add('text-text-muted');
+      yearlyLabel.classList.remove('text-text-muted');
+      yearlyLabel.classList.add('text-text-primary');
+      yearlyBadge.hidden = false;
+      monthlyEls.forEach(el => (el as HTMLElement).hidden = true);
+      yearlyEls.forEach(el => (el as HTMLElement).hidden = false);
+    } else {
+      toggleBtn.classList.remove('bg-rb2-orange');
+      toggleBtn.classList.add('bg-gray-200');
+      toggleKnob.classList.remove('translate-x-9');
+      toggleKnob.classList.add('translate-x-1');
+      monthlyLabel.classList.add('text-text-primary');
+      monthlyLabel.classList.remove('text-text-muted');
+      yearlyLabel.classList.add('text-text-muted');
+      yearlyLabel.classList.remove('text-text-primary');
+      yearlyBadge.hidden = true;
+      monthlyEls.forEach(el => (el as HTMLElement).hidden = false);
+      yearlyEls.forEach(el => (el as HTMLElement).hidden = true);
+    }
+
+    posthog.capture('pricing_page_viewed', {
+      pricing_toggle: newYearly ? 'yearly' : 'monthly',
+    });
+  });
+
+  // Single-open FAQ accordion
+  document.querySelector('[data-faq-accordion]')?.addEventListener('toggle', (e) => {
+    const target = e.target as HTMLDetailsElement;
+    if (!target.open) return;
+    const siblings = target.parentElement!.querySelectorAll('details[open]');
+    for (const el of siblings) {
+      if (el !== target) (el as HTMLDetailsElement).open = false;
+    }
+  }, true);
+</script>

@@ -1,0 +1,8 @@
+{
+  "badge": "NOW IN PUBLIC BETA",
+  "headline": "Stop Manually Entering Purchase Orders.\nStart Getting Them Right.",
+  "subheadline": "OrderPilot turns purchase order emails into validated, ERP-ready data in under 60 seconds. Your team spends 15 hours a week on data entry. It should be zero.",
+  "ctaPrimary": { "text": "Get in Touch", "href": "#contact" },
+  "ctaSecondary": { "text": "Calculate your costs", "href": "/calculator" },
+  "erpList": ["Business Central", "Exact Online", "Odoo", "NetSuite", "SAP"]
+}

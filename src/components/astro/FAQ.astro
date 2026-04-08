@@ -1,0 +1,49 @@
+---
+interface FaqEntry {
+  question: string;
+  answerHtml: string;
+}
+
+interface Props {
+  faqs: FaqEntry[];
+}
+
+const { faqs } = Astro.props;
+---
+
+<section id="faq" class="py-20 lg:py-24 px-6 fade-in border-t border-gray-100">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-12">
+      <span class="text-xs font-medium uppercase tracking-[0.2em] text-text-muted mb-4 block">/ FAQ</span>
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-text-primary mb-6">
+        Frequently Asked <span class="font-serif italic text-rb2-orange">Questions</span>
+      </h2>
+    </div>
+
+    <div class="space-y-4" data-accordion>
+      {faqs.map((faq, i) => (
+        <details class="group rounded-2xl border border-gray-100 transition-all duration-300 open:bg-card-white open:border-rb2-orange open:shadow-lg" open={i === 0}>
+          <summary class="w-full text-left p-6 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+            <span class="text-lg font-bold text-text-primary">{faq.question}</span>
+            <svg class="text-text-muted group-open:text-rb2-orange transition-transform group-open:rotate-45 shrink-0 ml-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          </summary>
+          <div class="px-6 pb-6 animate-tabFadeIn text-text-secondary leading-relaxed">
+            <Fragment set:html={faq.answerHtml} />
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Single-open accordion: close others when one opens
+  document.querySelector('[data-accordion]')?.addEventListener('toggle', (e) => {
+    const target = e.target as HTMLDetailsElement;
+    if (!target.open) return;
+    const siblings = target.parentElement!.querySelectorAll('details[open]');
+    for (const el of siblings) {
+      if (el !== target) (el as HTMLDetailsElement).open = false;
+    }
+  }, true);
+</script>

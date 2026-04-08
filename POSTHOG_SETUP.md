@@ -34,9 +34,9 @@ cp .env.example .env
 ```
 
 ```env
-VITE_PUBLIC_POSTHOG_KEY=phc_jouw_project_api_key
-VITE_PUBLIC_POSTHOG_HOST=https://eu.i.posthog.com
-VITE_PUBLIC_POSTHOG_DEBUG=true
+PUBLIC_POSTHOG_KEY=phc_jouw_project_api_key
+PUBLIC_POSTHOG_HOST=https://eu.i.posthog.com
+PUBLIC_POSTHOG_DEBUG=true
 ```
 
 ### 2. PostHog Project Setup
@@ -48,10 +48,10 @@ VITE_PUBLIC_POSTHOG_DEBUG=true
 ### 3. Development vs Production
 ```env
 # Development
-VITE_PUBLIC_POSTHOG_DEBUG=true
+PUBLIC_POSTHOG_DEBUG=true
 
 # Production
-VITE_PUBLIC_POSTHOG_DEBUG=false
+PUBLIC_POSTHOG_DEBUG=false
 ```
 
 ## 📈 Marketing Funnel Analysis
@@ -126,7 +126,7 @@ Enable om te zien hoe users door de site navigeren.
 1. Check browser console voor PostHog errors
 2. Verificeer API key in `.env`
 3. Controleer network tab voor PostHog requests
-4. Enable debug mode: `VITE_PUBLIC_POSTHOG_DEBUG=true`
+4. Enable debug mode: `PUBLIC_POSTHOG_DEBUG=true`
 
 ### TypeScript Errors?
 Zorg ervoor dat `vite-env.d.ts` de PostHog env types definieert.

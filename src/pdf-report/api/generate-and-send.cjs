@@ -43,17 +43,13 @@ async function generatePdfBuffer(input) {
   // For serverless, we need to inline the logo since file:// won't work
   let renderedHtml = renderTemplate(templateHtml, data);
 
-  // Safe PNG logo embedding - tiny file size, no HTML bloat (109 bytes)
-  const pngLogoPath = path.join(__dirname, '..', '..', '..', 'public', 'orderpilot-logo.png');
-  if (fs.existsSync(pngLogoPath)) {
-    const pngData = fs.readFileSync(pngLogoPath);
-    const pngBase64 = pngData.toString('base64');
-
-    // Replace orderpilot-logo-icon.svg references with tiny PNG logo
-    renderedHtml = renderedHtml.replace(
-      /src="[^"]*orderpilot-logo-icon\.svg"/g,
-      `src="data:image/png;base64,${pngBase64}"`
-    );
+  // Inline SVG logo as base64 data URI for Puppeteer rendering
+  const svgLogoPath = path.join(__dirname, '..', '..', '..', 'public', 'logo.svg');
+  if (fs.existsSync(svgLogoPath)) {
+    const svgData = fs.readFileSync(svgLogoPath, 'base64');
+    const logoDataUri = `src="data:image/svg+xml;base64,${svgData}"`;
+    renderedHtml = renderedHtml.replace(/src="[^"]*orderpilot-logo-icon\.svg"/g, logoDataUri);
+    renderedHtml = renderedHtml.replace(/src="[^"]*logo\.svg"/g, logoDataUri);
   }
 
   const launchOptions = {

@@ -1,0 +1,155 @@
+---
+import Logo from './Logo.astro';
+---
+
+<nav
+  data-navbar
+  class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent py-6"
+>
+  <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+    <a href="/" class="text-text-primary hover:opacity-80 transition-opacity">
+      <Logo size={48} />
+    </a>
+
+    <!-- Desktop Links -->
+    <div class="hidden md:flex items-center space-x-8">
+      <a
+        href="/#how-it-works"
+        data-nav-link
+        class="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+      >
+        How It Works
+      </a>
+      <a
+        href="/pricing"
+        data-nav-link
+        class="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+      >
+        Pricing
+      </a>
+      <a
+        href="/#contact"
+        data-nav-link="cta"
+        class="bg-rb2-orange text-white rounded-full px-6 py-2.5 text-sm font-semibold hover:bg-rb2-orange-hover hover:shadow-lg transition-all duration-200"
+      >
+        Get in Touch
+      </a>
+    </div>
+
+    <!-- Mobile Toggle -->
+    <button
+      data-mobile-toggle
+      class="md:hidden text-text-primary"
+      aria-label="Toggle mobile menu"
+    >
+      <!-- Menu icon -->
+      <svg data-icon-menu xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+      <!-- X icon (hidden by default) -->
+      <svg data-icon-close class="hidden" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div
+    data-mobile-menu
+    class="md:hidden absolute top-full left-0 right-0 bg-card-white border-b border-gray-100 p-6 space-y-4 shadow-xl hidden"
+  >
+    <a
+      href="/#how-it-works"
+      data-nav-link
+      class="block w-full text-left text-base font-medium text-text-secondary"
+    >
+      How It Works
+    </a>
+    <a
+      href="/pricing"
+      data-nav-link
+      class="block w-full text-left text-base font-medium text-text-secondary"
+    >
+      Pricing
+    </a>
+    <a
+      href="/#contact"
+      data-nav-link="cta"
+      class="block w-full bg-rb2-orange text-white text-center rounded-2xl px-6 py-3 font-semibold"
+    >
+      Get in Touch
+    </a>
+  </div>
+</nav>
+
+<style>
+  nav[data-navbar][data-scrolled] {
+    background-color: rgb(255 255 255 / 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgb(243 244 246);
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+</style>
+
+<script>
+  import posthog from 'posthog-js';
+
+  const nav = document.querySelector('[data-navbar]') as HTMLElement;
+  const toggle = document.querySelector('[data-mobile-toggle]') as HTMLButtonElement;
+  const menu = document.querySelector('[data-mobile-menu]') as HTMLElement;
+  const iconMenu = document.querySelector('[data-icon-menu]') as SVGElement;
+  const iconClose = document.querySelector('[data-icon-close]') as SVGElement;
+
+  // Scroll listener with dirty-check to avoid redundant DOM writes
+  let wasScrolled = false;
+  function handleScroll() {
+    const isScrolled = window.scrollY > 20;
+    if (isScrolled === wasScrolled) return;
+    wasScrolled = isScrolled;
+    if (isScrolled) {
+      nav.setAttribute('data-scrolled', '');
+    } else {
+      nav.removeAttribute('data-scrolled');
+    }
+  }
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  handleScroll();
+
+  // Mobile menu toggle
+  let isOpen = false;
+  toggle.addEventListener('click', () => {
+    isOpen = !isOpen;
+    menu.classList.toggle('hidden', !isOpen);
+    iconMenu.classList.toggle('hidden', isOpen);
+    iconClose.classList.toggle('hidden', !isOpen);
+  });
+
+  // Nav link tracking and hash scroll
+  document.querySelectorAll('[data-nav-link]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      const anchor = link as HTMLAnchorElement;
+      const href = anchor.getAttribute('href') || '';
+      const linkName = anchor.textContent?.trim() || '';
+
+      posthog.capture('hero_cta_clicked', {
+        cta_type: href.includes('#') ? 'expert_contact' : (href === '/pricing' ? 'pricing' : 'calculator'),
+        cta_text: linkName,
+        location: 'navbar'
+      });
+
+      // Handle hash links on same page
+      if (href.startsWith('/#') && window.location.pathname === '/') {
+        e.preventDefault();
+        const hash = href.replace('/', '');
+        const el = document.querySelector(hash);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      // Close mobile menu
+      if (isOpen) {
+        isOpen = false;
+        menu.classList.add('hidden');
+        iconMenu.classList.remove('hidden');
+        iconClose.classList.add('hidden');
+      }
+    });
+  });
+</script>

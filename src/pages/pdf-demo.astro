@@ -1,0 +1,13 @@
+---
+import { getEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PdfDemoPage from '../components/astro/PdfDemoPage.astro';
+import CookieConsent from '../components/astro/CookieConsent.astro';
+
+const pageMeta = await getEntry('pages', 'pdf-demo');
+---
+
+<BaseLayout title={pageMeta.data.title} description={pageMeta.data.description} ogImage={pageMeta.data.ogImage}>
+  <PdfDemoPage />
+  <CookieConsent />
+</BaseLayout>

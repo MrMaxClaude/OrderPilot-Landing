@@ -1,0 +1,19 @@
+{
+  "name": "Growth",
+  "description": "Most popular for scaling businesses",
+  "monthlyPrice": 899,
+  "yearlyPrice": 719,
+  "orderLimit": "5,000 orders/month",
+  "iconId": "zap",
+  "features": [
+    "Everything in Starter",
+    "Priority email support",
+    "Advanced workflow automation",
+    "Premium accuracy (99.5%+)",
+    "Custom approval rules",
+    "Advanced analytics & reporting"
+  ],
+  "popular": true,
+  "ctaText": "Talk to Expert",
+  "order": 2
+}

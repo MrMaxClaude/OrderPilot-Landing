@@ -1,0 +1,18 @@
+{
+  "name": "Starter",
+  "description": "Perfect for small teams getting started",
+  "monthlyPrice": 349,
+  "yearlyPrice": 279,
+  "orderLimit": "1,000 orders/month",
+  "iconId": "users",
+  "features": [
+    "AI-powered order processing",
+    "Email support",
+    "Basic ERP integrations",
+    "Standard accuracy (99%+)",
+    "Mobile dashboard access"
+  ],
+  "popular": false,
+  "ctaText": "Talk to Expert",
+  "order": 1
+}

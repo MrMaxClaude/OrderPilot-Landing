@@ -1,0 +1,185 @@
+---
+---
+
+<div
+  data-calculator-modal
+  hidden
+  class="fixed inset-0 z-[100] flex items-center justify-center p-6"
+>
+  <!-- Backdrop -->
+  <div data-close class="absolute inset-0 bg-text-primary/40 backdrop-blur-sm"></div>
+
+  <div class="bg-card-white w-full max-w-4xl rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden animate-tabFadeIn">
+    <!-- Close button -->
+    <button
+      data-close
+      class="absolute top-6 right-6 p-2 hover:bg-gray-100 rounded-full transition-colors"
+    >
+      <!-- X -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <div class="grid grid-cols-1 md:grid-cols-2">
+      <!-- Left: Inputs -->
+      <div class="p-8 md:p-12 border-r border-gray-100">
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-10 h-10 bg-rb2-orange/10 text-rb2-orange rounded-xl flex items-center justify-center">
+            <!-- Calculator -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><line x1="8" y1="10" x2="8" y2="10"/><line x1="12" y1="10" x2="12" y2="10"/><line x1="16" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="8" y2="14"/><line x1="12" y1="14" x2="12" y2="14"/><line x1="8" y1="18" x2="8" y2="18"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+          </div>
+          <h2 class="text-2xl font-bold text-text-primary">Savings Calculator</h2>
+        </div>
+
+        <div class="space-y-8">
+          <!-- Orders per month -->
+          <div class="space-y-4">
+            <div class="flex justify-between">
+              <label class="text-sm font-bold text-text-primary">Orders per month</label>
+              <span data-orders-display class="text-rb2-orange font-black">500</span>
+            </div>
+            <input
+              type="range"
+              data-orders
+              min="100"
+              max="10000"
+              step="100"
+              value="500"
+              class="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-rb2-orange"
+            />
+          </div>
+
+          <!-- Minutes per order -->
+          <div class="space-y-4">
+            <div class="flex justify-between">
+              <label class="text-sm font-bold text-text-primary">Minutes per order (manual)</label>
+              <span data-minutes-display class="text-rb2-orange font-black">15m</span>
+            </div>
+            <input
+              type="range"
+              data-minutes
+              min="5"
+              max="60"
+              step="5"
+              value="15"
+              class="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-rb2-orange"
+            />
+          </div>
+
+          <!-- Hourly rate -->
+          <div class="space-y-4">
+            <div class="flex justify-between">
+              <label class="text-sm font-bold text-text-primary">Hourly rate (&euro;)</label>
+              <span data-rate-display class="text-rb2-orange font-black">&euro;45</span>
+            </div>
+            <input
+              type="range"
+              data-rate
+              min="20"
+              max="150"
+              step="5"
+              value="45"
+              class="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-rb2-orange"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Results -->
+      <div class="p-8 md:p-12 bg-warm-bg flex flex-col justify-between">
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-widest text-text-muted mb-8">Your Potential Savings</h3>
+
+          <div class="space-y-8 mb-12">
+            <div>
+              <div class="text-4xl font-black text-text-primary mb-1">
+                &euro;<span data-saved-cost>0</span>
+              </div>
+              <div class="text-sm font-bold text-text-muted uppercase tracking-wider">Annual Cost Savings</div>
+            </div>
+
+            <div>
+              <div class="text-4xl font-black text-rb2-orange mb-1">
+                <span data-saved-hours>0</span>
+              </div>
+              <div class="text-sm font-bold text-text-muted uppercase tracking-wider">Hours Saved Per Year</div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="flex items-center gap-3 text-sm font-medium text-text-primary">
+              <!-- CheckCircle -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-accent"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <span>85% reduction in manual labor</span>
+            </div>
+            <div class="flex items-center gap-3 text-sm font-medium text-text-primary">
+              <!-- CheckCircle -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-accent"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <span>100% data accuracy guarantee</span>
+            </div>
+          </div>
+        </div>
+
+        <button
+          data-close
+          class="mt-12 w-full bg-text-primary text-white rounded-2xl font-bold py-4 hover:bg-black transition-all flex items-center justify-center gap-2"
+        >
+          Get Detailed Report
+          <!-- ArrowRight -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const modal = document.querySelector<HTMLElement>('[data-calculator-modal]')!;
+  const closeButtons = modal.querySelectorAll<HTMLElement>('[data-close]');
+  const ordersInput = modal.querySelector<HTMLInputElement>('[data-orders]')!;
+  const minutesInput = modal.querySelector<HTMLInputElement>('[data-minutes]')!;
+  const rateInput = modal.querySelector<HTMLInputElement>('[data-rate]')!;
+  const ordersDisplay = modal.querySelector<HTMLElement>('[data-orders-display]')!;
+  const minutesDisplay = modal.querySelector<HTMLElement>('[data-minutes-display]')!;
+  const rateDisplay = modal.querySelector<HTMLElement>('[data-rate-display]')!;
+  const savedCostEl = modal.querySelector<HTMLElement>('[data-saved-cost]')!;
+  const savedHoursEl = modal.querySelector<HTMLElement>('[data-saved-hours]')!;
+
+  function recalculate() {
+    const orders = parseInt(ordersInput.value);
+    const minutes = parseInt(minutesInput.value);
+    const rate = parseInt(rateInput.value);
+
+    ordersDisplay.textContent = String(orders);
+    minutesDisplay.textContent = `${minutes}m`;
+    rateDisplay.textContent = `€${rate}`;
+
+    const totalMinutes = orders * minutes;
+    const totalHours = totalMinutes / 60;
+    const totalCost = totalHours * rate;
+    const savedHours = totalHours * 0.85;
+    const savedCost = totalCost * 0.85;
+
+    savedCostEl.textContent = Math.round(savedCost).toLocaleString();
+    savedHoursEl.textContent = Math.round(savedHours).toLocaleString();
+  }
+
+  // Initial calculation
+  recalculate();
+
+  // Recalculate on slider input
+  ordersInput.addEventListener('input', recalculate);
+  minutesInput.addEventListener('input', recalculate);
+  rateInput.addEventListener('input', recalculate);
+
+  // Open modal via custom event
+  window.addEventListener('orderpilot:open-calculator', () => {
+    modal.removeAttribute('hidden');
+  });
+
+  // Close modal
+  closeButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      modal.setAttribute('hidden', '');
+    });
+  });
+</script>
