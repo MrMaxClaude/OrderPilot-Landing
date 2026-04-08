@@ -55,7 +55,7 @@ to: 'eros@rb2.nl', // Change this to your preferred email
 Before deploying to production:
 
 1. **Update environment variables:**
-   - Set `VITE_API_URL` to your production backend URL
+   - Set `PUBLIC_API_URL` to your production backend URL
    - Ensure `RESEND_API_KEY` is set in production env
 
 2. **Update email settings:**

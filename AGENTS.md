@@ -1,56 +1,57 @@
 ## Project
 
-OrderPilot landing site — React/TypeScript SPA for lead generation with an ROI calculator that generates personalised PDF reports and emails them via Resend.
+OrderPilot landing site — Astro static site for lead generation with an ROI calculator that generates personalised PDF reports and emails them via Resend. Zero framework JS — all interactivity is vanilla JS in `<script>` tags.
 
 ## Commands
 
 ```bash
-npm run dev          # Vite dev server on :3000
-npm run server       # Express backend on :3001 (email + PDF generation)
-npm run dev:full     # Both in parallel
-npm run build        # Vite production build
-npm run lint         # TypeScript type-check (tsc --noEmit)
+npm run dev          # Astro dev server (pages only)
+npm run dev:full     # Vercel dev server (pages + API routes)
+npm run build        # Astro production build
+npm run preview      # Preview production build
+npm run lint         # astro check + tsc --noEmit
 ```
 
 No test runner is configured.
 
 ## Architecture
 
-### Frontend (Vite + React 19 + TailwindCSS 4)
+### Frontend (Astro 6 + Tailwind CSS 4)
 
-- `index.tsx` — entrypoint; wraps app in PostHog + BrowserRouter
-- `App.tsx` — route definitions (/, /calculator, /pricing, /cases, /pdf-demo, /privacy)
-- `components/` — all page components and sections live flat here (no nesting)
-- `src/hooks/` — custom hooks (PostHog tracking, scroll animation)
+- `src/pages/` — file-based routing (index, pricing, calculator, cases, pdf-demo, privacy)
+- `src/components/astro/` — all components as `.astro` files with vanilla JS `<script>` tags
+- `src/layouts/` — BaseLayout (head, fonts, PostHog) + PageLayout (navbar, footer, CTA)
+- `src/content/` — Astro Content Collections (11 typed collections: hero, benefits, faqs, plans, cases, etc.)
+- `src/content.config.ts` — Zod schemas for all collections
+- `src/styles/global.css` — Tailwind directives + custom animations
 - `src/lib/cookieConsent.ts` — cookie consent state; PostHog is opt-out-by-default
-- `index.css` — global styles + Tailwind
+- `src/lib/markdown.ts` — shared markdown processor for content collections
 
-Path alias: `@` resolves to the project root (vite.config.ts).
+Path alias: `@` resolves to `src/`.
 
-### Backend — dual deployment
+### Content Collections
 
-The same PDF/email logic runs in two environments:
+Marketing content lives in `src/content/` as JSON and Markdown files, validated by Zod schemas at build time. Pages fetch via `getEntry()`/`getCollection()` and pass data as props to components.
 
-1. **`server.js`** — Express server for local dev. Endpoints: `POST /api/contact`, `POST /api/generate-report`.
-2. **`api/generate-report.js`** — Vercel serverless function (same logic, uses `@sparticuz/chromium` + `puppeteer-core` in prod, falls back to full `puppeteer` locally).
+Collections: pages, hero, benefits, howItWorks, testimonials, trust, integrations, faqs, pricingFaqs, plans, cases.
 
-Both share CJS modules in `src/pdf-report/`:
-- `generate-report.cjs` — cost calculation logic (`calculateCosts`) + HTML template rendering (`renderTemplate`)
-- `template.html` — full PDF report template (32KB, self-contained HTML/CSS)
-- `report-delivery-email.cjs` — transactional email HTML builder + subject line
+### Backend — Vercel serverless functions
 
-PDF generation: Puppeteer renders `template.html` with injected data, exports A4 PDF, attaches to Resend email.
+- `api/generate-report.js` — PDF generation + email delivery (Puppeteer + `@sparticuz/chromium` + Resend)
+- `api/contact.js` — contact form handler (Resend)
 
-### Contact form
+Shared CJS modules in `src/pdf-report/`:
+- `generate-report.cjs` — cost calculation logic + HTML template rendering
+- `template.html` — full PDF report template (self-contained HTML/CSS)
+- `report-delivery-email.cjs` — transactional email HTML builder
 
-`api/contact.js` (Vercel) / `server.js /api/contact` (local) — sends lead notification to sales + confirmation to submitter via Resend.
+PDF generation: Puppeteer renders template.html with injected data, exports A4 PDF, attaches to Resend email.
 
 ## Environment Variables
 
-See `.env.example`. Key vars:
+Key vars:
 - `RESEND_API_KEY` — required for all email functionality
-- `VITE_PUBLIC_POSTHOG_KEY` / `VITE_PUBLIC_POSTHOG_HOST` — analytics (EU host)
-- `VITE_API_URL` — backend URL for DemoForm (default `http://localhost:3001`); calculator uses same-origin `/api` on Vercel
+- `PUBLIC_POSTHOG_KEY` / `PUBLIC_POSTHOG_HOST` — analytics (EU host)
 
 ## Deployment
 
@@ -58,8 +59,9 @@ Vercel. Config in `vercel.json` — `api/generate-report.js` gets 3GB memory / 6
 
 ## Conventions
 
-- Components are `.tsx` files in `components/` (flat, no subdirectories)
-- Backend shared code uses `.cjs` extension (CommonJS) because Puppeteer/serverless requires it, while the project is ESM (`"type": "module"`)
-- Animations use `motion` (Framer Motion successor)
-- Brand colour: `#FF6B35` (rb2-orange)
+- All components are `.astro` files in `src/components/astro/` — zero React
+- Backend shared code uses `.cjs` extension (CommonJS) because Puppeteer/serverless requires it, while the project is ESM
+- No `useEffect`, no `useState` — all interactivity via vanilla JS `<script>` tags with `data-*` attributes
+- Brand colour: `#FF6321` (rb2-orange)
 - Contact email: `info@order-pilot.ai`
+- Domain: `order-pilot.ai` (not orderpilot.com)

@@ -54,9 +54,7 @@ export default async function handler(req, res) {
 
   const notifyTo = process.env.CONTACT_NOTIFY_TO || CONTACT_EMAIL;
   const fromAddress =
-    process.env.RESEND_CONTACT_FROM ||
-    process.env.RESEND_FROM ||
-    'OrderPilot <info@order-pilot.ai>';
+    process.env.RESEND_FROM || 'OrderPilot <info@order-pilot.ai>';
 
   try {
     const resend = new Resend(apiKey);

@@ -54,3 +54,4 @@ temp/
 *.log
 /.playwright-mcp
 /.superset
+/.omc
