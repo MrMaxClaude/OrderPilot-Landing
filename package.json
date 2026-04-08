@@ -7,35 +7,37 @@
   },
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "astro dev",
     "server": "node server.js",
     "dev:full": "npm run server & npm run dev",
-    "build": "vite build",
-    "preview": "vite preview",
-    "lint": "tsc --noEmit"
+    "build": "astro build",
+    "preview": "astro preview",
+    "lint": "astro check && tsc --noEmit"
   },
   "dependencies": {
-    "@posthog/react": "^1.8.2",
+    "@astrojs/check": "^0.9.8",
+    "@astrojs/react": "^5.0.3",
+    "@astrojs/sitemap": "^3.7.2",
+    "@astrojs/vercel": "^10.0.4",
     "@sparticuz/chromium": "^143.0.4",
     "@tailwindcss/vite": "^4.2.1",
+    "astro": "^6.1.4",
     "cors": "^2.8.6",
     "dotenv": "^17.4.0",
     "express": "^5.2.1",
     "lucide-react": "^0.564.0",
-    "motion": "^12.35.0",
     "posthog-js": "^1.364.0",
     "puppeteer": "^24.40.0",
     "puppeteer-core": "^24.40.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "react-router-dom": "^7.13.1",
     "resend": "^6.10.0",
     "tailwindcss": "^4.2.1"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
-    "@vitejs/plugin-react": "^5.0.0",
-    "typescript": "~5.8.2",
-    "vite": "^6.2.0"
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "~5.8.2"
   }
 }

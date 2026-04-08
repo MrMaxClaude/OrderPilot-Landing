@@ -1,0 +1,37 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Footer from '../components/astro/Footer.astro';
+import Navbar from '../components/astro/Navbar.astro';
+import CalculatorCTA from '../components/astro/CalculatorCTA.astro';
+import CookieConsent from '../components/astro/CookieConsent.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  showNavbar?: boolean;
+  showFooter?: boolean;
+  showCalculatorCTA?: boolean;
+}
+
+const {
+  title,
+  description,
+  ogImage,
+  showNavbar = true,
+  showFooter = true,
+  showCalculatorCTA = true,
+} = Astro.props;
+---
+
+<BaseLayout title={title} description={description} ogImage={ogImage}>
+  {showNavbar && <Navbar />}
+
+  <main>
+    <slot />
+  </main>
+
+  <CookieConsent />
+  {showFooter && <Footer />}
+  {showCalculatorCTA && <CalculatorCTA />}
+</BaseLayout>

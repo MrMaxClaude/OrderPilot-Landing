@@ -1,0 +1,96 @@
+---
+---
+
+<div
+  data-cookie-banner
+  hidden
+  class="fixed inset-x-0 bottom-0 z-[100] p-4 sm:p-6 pointer-events-none"
+  role="dialog"
+  aria-labelledby="cookie-consent-title"
+  aria-describedby="cookie-consent-desc"
+>
+  <div class="max-w-3xl mx-auto pointer-events-auto rounded-2xl border border-gray-200/80 bg-card-white/95 backdrop-blur-md shadow-2xl shadow-text-primary/10 p-5 sm:p-6">
+    <h2
+      id="cookie-consent-title"
+      class="text-base sm:text-lg font-bold text-text-primary mb-2"
+    >
+      Cookies & privacy
+    </h2>
+    <p
+      id="cookie-consent-desc"
+      class="text-sm text-text-secondary leading-relaxed mb-5"
+    >
+      We use cookies to run the site and, with your permission, analytics (PostHog) to
+      understand how visitors use OrderPilot. See our
+      <a
+        href="/privacy"
+        class="text-rb2-orange font-semibold hover:underline underline-offset-2"
+      >
+        privacy & cookie notice
+      </a>.
+    </p>
+    <div class="flex flex-col-reverse sm:flex-row sm:flex-wrap gap-3 sm:justify-end">
+      <button
+        type="button"
+        data-essential
+        class="px-4 py-2.5 rounded-xl text-sm font-semibold text-text-secondary border border-gray-200 hover:bg-warm-bg-alt transition-colors"
+      >
+        Essential only
+      </button>
+      <button
+        type="button"
+        data-accept
+        class="px-5 py-2.5 rounded-xl text-sm font-bold bg-rb2-orange text-white hover:bg-rb2-orange-hover transition-colors shadow-lg shadow-rb2-orange/20"
+      >
+        Accept analytics
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { getStoredConsent, saveConsent, OPEN_COOKIE_CONSENT_EVENT } from '../../lib/cookieConsent';
+  import posthog from 'posthog-js';
+
+  const banner = document.querySelector<HTMLElement>('[data-cookie-banner]')!;
+  const acceptBtn = banner.querySelector<HTMLButtonElement>('[data-accept]')!;
+  const essentialBtn = banner.querySelector<HTMLButtonElement>('[data-essential]')!;
+
+  function showBanner() {
+    banner.removeAttribute('hidden');
+  }
+
+  function hideBanner() {
+    banner.setAttribute('hidden', '');
+  }
+
+  function syncPostHog(analyticsAllowed: boolean) {
+    if (!import.meta.env.PUBLIC_POSTHOG_KEY) return;
+    if (analyticsAllowed) {
+      posthog.opt_in_capturing();
+    } else {
+      posthog.opt_out_capturing();
+      posthog.reset();
+    }
+  }
+
+  // Show banner if no stored consent
+  if (getStoredConsent() === null) {
+    showBanner();
+  }
+
+  // Listen for re-open event (e.g. from footer privacy link)
+  window.addEventListener(OPEN_COOKIE_CONSENT_EVENT, showBanner);
+
+  acceptBtn.addEventListener('click', () => {
+    saveConsent(true);
+    syncPostHog(true);
+    hideBanner();
+  });
+
+  essentialBtn.addEventListener('click', () => {
+    saveConsent(false);
+    syncPostHog(false);
+    hideBanner();
+  });
+</script>

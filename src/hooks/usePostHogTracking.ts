@@ -1,5 +1,4 @@
-import { usePostHog } from '@posthog/react';
-import { useLocation } from 'react-router-dom';
+import posthog from 'posthog-js';
 
 // Marketing funnel event types
 interface AwarenessEvents {
@@ -96,8 +95,6 @@ interface ConversionEvents {
 type MarketingEvents = AwarenessEvents & InterestEvents & ConsiderationEvents & ConversionEvents;
 
 export const usePostHogTracking = () => {
-  const posthog = usePostHog();
-  const location = useLocation();
 
   // Track marketing funnel events with proper typing
   const track = <T extends keyof MarketingEvents>(
@@ -110,14 +107,18 @@ export const usePostHogTracking = () => {
     const enrichedProperties = {
       ...properties,
       $current_url: window.location.href,
-      $pathname: location.pathname,
+      $pathname: window.location.pathname,
       $timestamp: new Date().toISOString(),
       // Add UTM parameters if present
-      ...(new URLSearchParams(location.search).get('utm_source') && {
-        utm_source: new URLSearchParams(location.search).get('utm_source'),
-        utm_campaign: new URLSearchParams(location.search).get('utm_campaign'),
-        utm_medium: new URLSearchParams(location.search).get('utm_medium'),
-      }),
+      ...(() => {
+        const params = new URLSearchParams(window.location.search);
+        const source = params.get('utm_source');
+        return source ? {
+          utm_source: source,
+          utm_campaign: params.get('utm_campaign'),
+          utm_medium: params.get('utm_medium'),
+        } : {};
+      })(),
     };
 
     posthog.capture(event, enrichedProperties);

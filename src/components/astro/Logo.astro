@@ -1,0 +1,19 @@
+---
+interface Props {
+  class?: string;
+  size?: number;
+}
+
+const { class: className = '', size = 48 } = Astro.props;
+---
+
+<div class:list={['inline-flex items-center gap-0', className]}>
+  <img
+    src="/logo.svg"
+    alt="Orderpilot Logo"
+    style={`height:${size}px;width:auto`}
+    class="shrink-0 translate-y-[1px]"
+    referrerpolicy="no-referrer"
+  />
+  <span class="text-2xl font-extrabold tracking-tight">Orderpilot</span>
+</div>

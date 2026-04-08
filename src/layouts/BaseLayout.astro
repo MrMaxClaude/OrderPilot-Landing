@@ -1,0 +1,81 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const { title, description = 'The world\'s most accurate purchase order processing platform. Built for procurement teams that demand 100% accuracy.', ogImage = '/orderpilot-logo.png' } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site)} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet" />
+  </head>
+  <body class="min-h-screen bg-warm-bg font-sans selection:bg-rb2-orange/30 selection:text-rb2-orange">
+    <slot />
+
+    <!-- Shared IntersectionObserver for .fade-in elements -->
+    <script>
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          }
+        },
+        { threshold: 0.1 }
+      );
+      document.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
+    </script>
+
+    <!-- PostHog (cookie-consent gated) -->
+    <script>
+      import posthog from 'posthog-js';
+      import { getStoredConsent } from '../lib/cookieConsent';
+
+      const key = import.meta.env.PUBLIC_POSTHOG_KEY;
+      if (key) {
+        posthog.init(key, {
+          api_host: import.meta.env.PUBLIC_POSTHOG_HOST || 'https://eu.i.posthog.com',
+          debug: import.meta.env.PUBLIC_POSTHOG_DEBUG === 'true',
+          opt_out_capturing_by_default: true,
+          loaded: (client) => {
+            const consent = getStoredConsent();
+            if (consent?.analytics) client.opt_in_capturing();
+          },
+          persistence: 'localStorage+cookie',
+          cross_subdomain_cookie: false,
+          secure_cookie: true,
+          property_denylist: ['$initial_referrer', '$initial_referring_domain'],
+        });
+
+        // Track page view
+        posthog.capture('$pageview');
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CalculatorPage from '../components/react/CalculatorPage.tsx';
+import CookieConsent from '../components/astro/CookieConsent.astro';
+---
+
+<BaseLayout title="ROI Calculator | Orderpilot" description="Calculate how much you could save with automated PO processing. Get a personalised cost analysis report.">
+  <CalculatorPage client:load />
+  <CookieConsent />
+</BaseLayout>
