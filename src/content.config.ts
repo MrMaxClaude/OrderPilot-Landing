@@ -159,20 +159,19 @@ const integrations = defineCollection({
   }),
 });
 
+const faqSchema = z.object({
+  question: z.string(),
+  order: z.number(),
+});
+
 const faqs = defineCollection({
   loader: glob({ pattern: '*.md', base: 'src/content/faqs' }),
-  schema: z.object({
-    question: z.string(),
-    order: z.number(),
-  }),
+  schema: faqSchema,
 });
 
 const pricingFaqs = defineCollection({
   loader: glob({ pattern: '*.md', base: 'src/content/pricingFaqs' }),
-  schema: z.object({
-    question: z.string(),
-    order: z.number(),
-  }),
+  schema: faqSchema,
 });
 
 const plans = defineCollection({
@@ -195,6 +194,7 @@ const cases = defineCollection({
   loader: glob({ pattern: '*.md', base: 'src/content/cases' }),
   schema: z.object({
     title: z.string(),
+    subtitle: z.string(),
     company: z.string(),
     industry: z.string(),
     location: z.string(),

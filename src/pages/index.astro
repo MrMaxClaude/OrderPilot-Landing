@@ -1,6 +1,6 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
-import { createMarkdownProcessor } from '@astrojs/markdown-remark';
+import { getMarkdownProcessor } from '../lib/markdown';
 import PageLayout from '../layouts/PageLayout.astro';
 import Hero from '../components/astro/Hero.astro';
 import BentoBenefits from '../components/astro/BentoBenefits.astro';
@@ -12,20 +12,22 @@ import Integrations from '../components/astro/Integrations.astro';
 import FAQ from '../components/astro/FAQ.astro';
 import ContactForm from '../components/astro/DemoForm.astro';
 
-const pageMeta = await getEntry('pages', 'home');
-const hero = await getEntry('hero', 'default');
-const benefits = await getEntry('benefits', 'default');
-const howItWorks = await getEntry('howItWorks', 'default');
-const trust = await getEntry('trust', 'default');
-const integrationsData = await getEntry('integrations', 'default');
+const [pageMeta, hero, benefits, howItWorks, trust, integrationsData, testimonials, faqEntries] = await Promise.all([
+  getEntry('pages', 'home'),
+  getEntry('hero', 'default'),
+  getEntry('benefits', 'default'),
+  getEntry('howItWorks', 'default'),
+  getEntry('trust', 'default'),
+  getEntry('integrations', 'default'),
+  getCollection('testimonials'),
+  getCollection('faqs'),
+]);
 
-const testimonials = await getCollection('testimonials');
 const sortedTestimonials = testimonials
   .sort((a, b) => a.data.order - b.data.order)
   .map((t) => t.data);
 
-const mdProcessor = await createMarkdownProcessor({});
-const faqEntries = await getCollection('faqs');
+const mdProcessor = await getMarkdownProcessor();
 const faqs = await Promise.all(
   faqEntries
     .sort((a, b) => a.data.order - b.data.order)

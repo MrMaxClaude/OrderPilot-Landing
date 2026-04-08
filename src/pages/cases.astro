@@ -1,12 +1,12 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
-import { createMarkdownProcessor } from '@astrojs/markdown-remark';
+import { getMarkdownProcessor } from '../lib/markdown';
 import PageLayout from '../layouts/PageLayout.astro';
 import CaseStudy from '../components/astro/CaseStudy.astro';
 
 const pageMeta = await getEntry('pages', 'cases');
 
-const mdProcessor = await createMarkdownProcessor({});
+const mdProcessor = await getMarkdownProcessor();
 const caseEntries = await getCollection('cases');
 const sortedCases = caseEntries.sort((a, b) => a.data.order - b.data.order);
 ---

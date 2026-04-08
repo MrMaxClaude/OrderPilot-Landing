@@ -22,6 +22,7 @@ interface Roi {
 
 interface Props {
   title: string;
+  subtitle: string;
   company: string;
   industry: string;
   location: string;
@@ -46,11 +47,9 @@ const { title, company, industry, location, volume, logo, quote, quoteAuthor, qu
       <span class="text-xs font-medium uppercase tracking-[0.2em] text-text-muted mb-4 block">
         / CUSTOMER SUCCESS
       </span>
-      <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-text-primary mb-6">
-        How IPN Saves <span class="font-serif italic text-rb2-orange">2,400 Hours</span> Per Year
-      </h2>
+      <h2 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-text-primary mb-6" set:html={title} />
       <p class="text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed">
-        Leading animal feed manufacturer transforms procurement operations with AI-powered automation
+        {Astro.props.subtitle}
       </p>
     </div>
 

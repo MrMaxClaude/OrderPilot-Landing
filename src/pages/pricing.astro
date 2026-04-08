@@ -1,6 +1,6 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
-import { createMarkdownProcessor } from '@astrojs/markdown-remark';
+import { getMarkdownProcessor } from '../lib/markdown';
 import PageLayout from '../layouts/PageLayout.astro';
 import PricingPage from '../components/astro/PricingPage.astro';
 
@@ -11,7 +11,7 @@ const plans = planEntries
   .sort((a, b) => a.data.order - b.data.order)
   .map((p) => p.data);
 
-const mdProcessor = await createMarkdownProcessor({});
+const mdProcessor = await getMarkdownProcessor();
 const faqEntries = await getCollection('pricingFaqs');
 const faqs = await Promise.all(
   faqEntries

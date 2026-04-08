@@ -1,5 +1,6 @@
 ---
-title: "How IPN Saves 2,400 Hours Per Year"
+title: 'How IPN Saves <span class="font-serif italic text-rb2-orange">2,400 Hours</span> Per Year'
+subtitle: "Leading animal feed manufacturer transforms procurement operations with AI-powered automation"
 company: "IPN Pet Food"
 industry: "Animal Feed & Pet Food Manufacturing"
 location: "Netherlands"
