@@ -177,7 +177,7 @@ async function sendEmail(email, companyName, firstName, pdfBuffer, data) {
   const pdfBase64 = Buffer.from(pdfBuffer).toString('base64');
 
   const fromAddress =
-    process.env.RESEND_FROM || 'OrderPilot <hello@order-pilot.ai>';
+    process.env.RESEND_FROM || 'OrderPilot <info@order-pilot.ai>';
 
   return await resend.emails.send({
     from: fromAddress,

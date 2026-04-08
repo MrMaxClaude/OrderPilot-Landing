@@ -56,7 +56,7 @@ export default async function handler(req, res) {
   const fromAddress =
     process.env.RESEND_CONTACT_FROM ||
     process.env.RESEND_FROM ||
-    'OrderPilot <onboarding@resend.dev>';
+    'OrderPilot <info@order-pilot.ai>';
 
   try {
     const resend = new Resend(apiKey);

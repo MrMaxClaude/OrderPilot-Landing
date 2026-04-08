@@ -45,7 +45,7 @@ app.post('/api/contact', async (req, res) => {
   const contactFrom =
     process.env.RESEND_CONTACT_FROM ||
     process.env.RESEND_FROM ||
-    'OrderPilot <onboarding@resend.dev>';
+    'OrderPilot <info@order-pilot.ai>';
   const notifyTo = process.env.CONTACT_NOTIFY_TO || CONTACT_EMAIL;
 
   try {
@@ -227,7 +227,7 @@ app.post('/api/generate-report', async (req, res) => {
     const personalGreeting = firstName ? `Hi ${firstName}` : (companyName ? `Hi ${companyName} team` : 'Hi');
 
     const emailResult = await resend.emails.send({
-      from: 'OrderPilot <noreply@resend.dev>',
+      from: process.env.RESEND_FROM || 'OrderPilot <info@order-pilot.ai>',
       to: email,
       subject: reportDeliveryEmailSubject(data),
       html: buildReportDeliveryEmailHtml({ personalGreeting, data }),

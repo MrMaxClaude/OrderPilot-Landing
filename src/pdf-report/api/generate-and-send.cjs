@@ -86,7 +86,7 @@ async function sendEmail(email, companyName, pdfBuffer, data) {
   fs.writeFileSync(tempPdfPath, pdfBuffer);
 
   const emailResult = await resend.emails.send({
-    from: 'OrderPilot <noreply@resend.dev>',
+    from: process.env.RESEND_FROM || 'OrderPilot <info@order-pilot.ai>',
     to: email,
     subject: `Your PO Processing Cost Analysis — ${data.totalAnnualCost}/year in hidden costs`,
     html: `
