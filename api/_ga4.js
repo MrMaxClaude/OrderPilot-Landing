@@ -4,11 +4,11 @@
  * Awaited with an 800ms timeout so the event completes before the serverless function exits.
  */
 
-const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID || 'G-ELTEQ53RTJ';
+const GA_MEASUREMENT_ID = process.env.PUBLIC_GA_MEASUREMENT_ID;
 
 export async function sendGa4Event(clientId, eventName, params = {}) {
   const apiSecret = process.env.GA_API_SECRET;
-  if (!apiSecret || !clientId) return;
+  if (!GA_MEASUREMENT_ID || !apiSecret || !clientId) return;
   try {
     await fetch(
       `https://www.google-analytics.com/mp/collect?measurement_id=${encodeURIComponent(GA_MEASUREMENT_ID)}&api_secret=${encodeURIComponent(apiSecret)}`,

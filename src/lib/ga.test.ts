@@ -36,8 +36,8 @@ describe('getGaClientId', () => {
     expect(result).toBe('2.abc');
   });
 
-  // Generates alphanumeric strings safe for use in cookie values and names
-  const cookieSafeString = fc.stringMatching(/^[a-z0-9]+$/, { minLength: 1 });
+  // + in the pattern guarantees minLength: 1
+  const cookieSafeString = fc.stringMatching(/^[a-z0-9]+$/);
 
   it.prop([cookieSafeString, cookieSafeString])(
     'should return the two trailing dot-segments for any client_id value',

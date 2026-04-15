@@ -32,15 +32,18 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <Analytics />
 
     <!-- Google Analytics 4 — Consent Mode v2 (denied by default, granted on user accept) -->
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', wait_for_update: 500 });
-      gtag('js', new Date());
-      gtag('config', 'G-ELTEQ53RTJ');
-    </script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ELTEQ53RTJ"></script>
-
+    {import.meta.env.PUBLIC_GA_MEASUREMENT_ID && (
+      <script is:inline define:vars={{ gaMeasurementId: import.meta.env.PUBLIC_GA_MEASUREMENT_ID }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', wait_for_update: 500 });
+        gtag('js', new Date());
+        gtag('config', gaMeasurementId);
+      </script>
+    )}
+    {import.meta.env.PUBLIC_GA_MEASUREMENT_ID && (
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${import.meta.env.PUBLIC_GA_MEASUREMENT_ID}`}></script>
+    )}
     <!-- Fonts (non-blocking) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
