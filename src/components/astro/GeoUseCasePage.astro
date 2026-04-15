@@ -1,0 +1,95 @@
+---
+import type { UseCaseDef } from '../../data/geoUseCases';
+import FAQ from './FAQ.astro';
+
+interface Props {
+  useCase: UseCaseDef;
+}
+
+const { useCase } = Astro.props;
+
+const faqForComponent = useCase.faqs.map((f) => ({
+  question: f.question,
+  answerHtml: `<p>${f.answer}</p>`,
+}));
+---
+
+<article class="max-w-3xl mx-auto px-4 sm:px-6 pt-24 pb-16">
+  <nav class="text-sm text-text-muted mb-8" aria-label="Breadcrumb">
+    <a href="/" class="text-rb2-orange font-semibold hover:underline">Home</a>
+    <span class="mx-2 text-text-muted">/</span>
+    <span class="text-text-primary font-medium">Industry</span>
+  </nav>
+
+  <header class="mb-12">
+    <p class="text-xs font-bold uppercase tracking-[0.2em] text-rb2-orange mb-4">OrderPilot · Industry GEO</p>
+    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-text-primary tracking-tight mb-6">
+      {useCase.h1}
+    </h1>
+    <p class="text-lg text-text-secondary leading-relaxed">
+      {useCase.intro}
+    </p>
+  </header>
+
+  <section class="mb-14" aria-labelledby="pain-heading">
+    <h2 id="pain-heading" class="text-xl font-black text-text-primary mb-6">
+      Sector pain points OrderPilot removes
+    </h2>
+    <ul class="space-y-6">
+      {
+        useCase.painPoints.map((p) => (
+          <li class="rounded-2xl border border-gray-100 bg-card-white p-6 shadow-sm">
+            <h3 class="font-bold text-text-primary mb-2">{p.title}</h3>
+            <p class="text-text-secondary text-sm leading-relaxed">{p.detail}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="mb-14" aria-labelledby="resolve-heading">
+    <h2 id="resolve-heading" class="text-xl font-black text-text-primary mb-6">
+      How OrderPilot addresses each pain point
+    </h2>
+    <ul class="space-y-6">
+      {
+        useCase.resolutions.map((r) => (
+          <li class="rounded-2xl border border-gray-100 bg-white p-6">
+            <h3 class="font-bold text-text-primary mb-2">{r.title}</h3>
+            <p class="text-text-secondary text-sm leading-relaxed">{r.detail}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <aside class="mb-14 rounded-2xl border border-rb2-orange/30 bg-rb2-orange/5 p-6" aria-label="Key facts">
+    <h2 class="text-sm font-black uppercase tracking-widest text-rb2-orange mb-4">Key facts</h2>
+    <ul class="list-disc pl-5 space-y-2 text-sm text-text-secondary">
+      {useCase.facts.map((f) => <li>{f}</li>)}
+    </ul>
+  </aside>
+
+  <section class="mb-14 flex flex-col sm:flex-row flex-wrap gap-4">
+    <a
+      href="/kb"
+      class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-text-primary text-white text-sm font-bold hover:opacity-90 transition-opacity"
+    >
+      Knowledge base
+    </a>
+    <a
+      href="/calculator"
+      class="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-gray-200 bg-white text-sm font-bold text-text-primary hover:border-rb2-orange transition-colors"
+    >
+      ROI calculator
+    </a>
+    <a
+      href="/#contact"
+      class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-rb2-orange text-white text-sm font-bold hover:bg-rb2-orange-hover transition-colors"
+    >
+      Talk to OrderPilot
+    </a>
+  </section>
+
+  <FAQ faqs={faqForComponent} sectionId="sector-faq" />
+</article>

@@ -6,10 +6,41 @@ interface Props {
   title: string;
   description?: string;
   ogImage?: string;
+  /** Extra JSON-LD objects (e.g. FAQPage) rendered as separate script tags */
+  extraJsonLd?: Record<string, unknown>[];
 }
 
-const { title, description = 'The world\'s most accurate purchase order processing platform. Built for procurement teams that demand 100% accuracy.', ogImage = '/orderpilot-logo.png' } = Astro.props;
+const {
+  title,
+  description = 'The world\'s most accurate purchase order processing platform. Built for procurement teams that demand 100% accuracy.',
+  ogImage = '/orderpilot-logo.png',
+  extraJsonLd = [],
+} = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const siteOrigin = Astro.site ? new URL(Astro.site).origin : 'https://order-pilot.ai';
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'OrderPilot',
+  url: siteOrigin,
+  email: 'info@order-pilot.ai',
+  logo: new URL('/orderpilot-logo.png', siteOrigin).toString(),
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      contactType: 'sales',
+      email: 'info@order-pilot.ai',
+      availableLanguage: ['English', 'Dutch'],
+    },
+  ],
+};
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'OrderPilot',
+  url: siteOrigin,
+  inLanguage: 'en',
+};
 ---
 
 <!DOCTYPE html>
@@ -27,7 +58,17 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={new URL(ogImage, Astro.site)} />
+    <meta property="og:site_name" content="OrderPilot" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(ogImage, Astro.site)} />
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(organizationSchema)} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(websiteSchema)} />
+    {extraJsonLd.map((schema) => (
+      <script type="application/ld+json" is:inline set:html={JSON.stringify(schema)} />
+    ))}
 
     <Analytics />
 

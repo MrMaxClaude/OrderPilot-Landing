@@ -1,0 +1,68 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import { getMarkdownProcessor } from '../lib/markdown';
+import PageLayout from '../layouts/PageLayout.astro';
+import FAQ from '../components/astro/FAQ.astro';
+import { ABOUT_ORDERPILOT_KB, GEO_HIDDEN_FAQ_PAIRS } from '../data/geoKnowledgeBase';
+import { GEO_USE_CASES } from '../data/geoUseCases';
+import { buildFaqPageSchema, stripHtmlToPlainText } from '../lib/geoFaqSchema';
+
+const pageMeta = await getEntry('pages', 'knowledge-base');
+const faqEntries = await getCollection('faqs');
+const mdProcessor = await getMarkdownProcessor();
+const faqs = await Promise.all(
+  faqEntries
+    .sort((a, b) => a.data.order - b.data.order)
+    .map(async (entry) => {
+      const { code } = await mdProcessor.render(entry.body);
+      return { question: entry.data.question, answerHtml: code };
+    }),
+);
+
+const visiblePairs = faqs.map((f) => ({
+  name: f.question,
+  text: stripHtmlToPlainText(f.answerHtml),
+}));
+
+const kbFaqSchema = buildFaqPageSchema({
+  description: ABOUT_ORDERPILOT_KB,
+  mainEntity: [...visiblePairs, ...GEO_HIDDEN_FAQ_PAIRS],
+});
+---
+
+<PageLayout
+  title={pageMeta.data.title}
+  description={pageMeta.data.description}
+  ogImage={pageMeta.data.ogImage}
+  extraJsonLd={[kbFaqSchema]}
+>
+  <article class="max-w-3xl mx-auto px-4 sm:px-6 pt-24 pb-8">
+    <p class="text-xs font-bold uppercase tracking-[0.2em] text-rb2-orange mb-3">Knowledge base</p>
+    <h1 class="text-3xl sm:text-4xl font-black text-text-primary mb-6">About OrderPilot</h1>
+    <p class="text-text-secondary leading-relaxed text-base">
+      {ABOUT_ORDERPILOT_KB}
+    </p>
+  </article>
+
+  <section class="max-w-3xl mx-auto px-4 sm:px-6 pb-10" aria-labelledby="industry-pages-heading">
+    <h2 id="industry-pages-heading" class="text-lg font-black text-text-primary mb-4">
+      Industry-specific guides
+    </h2>
+    <p class="text-sm text-text-secondary mb-4">
+      Deeper, sector-written pages (not duplicated here) answer how OrderPilot applies to manufacturing, wholesale, SAP, AFAS, and general mid-market PO programs.
+    </p>
+    <ul class="grid sm:grid-cols-2 gap-3 text-sm">
+      {
+        GEO_USE_CASES.map((u) => (
+          <li>
+            <a href={`/${u.path}/`} class="font-semibold text-rb2-orange hover:underline">
+              {u.h1}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <FAQ faqs={faqs} sectionId="kb-faq" />
+</PageLayout>

@@ -12,6 +12,7 @@ interface Props {
   showNavbar?: boolean;
   showFooter?: boolean;
   showCalculatorCTA?: boolean;
+  extraJsonLd?: Record<string, unknown>[];
 }
 
 const {
@@ -21,10 +22,11 @@ const {
   showNavbar = true,
   showFooter = true,
   showCalculatorCTA = true,
+  extraJsonLd = [],
 } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} ogImage={ogImage}>
+<BaseLayout title={title} description={description} ogImage={ogImage} extraJsonLd={extraJsonLd}>
   {showNavbar && <Navbar />}
 
   <main>

@@ -1,0 +1,16 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import GeoUseCasePage from '../components/astro/GeoUseCasePage.astro';
+import { getUseCaseByPath } from '../data/geoUseCases';
+import { buildFaqPageSchema } from '../lib/geoFaqSchema';
+
+const uc = getUseCaseByPath('po-processing-software-mid-market')!;
+const faqSchema = buildFaqPageSchema({
+  description: uc.description,
+  mainEntity: uc.faqs.map((f) => ({ name: f.question, text: f.answer })),
+});
+---
+
+<PageLayout title={uc.title} description={uc.description} extraJsonLd={[faqSchema]}>
+  <GeoUseCasePage useCase={uc} />
+</PageLayout>

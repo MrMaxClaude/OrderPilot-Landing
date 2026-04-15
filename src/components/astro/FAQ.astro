@@ -6,12 +6,14 @@ interface FaqEntry {
 
 interface Props {
   faqs: FaqEntry[];
+  /** Defaults to `faq` (home). Use a unique id on secondary FAQ sections. */
+  sectionId?: string;
 }
 
-const { faqs } = Astro.props;
+const { faqs, sectionId = 'faq' } = Astro.props;
 ---
 
-<section id="faq" class="py-20 lg:py-24 px-6 fade-in border-t border-gray-100">
+<section id={sectionId} class="py-20 lg:py-24 px-6 fade-in border-t border-gray-100">
   <div class="max-w-4xl mx-auto">
     <div class="text-center mb-12">
       <span class="text-xs font-medium uppercase tracking-[0.2em] text-text-muted mb-4 block">/ FAQ</span>
