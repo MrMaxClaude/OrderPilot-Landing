@@ -20,7 +20,7 @@
       id="cookie-consent-desc"
       class="text-sm text-text-secondary leading-relaxed mb-5"
     >
-      We use cookies to run the site and, with your permission, analytics (PostHog) to
+      We use cookies to run the site and, with your permission, analytics (PostHog and Google Analytics) to
       understand how visitors use OrderPilot. See our
       <a
         href="/privacy"
@@ -51,6 +51,7 @@
 <script>
   import { getStoredConsent, saveConsent, OPEN_COOKIE_CONSENT_EVENT } from '../../lib/cookieConsent';
   import posthog from 'posthog-js';
+  import { type GtagFn } from '../../lib/ga';
 
   const banner = document.querySelector<HTMLElement>('[data-cookie-banner]')!;
   const acceptBtn = banner.querySelector<HTMLButtonElement>('[data-accept]')!;
@@ -74,9 +75,19 @@
     }
   }
 
-  // Show banner if no stored consent
-  if (getStoredConsent() === null) {
+  function syncGa(analyticsAllowed: boolean) {
+    const gtag = (window as Window & { gtag?: GtagFn }).gtag;
+    gtag?.('consent', 'update', {
+      analytics_storage: analyticsAllowed ? 'granted' : 'denied',
+    });
+  }
+
+  // Restore consent state on every page load
+  const stored = getStoredConsent();
+  if (stored === null) {
     showBanner();
+  } else if (stored.analytics) {
+    syncGa(true);
   }
 
   // Listen for re-open event (e.g. from footer privacy link)
@@ -85,12 +96,14 @@
   acceptBtn.addEventListener('click', () => {
     saveConsent(true);
     syncPostHog(true);
+    syncGa(true);
     hideBanner();
   });
 
   essentialBtn.addEventListener('click', () => {
     saveConsent(false);
     syncPostHog(false);
+    syncGa(false);
     hideBanner();
   });
 </script>

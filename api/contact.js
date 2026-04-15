@@ -4,6 +4,7 @@
  */
 
 import { Resend } from 'resend';
+import { sendGa4Event } from './_ga4.js';
 
 const CONTACT_EMAIL = 'info@order-pilot.ai';
 
@@ -37,7 +38,7 @@ export default async function handler(req, res) {
   }
 
   const body = parseJsonBody(req);
-  const { firstName, lastName, email, company, poVolume, message } = body;
+  const { firstName, lastName, email, company, poVolume, message, gaClientId } = body;
 
   if (!firstName || !lastName || !email || !company || !poVolume) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -158,6 +159,11 @@ export default async function handler(req, res) {
       notification: notificationEmail.data?.id,
       confirmation: confirmationEmail.data?.id,
     });
+
+    // GA4 server-side conversion (awaited so it completes before Lambda exits)
+    if (gaClientId) {
+      await sendGa4Event(gaClientId, 'generate_lead', { method: 'contact_form' });
+    }
 
     return res.status(200).json({
       success: true,

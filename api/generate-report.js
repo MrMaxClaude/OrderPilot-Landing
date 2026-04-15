@@ -11,6 +11,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import { sendGa4Event } from './_ga4.js';
 
 const require = createRequire(import.meta.url);
 const { calculateCosts, renderTemplate } = require('../src/pdf-report/generate-report.cjs');
@@ -60,7 +61,8 @@ export default async function handler(req, res) {
       monthlyVolume,
       timePerPO,
       errorRate,
-      erpSystem
+      erpSystem,
+      gaClientId,
     } = body;
 
     // Validate required fields
@@ -83,6 +85,15 @@ export default async function handler(req, res) {
 
     // Send email with Resend
     const emailResult = await sendEmail(email, companyName, firstName, pdfBuffer, data);
+
+    // GA4 server-side conversion (awaited so it completes before Lambda exits)
+    if (gaClientId) {
+      await sendGa4Event(gaClientId, 'generate_lead', {
+        method: 'pdf_report',
+        value: data._raw.annualSavings,
+        currency: 'EUR',
+      });
+    }
 
     res.status(200).json({
       success: true,

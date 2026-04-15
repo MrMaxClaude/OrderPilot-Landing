@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "devCommand": "astro dev --port 3000",
   "functions": {
     "api/generate-report.js": {
       "memory": 3008,

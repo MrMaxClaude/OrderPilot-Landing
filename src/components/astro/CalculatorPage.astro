@@ -905,15 +905,20 @@ import Logo from './Logo.astro';
     return ERP_NAMES[answers.erp as string] || 'ERP';
   }
 
+  import { getGaClientId, type GtagFn } from '../../lib/ga';
+
   // --- EVENT HANDLERS ---
 
   // Start button
+  const ga = (window as Window & { gtag?: GtagFn }).gtag;
+
   startBtn.addEventListener('click', () => {
     showPhase('questions');
     showQuestion(0);
     posthog.capture('calculator_started', {
       entry_point: document.referrer.includes('orderpi') ? 'internal' : 'external',
     });
+    ga?.('event', 'calculator_started');
   });
 
   // Option clicks (delegated)
@@ -952,6 +957,9 @@ import Logo from './Logo.astro';
             po_volume: answers.volume || 0,
             processing_time: answers.time || 0,
             team_size: answers.team || 0,
+          });
+          ga?.('event', 'calculator_completed', {
+            po_volume: answers.volume || 0,
           });
         }
       }, 600);
@@ -1016,6 +1024,8 @@ import Logo from './Logo.astro';
     const email = inputEmail.value.trim();
     const erpName = getErpName();
 
+    const gaClientId = getGaClientId();
+
     const reportData = {
       email,
       firstName,
@@ -1023,7 +1033,8 @@ import Logo from './Logo.astro';
       monthlyVolume: (answers.volume as number) || 225,
       timePerPO: answers.time ? Math.round((answers.time as number) * 60) : 18,
       errorRate: answers.errors ? Math.round(answers.errors * 100) : 12,
-      erpSystem: erpName
+      erpSystem: erpName,
+      gaClientId,
     };
 
     try {

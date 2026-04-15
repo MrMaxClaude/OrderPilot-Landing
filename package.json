@@ -11,7 +11,8 @@
     "dev:full": "vercel dev",
     "build": "astro build",
     "preview": "astro preview",
-    "lint": "astro check && tsc --noEmit"
+    "lint": "astro check && tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.8",
@@ -19,6 +20,7 @@
     "@astrojs/vercel": "^10.0.4",
     "@sparticuz/chromium": "^143.0.4",
     "@tailwindcss/vite": "^4.2.1",
+    "@vercel/analytics": "^2.0.1",
     "astro": "^6.1.4",
     "posthog-js": "^1.364.0",
     "puppeteer": "^24.40.0",
@@ -27,8 +29,12 @@
     "tailwindcss": "^4.2.1"
   },
   "devDependencies": {
+    "@fast-check/vitest": "^0.4.0",
     "@types/node": "^22.14.0",
+    "fast-check": "^4.6.0",
+    "jsdom": "^29.0.2",
     "typescript": "~5.8.2",
-    "vercel": "^50.41.0"
+    "vercel": "^50.41.0",
+    "vitest": "^4.1.4"
   }
 }

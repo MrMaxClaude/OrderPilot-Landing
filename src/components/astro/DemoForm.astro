@@ -162,6 +162,7 @@ const benefits = [
 
 <script>
   import posthog from 'posthog-js';
+  import { getGaClientId } from '../../lib/ga';
 
   const formView = document.querySelector('[data-form-view]') as HTMLElement;
   const successView = document.querySelector('[data-success-view]') as HTMLElement;
@@ -209,11 +210,13 @@ const benefits = [
     const companyId = `${company.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`;
 
     try {
+      const gaClientId = getGaClientId();
+
       const apiBase = (import.meta.env.PUBLIC_API_URL || '').replace(/\/$/, '');
       const response = await fetch(`${apiBase}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, lastName, email, company, poVolume, message }),
+        body: JSON.stringify({ firstName, lastName, email, company, poVolume, message, gaClientId }),
       });
 
       if (!response.ok) throw new Error('Failed to submit form');

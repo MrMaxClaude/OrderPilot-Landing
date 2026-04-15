@@ -13,7 +13,7 @@ import PageLayout from '../layouts/PageLayout.astro';
       </a>
     </p>
     <p class="text-text-secondary text-sm mb-10">
-      <strong class="text-text-primary">Last updated:</strong> 1 April 2026
+      <strong class="text-text-primary">Last updated:</strong> 15 April 2026
     </p>
 
     <p class="mb-8">
@@ -70,7 +70,7 @@ import PageLayout from '../layouts/PageLayout.astro';
         <li><strong class="text-text-primary">Compliance with legal obligations</strong></li>
       </ul>
       <p class="mt-4 text-text-muted text-xs">
-        Where we rely on consent (for example for PostHog analytics), you can withdraw it at any
+        Where we rely on consent (for example for PostHog and Google Analytics), you can withdraw it at any
         time without affecting the lawfulness of processing based on consent before its withdrawal.
       </p>
     </section>
@@ -91,7 +91,8 @@ import PageLayout from '../layouts/PageLayout.astro';
       <p class="mb-4">Your personal data is not retained longer than strictly necessary for the purposes for which it is processed. Specifically:</p>
       <ul class="list-disc pl-5 space-y-2">
         <li>Contact form submissions: 12 months after last interaction</li>
-        <li>Analytics data: up to 26 months (PostHog default retention, configurable)</li>
+        <li>Analytics data (PostHog): up to 26 months (default retention, configurable)</li>
+        <li>Analytics data (Google Analytics 4): up to 14 months (GA4 default, configurable in GA4 Admin)</li>
         <li>Email marketing data: until you unsubscribe</li>
       </ul>
     </section>
@@ -137,6 +138,12 @@ import PageLayout from '../layouts/PageLayout.astro';
               <td class="text-sm text-text-secondary px-4 py-3 border-b border-gray-50 align-top">Website analytics</td>
               <td class="text-sm text-text-secondary px-4 py-3 border-b border-gray-50 align-top">Usage events, device/browser data; IP treated per PostHog settings</td>
               <td class="text-sm text-text-secondary px-4 py-3 border-b border-gray-50 align-top">EU (when configured for EU hosting)</td>
+            </tr>
+            <tr>
+              <td class="text-sm text-text-secondary px-4 py-3 border-b border-gray-50 align-top">Google Analytics 4</td>
+              <td class="text-sm text-text-secondary px-4 py-3 border-b border-gray-50 align-top">Website analytics &amp; conversion tracking</td>
+              <td class="text-sm text-text-secondary px-4 py-3 border-b border-gray-50 align-top">Usage events, device/browser data, pseudonymous identifiers (<code class="text-xs bg-warm-bg-alt px-1 rounded">_ga</code> cookie); IP anonymised by default</td>
+              <td class="text-sm text-text-secondary px-4 py-3 border-b border-gray-50 align-top">USA (Google LLC, Standard Contractual Clauses)</td>
             </tr>
             <tr>
               <td class="text-sm text-text-secondary px-4 py-3 border-b border-gray-50 align-top">Resend</td>
@@ -195,7 +202,7 @@ import PageLayout from '../layouts/PageLayout.astro';
         </table>
       </div>
 
-      <h4 class="text-base font-bold text-text-primary mt-8 mb-3">Analytics (PostHog)</h4>
+      <h4 class="text-base font-bold text-text-primary mt-6 mb-3">Analytics (PostHog)</h4>
       <p class="mb-4">
         We use PostHog for website analytics <strong class="text-text-primary">only after you consent</strong>.
         PostHog is configured to prioritize privacy, including:
@@ -233,11 +240,50 @@ import PageLayout from '../layouts/PageLayout.astro';
         </table>
       </div>
 
+      <h4 class="text-base font-bold text-text-primary mt-8 mb-3">Analytics (Google Analytics 4)</h4>
+      <p class="mb-4">
+        We use Google Analytics 4 (GA4) with <strong class="text-text-primary">Consent Mode v2</strong>.
+        The GA4 script loads on every visit but operates in a cookieless, privacy-safe mode until you
+        consent. Once you accept analytics cookies, full measurement is enabled.
+      </p>
+      <ul class="list-disc pl-5 space-y-2 mb-4">
+        <li>IP anonymisation is applied by default</li>
+        <li>Data is processed by Google LLC (USA) under Standard Contractual Clauses</li>
+        <li>Without consent, only anonymous cookieless pings are sent to support conversion modelling</li>
+      </ul>
+      <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white my-4">
+        <table class="w-full min-w-[480px] border-collapse">
+          <thead>
+            <tr>
+              <th class="text-left text-xs font-bold uppercase tracking-wide text-text-primary px-4 py-3 border-b border-gray-100 bg-warm-bg-alt">Cookie</th>
+              <th class="text-left text-xs font-bold uppercase tracking-wide text-text-primary px-4 py-3 border-b border-gray-100 bg-warm-bg-alt">Purpose</th>
+              <th class="text-left text-xs font-bold uppercase tracking-wide text-text-primary px-4 py-3 border-b border-gray-100 bg-warm-bg-alt">Retention</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-sm text-text-secondary px-4 py-3 border-b border-gray-50 align-top">
+                <code class="text-xs bg-warm-bg-alt px-1 rounded">_ga</code>
+              </td>
+              <td class="text-sm text-text-secondary px-4 py-3 border-b border-gray-50 align-top">Distinguishes returning visitors (pseudonymous client ID)</td>
+              <td class="text-sm text-text-secondary px-4 py-3 border-b border-gray-50 align-top">2 years; only set after consent</td>
+            </tr>
+            <tr>
+              <td class="text-sm text-text-secondary px-4 py-3 border-b border-gray-50 align-top">
+                <code class="text-xs bg-warm-bg-alt px-1 rounded">_ga_*</code>
+              </td>
+              <td class="text-sm text-text-secondary px-4 py-3 border-b border-gray-50 align-top">Persists session state for the GA4 property</td>
+              <td class="text-sm text-text-secondary px-4 py-3 border-b border-gray-50 align-top">2 years; only set after consent</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
       <h4 class="text-base font-bold text-text-primary mt-8 mb-3">Marketing / tracking cookies</h4>
       <p>
-        We do not use separate advertising or social pixels for cross-site tracking on this website.
-        If we add such tools in the future, we will update this policy and, where required, ask for
-        consent before they load.
+        We do not use advertising pixels or social media tracking cookies for cross-site behavioural
+        advertising on this website. If we add such tools in the future, we will update this policy
+        and ask for consent before they load.
       </p>
     </section>
 
