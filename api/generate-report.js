@@ -87,13 +87,13 @@ export default async function handler(req, res) {
     const emailResult = await sendEmail(email, companyName, firstName, pdfBuffer, data);
 
     // GA4 server-side conversion (awaited so it completes before Lambda exits)
-    if (gaClientId) {
-      await sendGa4Event(gaClientId, 'generate_lead', {
-        method: 'pdf_report',
-        value: data._raw.annualSavings,
-        currency: 'EUR',
-      });
-    }
+    // Fall back to a random client_id if the browser blocked GA (ad blockers suppress _ga cookie)
+    const effectiveClientId = gaClientId || crypto.randomUUID();
+    await sendGa4Event(effectiveClientId, 'generate_lead', {
+      method: 'pdf_report',
+      value: data._raw.annualSavings,
+      currency: 'EUR',
+    });
 
     res.status(200).json({
       success: true,
