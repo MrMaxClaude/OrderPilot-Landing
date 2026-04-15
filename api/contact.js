@@ -160,9 +160,13 @@ export default async function handler(req, res) {
       confirmation: confirmationEmail.data?.id,
     });
 
-    // GA4 server-side conversion (awaited so it completes before Lambda exits)
+    // GA4 server-side conversions (awaited so they complete before Lambda exits)
     if (gaClientId) {
       await sendGa4Event(gaClientId, 'generate_lead', { method: 'contact_form' });
+      const highVolume = ['500 - 2,000 orders', '2,000 - 10,000 orders', '10,000+ orders'].includes(poVolume);
+      if (highVolume) {
+        await sendGa4Event(gaClientId, 'qualify_lead', { method: 'contact_form', po_volume: poVolume });
+      }
     }
 
     return res.status(200).json({
