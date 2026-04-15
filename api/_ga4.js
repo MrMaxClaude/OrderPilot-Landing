@@ -8,17 +8,18 @@ const GA_MEASUREMENT_ID = process.env.PUBLIC_GA_MEASUREMENT_ID;
 
 export async function sendGa4Event(clientId, eventName, params = {}) {
   const apiSecret = process.env.GA_API_SECRET;
-  if (!GA_MEASUREMENT_ID || !apiSecret || !clientId) return;
+  if (!GA_MEASUREMENT_ID) { console.warn('[ga4] skipped: PUBLIC_GA_MEASUREMENT_ID not set'); return; }
+  if (!apiSecret) { console.warn('[ga4] skipped: GA_API_SECRET not set'); return; }
+  if (!clientId) { console.warn('[ga4] skipped: clientId missing'); return; }
+
+  const url = `https://www.google-analytics.com/mp/collect?measurement_id=${encodeURIComponent(GA_MEASUREMENT_ID)}&api_secret=${encodeURIComponent(apiSecret)}`;
+  const body = JSON.stringify({ client_id: clientId, events: [{ name: eventName, params }] });
+  console.log(`[ga4] sending ${eventName} for client ${clientId}`, params);
+
   try {
-    await fetch(
-      `https://www.google-analytics.com/mp/collect?measurement_id=${encodeURIComponent(GA_MEASUREMENT_ID)}&api_secret=${encodeURIComponent(apiSecret)}`,
-      {
-        method: 'POST',
-        body: JSON.stringify({ client_id: clientId, events: [{ name: eventName, params }] }),
-        signal: AbortSignal.timeout(800),
-      }
-    );
-  } catch {
-    // ignore — never fail the main request on analytics errors
+    const res = await fetch(url, { method: 'POST', body, signal: AbortSignal.timeout(800) });
+    console.log(`[ga4] ${eventName} → HTTP ${res.status}`);
+  } catch (err) {
+    console.error(`[ga4] ${eventName} failed:`, err?.message ?? err);
   }
 }
