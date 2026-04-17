@@ -1,5 +1,5 @@
 /**
- * GEO layer for the knowledge base page (/kb).
+ * GEO layer for the knowledge base page (/knowledge-base/).
  * Visible About copy + extra FAQPage entities for AI indexing (Sectie 4b).
  */
 

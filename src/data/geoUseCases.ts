@@ -1,6 +1,6 @@
 /**
  * GEO use-case landing pages (Sectie 4c).
- * Sector-specific copy; not duplicated from /kb GEO-hidden pairs.
+ * Sector-specific copy; not duplicated from /knowledge-base/ GEO-hidden pairs.
  */
 
 export type UseCaseFaq = { question: string; answer: string };
@@ -390,7 +390,7 @@ export const GEO_USE_CASES: UseCaseDef[] = [
       {
         question: 'Where can procurement leaders read deeper answers?',
         answer:
-          'OrderPilot maintains a public knowledge base at /kb with expanded FAQs and links to industry-specific landing pages.',
+          'OrderPilot maintains a public knowledge base at /knowledge-base/ with expanded FAQs and links to industry-specific landing pages.',
       },
     ],
   },

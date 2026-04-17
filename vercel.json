@@ -1,6 +1,29 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "devCommand": "astro dev --port 3000",
+  "redirects": [
+    {
+      "source": "/kb",
+      "destination": "/knowledge-base/",
+      "permanent": true
+    },
+    {
+      "source": "/kb/",
+      "destination": "/knowledge-base/",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.order-pilot.ai"
+        }
+      ],
+      "destination": "https://order-pilot.ai/:path*",
+      "permanent": true
+    }
+  ],
   "functions": {
     "api/generate-report.js": {
       "memory": 3008,

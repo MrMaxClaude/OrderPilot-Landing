@@ -1,0 +1,429 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import { getMarkdownProcessor } from '../lib/markdown';
+import PageLayout from '../layouts/PageLayout.astro';
+import FAQ from '../components/astro/FAQ.astro';
+import { ABOUT_ORDERPILOT_KB, GEO_HIDDEN_FAQ_PAIRS } from '../data/geoKnowledgeBase';
+import { GEO_USE_CASES } from '../data/geoUseCases';
+import { KB_RESOURCE_CARDS, KB_SUPPORT_TIPS } from '../data/kbPageContent';
+import { buildFaqPageSchema, stripHtmlToPlainText } from '../lib/geoFaqSchema';
+
+const pageMeta = await getEntry('pages', 'knowledge-base');
+if (!pageMeta) {
+  throw new Error('Missing content collection entry: pages/knowledge-base');
+}
+const faqEntries = await getCollection('faqs');
+const mdProcessor = await getMarkdownProcessor();
+const faqs = await Promise.all(
+  faqEntries
+    .sort((a, b) => a.data.order - b.data.order)
+    .map(async (entry) => {
+      const { code } = await mdProcessor.render(entry.body ?? '');
+      return { question: entry.data.question, answerHtml: code };
+    }),
+);
+
+const visiblePairs = faqs.map((f) => ({
+  name: f.question,
+  text: stripHtmlToPlainText(f.answerHtml),
+}));
+
+const kbFaqSchema = buildFaqPageSchema({
+  description: ABOUT_ORDERPILOT_KB,
+  mainEntity: [...visiblePairs, ...GEO_HIDDEN_FAQ_PAIRS],
+});
+
+function searchBlob(parts: string[]): string {
+  return parts
+    .join(' ')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '');
+}
+
+const industrySearchStrings = GEO_USE_CASES.map((u) =>
+  searchBlob([u.h1, u.title, u.description, u.path.replace(/-/g, ' ')]),
+);
+
+const aboutSearchBlob = searchBlob([ABOUT_ORDERPILOT_KB, 'about orderpilot', 'orderpilot']);
+---
+
+<PageLayout
+  title={pageMeta.data.title}
+  description={pageMeta.data.description}
+  ogImage={pageMeta.data.ogImage}
+  extraJsonLd={[kbFaqSchema]}
+>
+  <div id="kb-page-root">
+    <!-- Hero + search (reference-style layout, OrderPilot colours) -->
+    <section
+      class="relative border-b border-gray-100/80 bg-card-white"
+      aria-labelledby="kb-hero-heading"
+    >
+      <div
+        class="pointer-events-none absolute inset-0 opacity-[0.35]"
+        style="background-image: radial-gradient(circle at 1px 1px, rgb(20 20 20 / 0.06) 1px, transparent 0); background-size: 28px 28px;"
+        aria-hidden="true"
+      >
+      </div>
+      <div class="relative max-w-3xl mx-auto px-4 sm:px-6 pt-28 pb-14 text-center">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-text-muted mb-4">Knowledge base</p>
+        <h1 id="kb-hero-heading" class="text-3xl sm:text-4xl md:text-5xl font-black text-text-primary tracking-tight mb-4">
+          How can we <span class="relative inline-block pb-1 border-b-[5px] border-rb2-orange">help</span> you?
+        </h1>
+        <p class="text-text-secondary text-base sm:text-lg max-w-xl mx-auto mb-8">
+          Search guides, FAQs, and topics — or jump straight to industry automation, tools, and support tips.
+        </p>
+
+        <div
+          class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 rounded-2xl bg-card-white p-2 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)] border border-gray-100 max-w-xl mx-auto"
+        >
+          <label class="sr-only" for="kb-search-input">Search knowledge base</label>
+          <input
+            id="kb-search-input"
+            type="search"
+            autocomplete="off"
+            placeholder="Start typing your search…"
+            class="flex-1 min-w-0 rounded-xl px-4 py-3.5 text-sm text-text-primary placeholder:text-text-muted outline-none focus:ring-2 focus:ring-rb2-orange/25 bg-warm-bg/50 border border-transparent focus:border-rb2-orange/30"
+          />
+          <button
+            type="button"
+            id="kb-search-button"
+            class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-rb2-orange text-white hover:bg-rb2-orange-hover transition-colors shadow-md"
+            aria-label="Search"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </button>
+        </div>
+        <p class="mt-4 text-sm text-text-muted">
+          Or <a href="#kb-pillars" class="font-semibold text-rb2-orange hover:underline">choose</a> a starting point below.
+        </p>
+      </div>
+    </section>
+
+    <!-- Three main pillars -->
+    <section
+      id="kb-pillars"
+      class="max-w-6xl mx-auto px-4 sm:px-6 py-14 md:py-16"
+      aria-labelledby="pillars-heading"
+      data-kb-section
+    >
+      <h2 id="pillars-heading" class="sr-only">Main topics</h2>
+      <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+        <a
+          href="#industry-guides"
+          class="group rounded-2xl border border-gray-100 bg-card-white p-8 shadow-sm hover:shadow-[0_16px_48px_-16px_rgba(0,0,0,0.12)] hover:border-rb2-orange/25 transition-all duration-300 flex flex-col text-left"
+          data-kb-block
+          data-kb-item={searchBlob(['industry guides', 'manufacturing', 'distribution', 'sap', 'afas', 'mid-market', 'purchase order automation'])}
+        >
+          <div class="w-12 h-12 rounded-xl bg-rb2-orange/10 text-rb2-orange flex items-center justify-center mb-5 group-hover:bg-rb2-orange/15 transition-colors" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8"/><path d="M8 11h8"/></svg>
+          </div>
+          <h3 class="text-lg font-black text-text-primary mb-2">Industry guides</h3>
+          <p class="text-sm text-text-secondary leading-relaxed flex-1">
+            Deep pages for manufacturing, wholesale, SAP, AFAS, and general mid-market PO programs — written for buyers and finance leaders.
+          </p>
+          <span class="mt-5 text-sm font-semibold text-rb2-orange group-hover:underline inline-flex items-center gap-1">
+            Browse guides
+            <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </span>
+        </a>
+
+        <a
+          href="#kb-faq"
+          class="group rounded-2xl border border-gray-100 bg-card-white p-8 shadow-sm hover:shadow-[0_16px_48px_-16px_rgba(0,0,0,0.12)] hover:border-rb2-orange/25 transition-all duration-300 flex flex-col text-left"
+          data-kb-block
+          data-kb-item={searchBlob(['faq', 'questions', 'pricing', 'accuracy', 'erp', 'integration', 'orderpilot'])}
+        >
+          <div class="w-12 h-12 rounded-xl bg-rb2-orange/10 text-rb2-orange flex items-center justify-center mb-5 group-hover:bg-rb2-orange/15 transition-colors" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          </div>
+          <h3 class="text-lg font-black text-text-primary mb-2">FAQ</h3>
+          <p class="text-sm text-text-secondary leading-relaxed flex-1">
+            Answers on accuracy, ERP connectors, security, and how OrderPilot fits next to your existing procurement stack.
+          </p>
+          <span class="mt-5 text-sm font-semibold text-rb2-orange group-hover:underline inline-flex items-center gap-1">
+            Open questions
+            <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </span>
+        </a>
+
+        <a
+          href="#kb-resources"
+          class="group rounded-2xl border border-gray-100 bg-card-white p-8 shadow-sm hover:shadow-[0_16px_48px_-16px_rgba(0,0,0,0.12)] hover:border-rb2-orange/25 transition-all duration-300 flex flex-col text-left"
+          data-kb-block
+          data-kb-item={searchBlob(['calculator', 'roi', 'pricing', 'cases', 'privacy', 'resources', 'tools'])}
+        >
+          <div class="w-12 h-12 rounded-xl bg-rb2-orange/10 text-rb2-orange flex items-center justify-center mb-5 group-hover:bg-rb2-orange/15 transition-colors" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <h3 class="text-lg font-black text-text-primary mb-2">Tools &amp; resources</h3>
+          <p class="text-sm text-text-secondary leading-relaxed flex-1">
+            ROI calculator, pricing, customer stories, and privacy — everything to evaluate OrderPilot with your CFO and IT lead.
+          </p>
+          <span class="mt-5 text-sm font-semibold text-rb2-orange group-hover:underline inline-flex items-center gap-1">
+            Explore resources
+            <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Industry guides (wide link rows + chevron) -->
+    <section
+      id="industry-guides"
+      class="max-w-6xl mx-auto px-4 sm:px-6 pb-16 md:pb-20"
+      aria-labelledby="industry-guides-heading"
+      data-kb-section
+    >
+      <div class="max-w-2xl mx-auto text-center mb-10">
+        <h2 id="industry-guides-heading" class="text-2xl md:text-3xl font-black text-text-primary tracking-tight mb-3">
+          Industry-specific guides
+        </h2>
+        <p class="text-sm md:text-base text-text-secondary leading-relaxed">
+          SEO-focused landing pages for how OrderPilot applies to your sector and stack — each with its own FAQs for long-tail discovery.
+        </p>
+      </div>
+      <ul class="max-w-3xl mx-auto space-y-2.5" id="kb-industry-list">
+        {
+          GEO_USE_CASES.map((u, i) => (
+            <li data-kb-row data-kb-item={industrySearchStrings[i]}>
+              <a
+                href={`/${u.path}/`}
+                class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-card-white px-5 py-4 text-left shadow-sm hover:border-rb2-orange/35 hover:shadow-md transition-all group"
+              >
+                <span class="text-[15px] font-bold text-rb2-orange group-hover:underline">{u.h1}</span>
+                <svg
+                  class="w-5 h-5 text-rb2-orange shrink-0 opacity-80 group-hover:translate-x-0.5 transition-transform"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <!-- Support tips (accordion) -->
+    <section
+      class="max-w-6xl mx-auto px-4 sm:px-6 pb-16 md:pb-20"
+      aria-labelledby="support-tips-heading"
+      data-kb-section
+    >
+      <div class="max-w-2xl mx-auto text-center mb-10">
+        <h2 id="support-tips-heading" class="text-2xl md:text-3xl font-black text-text-primary tracking-tight mb-3">
+          Support &amp; tips
+        </h2>
+        <p class="text-sm md:text-base text-text-secondary leading-relaxed">
+          Practical notes for procurement and finance teams rolling out automated PO intake.
+        </p>
+      </div>
+      <div class="max-w-3xl mx-auto space-y-2.5" data-kb-accordion="tips">
+        {
+          KB_SUPPORT_TIPS.map((tip, i) => (
+            <details
+              class="group rounded-xl border border-gray-100 bg-card-white transition-all duration-300 open:border-rb2-orange/40 open:shadow-md"
+              open={i === 0}
+              data-kb-row
+              data-kb-item={searchBlob([tip.title, tip.text])}
+            >
+              <summary class="w-full text-left px-5 py-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden gap-3">
+                <span class="text-[15px] font-bold text-rb2-orange">{tip.title}</span>
+                <svg
+                  class="w-5 h-5 text-rb2-orange shrink-0 transition-transform group-open:rotate-180"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </summary>
+              <div class="px-5 pb-5 text-sm text-text-secondary leading-relaxed border-t border-gray-50 pt-4">
+                {tip.text}
+              </div>
+            </details>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Resource cards -->
+    <section
+      id="kb-resources"
+      class="border-t border-gray-100 bg-warm-bg-alt/80"
+      aria-labelledby="resources-heading"
+      data-kb-section
+    >
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-20">
+        <div class="max-w-2xl mx-auto text-center mb-10">
+          <h2 id="resources-heading" class="text-2xl md:text-3xl font-black text-text-primary tracking-tight mb-3">
+            Resources
+          </h2>
+          <p class="text-sm md:text-base text-text-secondary leading-relaxed">
+            Shortcuts visitors use before booking a demo — good for SEO internal linking and clearer journeys.
+          </p>
+        </div>
+        <ul class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {
+            KB_RESOURCE_CARDS.map((r) => (
+              <li data-kb-row data-kb-item={searchBlob([r.title, r.excerpt, r.label, r.href])}>
+                <a
+                  href={r.href}
+                  class="flex h-full flex-col rounded-2xl border border-gray-100 bg-card-white p-6 shadow-sm hover:shadow-lg hover:border-rb2-orange/25 transition-all group"
+                >
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-text-muted mb-2">{r.label}</span>
+                  <span class="text-base font-black text-text-primary group-hover:text-rb2-orange transition-colors mb-2">{r.title}</span>
+                  <span class="text-sm text-text-secondary leading-relaxed flex-1">{r.excerpt}</span>
+                  <span class="mt-4 text-sm font-semibold text-rb2-orange inline-flex items-center gap-1">
+                    Open
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- Featured SEO articles (same guides, card layout) -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-20" aria-labelledby="featured-heading" data-kb-section>
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
+        <div>
+          <h2 id="featured-heading" class="text-2xl md:text-3xl font-black text-text-primary tracking-tight mb-2">
+            Featured articles
+          </h2>
+          <p class="text-sm text-text-secondary max-w-xl">
+            Long-form hubs aligned to how buyers search for purchase order automation.
+          </p>
+        </div>
+        <a href="#industry-guides" class="text-sm font-semibold text-rb2-orange hover:underline shrink-0">All guides</a>
+      </div>
+      <ul class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {
+          GEO_USE_CASES.map((u, i) => (
+            <li data-kb-row data-kb-item={industrySearchStrings[i]}>
+              <article class="h-full rounded-2xl border border-gray-100 bg-card-white p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+                <p class="text-xs text-text-muted mb-2">Updated {i === 0 ? 'April' : 'March'} 2026</p>
+                <h3 class="text-lg font-black text-rb2-orange leading-snug mb-3">
+                  <a href={`/${u.path}/`} class="hover:underline">
+                    {u.h1}
+                  </a>
+                </h3>
+                <p class="text-sm text-text-secondary leading-relaxed flex-1 line-clamp-4">{u.intro}</p>
+                <a
+                  href={`/${u.path}/`}
+                  class="mt-4 text-sm font-semibold text-text-primary hover:text-rb2-orange inline-flex items-center gap-1"
+                >
+                  Read guide
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+              </article>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <!-- About (GEO-visible copy) -->
+    <section
+      class="max-w-3xl mx-auto px-4 sm:px-6 pb-8"
+      aria-labelledby="about-kb-heading"
+      data-kb-section
+    >
+      <h2 id="about-kb-heading" class="text-lg font-black text-text-primary mb-3">About OrderPilot</h2>
+      <p class="text-text-secondary leading-relaxed text-sm sm:text-base" data-kb-row data-kb-item={aboutSearchBlob}>
+        {ABOUT_ORDERPILOT_KB}
+      </p>
+    </section>
+
+    <FAQ faqs={faqs} sectionId="kb-faq" variant="minimal" />
+
+    <p id="kb-search-empty" class="hidden max-w-xl mx-auto px-4 text-center text-sm text-text-muted pb-10" role="status">
+      No matches — try another keyword or scroll the sections below.
+    </p>
+  </div>
+</PageLayout>
+
+<script>
+  function runKbSearch() {
+    const input = document.getElementById('kb-search-input') as HTMLInputElement | null;
+    const empty = document.getElementById('kb-search-empty');
+    if (!input) return;
+
+    const q = input.value
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/\p{M}/gu, '');
+
+    const rows = document.querySelectorAll('#kb-page-root [data-kb-row]');
+    const blocks = document.querySelectorAll('#kb-page-root [data-kb-block]');
+    const sections = document.querySelectorAll('#kb-page-root [data-kb-section]');
+
+    let anyMatch = false;
+
+    const match = (hay: string) => !q || hay.includes(q);
+
+    rows.forEach((el) => {
+      let hay = (el.getAttribute('data-kb-item') || '').toLowerCase();
+      if (el instanceof HTMLDetailsElement || el.tagName === 'DETAILS') {
+        const d = el as HTMLDetailsElement;
+        hay = `${hay} ${(d.textContent || '').toLowerCase()}`;
+      }
+      const ok = match(hay);
+      if (ok) anyMatch = true;
+      (el as HTMLElement).classList.toggle('hidden', !ok);
+    });
+
+    blocks.forEach((el) => {
+      const hay = (el.getAttribute('data-kb-item') || '').toLowerCase();
+      const ok = match(hay);
+      if (ok) anyMatch = true;
+      (el as HTMLElement).classList.toggle('hidden', !ok);
+    });
+
+    sections.forEach((section) => {
+      const visible = section.querySelector(
+        '[data-kb-row]:not(.hidden), [data-kb-block]:not(.hidden), details:not(.hidden)',
+      );
+      (section as HTMLElement).classList.toggle('hidden', !!(q && !visible));
+    });
+
+    if (empty) {
+      empty.classList.toggle('hidden', !q || anyMatch);
+    }
+  }
+
+  const input = document.getElementById('kb-search-input');
+  const btn = document.getElementById('kb-search-button');
+  input?.addEventListener('input', runKbSearch);
+  input?.addEventListener('search', runKbSearch);
+  btn?.addEventListener('click', runKbSearch);
+
+  document.querySelectorAll('[data-kb-accordion="tips"]').forEach((root) => {
+    root.addEventListener(
+      'toggle',
+      (e) => {
+        const target = e.target as HTMLDetailsElement;
+        if (!target.open || !(target instanceof HTMLDetailsElement)) return;
+        root.querySelectorAll('details[open]').forEach((el) => {
+          if (el !== target) (el as HTMLDetailsElement).open = false;
+        });
+      },
+      true,
+    );
+  });
+</script>

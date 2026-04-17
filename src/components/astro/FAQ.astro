@@ -8,28 +8,86 @@ interface Props {
   faqs: FaqEntry[];
   /** Defaults to `faq` (home). Use a unique id on secondary FAQ sections. */
   sectionId?: string;
+  /** Tighter layout for knowledge base hub; keeps home FAQ hero treatment as default. */
+  variant?: 'default' | 'minimal';
 }
 
-const { faqs, sectionId = 'faq' } = Astro.props;
+const { faqs, sectionId = 'faq', variant = 'default' } = Astro.props;
+
+const sectionClass =
+  variant === 'minimal'
+    ? 'py-16 lg:py-20 px-4 sm:px-6 border-t border-gray-100 bg-warm-bg'
+    : 'py-20 lg:py-24 px-6 fade-in border-t border-gray-100';
+
+const headerClass = variant === 'minimal' ? 'text-left mb-10 max-w-3xl mx-auto' : 'text-center mb-12';
+
+const eyebrowClass =
+  variant === 'minimal'
+    ? 'text-xs font-bold uppercase tracking-[0.2em] text-text-muted mb-3 block'
+    : 'text-xs font-medium uppercase tracking-[0.2em] text-text-muted mb-4 block';
+
+const titleClass =
+  variant === 'minimal'
+    ? 'text-2xl md:text-3xl font-black tracking-tight text-text-primary'
+    : 'text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-text-primary mb-6';
+
+const innerWrapClass = variant === 'minimal' ? 'max-w-3xl mx-auto' : 'max-w-4xl mx-auto';
+
+const detailsClass =
+  variant === 'minimal'
+    ? 'group rounded-xl border border-gray-100 bg-card-white transition-all duration-300 open:border-rb2-orange/40 open:shadow-md'
+    : 'group rounded-2xl border border-gray-100 transition-all duration-300 open:bg-card-white open:border-rb2-orange open:shadow-lg';
+
+const summaryClass =
+  variant === 'minimal'
+    ? 'w-full text-left px-5 py-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden gap-3'
+    : 'w-full text-left p-6 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden';
+
+const questionClass = variant === 'minimal' ? 'text-[15px] font-bold text-rb2-orange' : 'text-lg font-bold text-text-primary';
+
+const chevronClass =
+  variant === 'minimal'
+    ? 'w-5 h-5 text-rb2-orange shrink-0 transition-transform group-open:rotate-180'
+    : 'text-text-muted group-open:text-rb2-orange transition-transform group-open:rotate-45 shrink-0 ml-4';
+
+const bodyPaddingClass = variant === 'minimal' ? 'px-5 pb-5 border-t border-gray-50 pt-4' : 'px-6 pb-6';
+
+function faqSearchKey(question: string): string {
+  return question
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
+const faqsWithSearch = faqs.map((faq) => ({ ...faq, searchKey: faqSearchKey(faq.question) }));
 ---
 
-<section id={sectionId} class="py-20 lg:py-24 px-6 fade-in border-t border-gray-100">
-  <div class="max-w-4xl mx-auto">
-    <div class="text-center mb-12">
-      <span class="text-xs font-medium uppercase tracking-[0.2em] text-text-muted mb-4 block">/ FAQ</span>
-      <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-text-primary mb-6">
-        Frequently Asked <span class="font-serif italic text-rb2-orange">Questions</span>
+<section id={sectionId} class={sectionClass} data-kb-section={variant === 'minimal' ? true : undefined}>
+  <div class={innerWrapClass}>
+    <div class={headerClass}>
+      <span class={eyebrowClass}>/ FAQ</span>
+      <h2 class={titleClass}>
+        Frequently Asked{' '}
+        <span
+          class:list={{
+            'font-serif italic text-rb2-orange': variant === 'default',
+            'text-rb2-orange': variant === 'minimal',
+          }}>Questions</span>
       </h2>
     </div>
 
     <div class="space-y-4" data-accordion>
-      {faqs.map((faq, i) => (
-        <details class="group rounded-2xl border border-gray-100 transition-all duration-300 open:bg-card-white open:border-rb2-orange open:shadow-lg" open={i === 0}>
-          <summary class="w-full text-left p-6 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-            <span class="text-lg font-bold text-text-primary">{faq.question}</span>
-            <svg class="text-text-muted group-open:text-rb2-orange transition-transform group-open:rotate-45 shrink-0 ml-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+      {faqsWithSearch.map((faq, i) => (
+        <details class={detailsClass} open={i === 0} data-kb-row data-kb-item={faq.searchKey}>
+          <summary class={summaryClass}>
+            <span class={questionClass}>{faq.question}</span>
+            {variant === 'minimal' ? (
+              <svg class={chevronClass} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+            ) : (
+              <svg class={chevronClass} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+            )}
           </summary>
-          <div class="px-6 pb-6 animate-tabFadeIn text-text-secondary leading-relaxed">
+          <div class={`${bodyPaddingClass} animate-tabFadeIn text-text-secondary leading-relaxed`}>
             <Fragment set:html={faq.answerHtml} />
           </div>
         </details>
@@ -39,13 +97,17 @@ const { faqs, sectionId = 'faq' } = Astro.props;
 </section>
 
 <script>
-  // Single-open accordion: close others when one opens
-  document.querySelector('[data-accordion]')?.addEventListener('toggle', (e) => {
-    const target = e.target as HTMLDetailsElement;
-    if (!target.open) return;
-    const siblings = target.parentElement!.querySelectorAll('details[open]');
-    for (const el of siblings) {
-      if (el !== target) (el as HTMLDetailsElement).open = false;
-    }
-  }, true);
+  document.querySelectorAll('[data-accordion]').forEach((root) => {
+    root.addEventListener(
+      'toggle',
+      (e) => {
+        const target = e.target as HTMLDetailsElement;
+        if (!target.open || !(target instanceof HTMLDetailsElement)) return;
+        root.querySelectorAll('details[open]').forEach((el) => {
+          if (el !== target) (el as HTMLDetailsElement).open = false;
+        });
+      },
+      true,
+    );
+  });
 </script>
