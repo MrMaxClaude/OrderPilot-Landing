@@ -7,22 +7,28 @@
      bg-orange-50 bg-blue-50 bg-emerald-50
 -->
 <div class="w-full max-w-6xl mx-auto mt-12" id="hero-animation">
-  <style>
-    @keyframes slideToCenter {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(784px); }
+  <!-- is:global + #hero-animation: classes below apply to JS-created nodes (no data-astro-cid).
+       Scoped Astro CSS would otherwise only match static markup, breaking slide + particle motion. -->
+  <style is:global>
+    @keyframes op-hero-slideToCenter {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(784px);
+      }
     }
-    .document-sliding {
-      animation: slideToCenter 3s linear forwards;
+    #hero-animation .document-sliding {
+      animation: op-hero-slideToCenter 3s linear forwards;
     }
-    @keyframes linePulse {
+    @keyframes op-hero-linePulse {
       0%, 100% { opacity: 0.3; }
       50% { opacity: 1; box-shadow: 0 0 12px rgba(255, 69, 0, 0.4); }
     }
-    .line-pulse {
-      animation: linePulse 2s ease-in-out infinite;
+    #hero-animation .line-pulse {
+      animation: op-hero-linePulse 2s ease-in-out infinite;
     }
-    @keyframes particleFly {
+    @keyframes op-hero-particleFly {
       0% {
         transform: translate(0, 0) scale(1) rotate(0deg);
         opacity: 1;
@@ -32,48 +38,60 @@
         opacity: 0;
       }
     }
-    .particle {
-      animation: particleFly var(--duration) ease-out forwards;
+    #hero-animation .particle {
+      animation: op-hero-particleFly var(--duration) ease-out forwards;
       animation-delay: var(--delay);
     }
-    @keyframes fieldAppear {
+    @keyframes op-hero-fieldAppear {
       0%   { opacity: 0; transform: translateX(-12px); }
       100% { opacity: 1; transform: translateX(0); }
     }
-    .field-filling {
-      animation: fieldAppear 0.3s ease-out forwards;
+    #hero-animation .field-filling {
+      animation: op-hero-fieldAppear 0.3s ease-out forwards;
     }
-    @keyframes popIn {
+    @keyframes op-hero-popIn {
       0%   { opacity: 0; transform: scale(0.85); }
       70%  { transform: scale(1.05); }
       100% { opacity: 1; transform: scale(1); }
     }
-    .validated-pop {
-      animation: popIn 0.4s ease-out forwards;
+    #hero-animation .validated-pop {
+      animation: op-hero-popIn 0.4s ease-out forwards;
     }
   </style>
 
   <div class="bg-white/50 rounded-2xl p-8 md:p-12 border border-gray-100 shadow-sm relative overflow-hidden h-[450px] flex items-center justify-between">
     <!-- Left Half: Document Source & Sliding Path -->
-    <div class="w-1/2 h-full relative overflow-hidden flex items-center justify-start pl-12">
-      <div class="relative w-64 h-80" id="doc-stack">
+    <div class="relative flex h-full w-1/2 items-center justify-start overflow-hidden pl-12">
+      <div class="relative h-80 w-64" id="doc-stack">
         <!-- Documents rendered by script -->
       </div>
     </div>
 
     <!-- Center: Processing Engine -->
-    <div class="absolute left-1/2 top-0 bottom-0 w-[2px] bg-[#FF4500] -translate-x-1/2 line-pulse z-5"></div>
-    <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-white shadow-lg border-2 border-[#FF4500] z-20 flex items-center justify-center p-3">
+    <div
+      id="hero-center-line"
+      class="absolute bottom-0 left-1/2 top-0 z-10 w-[2px] -translate-x-1/2 bg-[#FF4500] line-pulse"
+      aria-hidden="true"
+    ></div>
+    <div
+      class="absolute left-1/2 top-1/2 z-20 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-[#FF4500] bg-white p-3 shadow-lg"
+    >
       <img
-        src="/logo.svg"
-        alt="Orderpilot Icon"
-        class="w-full h-full object-contain"
+        src="/OrderPilot%20Logo%20Assets%20(3).svg"
+        alt=""
+        class="h-full w-full object-contain"
+        loading="eager"
+        decoding="async"
         referrerpolicy="no-referrer"
       />
     </div>
 
-    <!-- Shred Particles -->
-    <div class="absolute left-1/2 top-1/2 -translate-y-1/2 w-64 h-80 pointer-events-none z-10" id="particle-container"></div>
+    <!-- Shred Particles: same geometry as pre-Astro — left-1/2 without -translate-x-1/2 so box
+         starts on the center line; particles at left:0 sit on the line and fly with +endX to the right -->
+    <div
+      class="pointer-events-none absolute left-1/2 top-1/2 z-10 h-80 w-64 -translate-y-1/2"
+      id="particle-container"
+    ></div>
 
     <!-- Right Half: Captured Information -->
     <div class="w-1/2 flex justify-end items-center pr-12">
@@ -302,7 +320,7 @@
         const color = Math.random() > 0.4 ? '#FF4500' : Math.random() > 0.5 ? '#FB923C' : '#FFF7ED';
 
         p.className = 'absolute rounded-[1px] particle';
-        p.style.cssText = `width:${size}px;height:${size}px;background-color:${color};left:0px;top:${Math.random() * 320}px;--endX:${endX}px;--endY:${endY}px;--rotation:${rotation}deg;--duration:${duration}s;--delay:${delay}s;`;
+        p.style.cssText = `width:${size}px;height:${size}px;background-color:${color};left:0;top:${Math.random() * 320}px;--endX:${endX}px;--endY:${endY}px;--rotation:${rotation}deg;--duration:${duration}s;--delay:${delay}s;`;
         particleContainer.appendChild(p);
         batch.push(p);
       }
