@@ -21,6 +21,20 @@ import Logo from './Logo.astro';
         How It Works
       </a>
       <a
+        href="/cases"
+        data-nav-link
+        class="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+      >
+        Cases
+      </a>
+      <a
+        href="/calculator"
+        data-nav-link
+        class="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+      >
+        Calculator
+      </a>
+      <a
         href="/pricing"
         data-nav-link
         class="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
@@ -60,6 +74,20 @@ import Logo from './Logo.astro';
       class="block w-full text-left text-base font-medium text-text-secondary"
     >
       How It Works
+    </a>
+    <a
+      href="/cases"
+      data-nav-link
+      class="block w-full text-left text-base font-medium text-text-secondary"
+    >
+      Cases
+    </a>
+    <a
+      href="/calculator"
+      data-nav-link
+      class="block w-full text-left text-base font-medium text-text-secondary"
+    >
+      Calculator
     </a>
     <a
       href="/pricing"
@@ -129,8 +157,18 @@ import Logo from './Logo.astro';
       const href = anchor.getAttribute('href') || '';
       const linkName = anchor.textContent?.trim() || '';
 
+      const ctaType = href.includes('#')
+        ? 'expert_contact'
+        : href === '/pricing'
+          ? 'pricing'
+          : href === '/cases'
+            ? 'cases'
+            : href === '/calculator'
+              ? 'calculator'
+              : 'other';
+
       posthog.capture('hero_cta_clicked', {
-        cta_type: href.includes('#') ? 'expert_contact' : (href === '/pricing' ? 'pricing' : 'calculator'),
+        cta_type: ctaType,
         cta_text: linkName,
         location: 'navbar'
       });

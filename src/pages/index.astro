@@ -1,6 +1,7 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
 import { getMarkdownProcessor } from '../lib/markdown';
+import { buildFaqPageSchema, stripHtmlToPlainText } from '../lib/geoFaqSchema';
 import PageLayout from '../layouts/PageLayout.astro';
 import Hero from '../components/astro/Hero.astro';
 import BentoBenefits from '../components/astro/BentoBenefits.astro';
@@ -36,9 +37,21 @@ const faqs = await Promise.all(
       return { question: entry.data.question, answerHtml: code };
     }),
 );
+
+const faqPageSchema = buildFaqPageSchema({
+  mainEntity: faqs.map((f) => ({
+    name: f.question,
+    text: stripHtmlToPlainText(f.answerHtml),
+  })),
+});
 ---
 
-<PageLayout title={pageMeta.data.title} description={pageMeta.data.description} ogImage={pageMeta.data.ogImage}>
+<PageLayout
+  title={pageMeta.data.title}
+  description={pageMeta.data.description}
+  ogImage={pageMeta.data.ogImage}
+  extraJsonLd={[faqPageSchema]}
+>
   <Hero {...hero.data} />
   <BentoBenefits {...benefits.data} />
   <POTransformation />
