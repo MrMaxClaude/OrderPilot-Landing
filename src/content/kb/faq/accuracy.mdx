@@ -1,0 +1,52 @@
+---
+title: "How accurate is OrderPilot, really?"
+description: "Our honest accuracy numbers broken down by field and document type, plus the feedback loop that gets you from 95 % to 99.5 % in the first month."
+category: "faq"
+tags: ["accuracy", "quality"]
+publishedAt: 2026-04-14
+order: 1
+popular: true
+---
+
+OrderPilot averages 99.2 % field-level accuracy across our customer base - but that number hides useful detail. Here's what actually happens.
+
+## Day one accuracy
+
+On the first PO from a brand-new supplier with no prior template, expect:
+
+- Header fields (supplier, PO number, date, total): ~97 %
+- Standard line-item fields (qty, unit price, line total): ~94 %
+- Edge-case fields (UoM, delivery address, payment terms): ~88 %
+
+These numbers come from our confidence-calibrated extraction, not marketing.
+
+## After 30 days (with corrections)
+
+By the time you've processed 20–50 POs from a supplier, the model has learned that supplier's template, terminology, and corrections. For established suppliers we see:
+
+- Header fields: 99.8 %
+- Line items: 99.2 %
+- Edge fields: 97.5 %
+
+## What drives accuracy
+
+Three things, in order:
+
+1. **Supplier template consistency** - if a supplier sends the same format every time, we nail it
+2. **Your correction feedback** - every correction you make in OrderPilot improves extractions from that supplier
+3. **SKU and vendor master completeness** - without good reference data, we have nothing to match against
+
+## What doesn't drive accuracy
+
+Common things customers worry about that mostly don't matter:
+
+- **Scan quality** - our OCR handles low-res scans down to ~150 DPI
+- **Handwritten notes** - these are always flagged for manual review (by design)
+- **Multi-page POs** - handled natively, no config needed
+- **Non-standard formats** - we learn per-supplier, so unusual formats are fine as long as they're consistent
+
+## The 100 % claim on the homepage
+
+The "100% accuracy" headline refers to downstream document-level accuracy after validation queue review: no PO enters your ERP with an uncorrected error. It's a claim about process, not raw extraction.
+
+If you want the raw extraction numbers for diligence, ask for our statistical accuracy report during onboarding.

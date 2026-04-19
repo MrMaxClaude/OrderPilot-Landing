@@ -28,7 +28,7 @@ function buildReportDeliveryEmailHtml({ personalGreeting, data }) {
   const contactFormUrl = `${siteUrl}/#contact?utm_source=pdf&utm_medium=email&utm_campaign=cost_analysis`;
 
   const erpSystem = typeof data.erpSystem === 'string' ? data.erpSystem : 'ERP';
-  const roiMultiple = data.roiMultiple != null ? String(data.roiMultiple) : '—';
+  const roiMultiple = data.roiMultiple != null ? String(data.roiMultiple) : '-';
   const totalAnnualCost = String(data.totalAnnualCost ?? '');
   const annualSavings = String(data.annualSavings ?? '');
 
@@ -56,9 +56,9 @@ function buildReportDeliveryEmailHtml({ personalGreeting, data }) {
             <td style="background-color:#FAF6F0;border-left:4px solid #FF6321;padding:18px 20px;margin:0;">
               <p style="margin:0;font-size:15px;line-height:1.65;color:#141414;">
                 <strong>Key insight:</strong> Your current manual processing costs
-                <strong style="color:#FF6321;">${totalAnnualCost}/year</strong>.
+                <strong>${totalAnnualCost}/year</strong>.
                 With OrderPilot automation, you could save
-                <strong style="color:#10B981;">${annualSavings}/year</strong>.
+                <strong style="color:#FF6321;">${annualSavings}/year</strong>.
               </p>
             </td>
           </tr>
@@ -90,7 +90,7 @@ function buildReportDeliveryEmailHtml({ personalGreeting, data }) {
           </tr>
           <tr>
             <td style="border-top:1px solid #E5E7EB;padding-top:24px;text-align:center;font-size:12px;color:#8E8E8E;line-height:1.6;">
-              <p style="margin:0 0 8px 0;">OrderPilot — AI-powered PO processing automation</p>
+              <p style="margin:0 0 8px 0;">OrderPilot - AI-powered PO processing automation</p>
               <p style="margin:0;">
                 <a href="${FOOTER_SITE_URL}" style="color:#FF6321;text-decoration:none;">${FOOTER_SITE_LABEL}</a>
                 <span style="color:#D1D5DB;">&nbsp;&nbsp;·&nbsp;&nbsp;</span>
@@ -108,7 +108,7 @@ function buildReportDeliveryEmailHtml({ personalGreeting, data }) {
 
 function reportDeliveryEmailSubject(data) {
   const total = data.totalAnnualCost != null ? String(data.totalAnnualCost) : '';
-  return `Your PO Processing Cost Analysis — ${total}/year in hidden costs`;
+  return `Your PO Processing Cost Analysis - ${total}/year in hidden costs`;
 }
 
 module.exports = {

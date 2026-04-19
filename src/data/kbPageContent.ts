@@ -1,5 +1,5 @@
 /**
- * Copy for the knowledge base hub (/knowledge-base/) — support tips and resource teasers.
+ * Copy for the knowledge base hub (/knowledge-base/) - support tips and resource teasers.
  */
 
 export type KbSupportTip = { title: string; text: string };
@@ -11,7 +11,7 @@ export const KB_SUPPORT_TIPS: KbSupportTip[] = [
   },
   {
     title: 'When to keep a human in the loop',
-    text: 'OrderPilot posts automatically when confidence is high. When a field is ambiguous or conflicts with master data, the PO goes to a review queue with context so approvers fix only exceptions — not every line.',
+    text: 'OrderPilot posts automatically when confidence is high. When a field is ambiguous or conflicts with master data, the PO goes to a review queue with context so approvers fix only exceptions - not every line.',
   },
   {
     title: 'How OrderPilot differs from generic document AI',
@@ -19,7 +19,7 @@ export const KB_SUPPORT_TIPS: KbSupportTip[] = [
   },
   {
     title: 'Sizing PO volume for pricing',
-    text: 'Plans are anchored on monthly purchase order volume (for example up to 1,000 POs on the standard tier). If you are between brackets, use the ROI calculator or talk to us — we map mixed channels (email + portal + EDI) to a single clear count.',
+    text: 'Plans are anchored on monthly purchase order volume (for example up to 1,000 POs on the standard tier). If you are between brackets, use the ROI calculator or talk to us - we map mixed channels (email + portal + EDI) to a single clear count.',
   },
 ];
 

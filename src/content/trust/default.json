@@ -1,5 +1,5 @@
 {
-  "headline": "Enterprise-Grade Security",
+  "headline": "Enterprise-grade security",
   "description": "Your data is encrypted at rest and in transit. We are ISO 27001 certified and GDPR compliant. We never use your data to train public AI models.",
   "badges": [
     { "label": "ISO 27001", "icon": "shield" },

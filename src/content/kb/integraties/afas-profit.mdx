@@ -1,0 +1,53 @@
+---
+title: "AFAS Profit integration: native connector for Dutch mid-market"
+description: "Connect OrderPilot to AFAS Profit using GetConnector and UpdateConnector. Covers supplier matching, inkooporder creation, and the one-click reconciliation flow."
+category: "integraties"
+tags: ["AFAS", "Profit", "ERP", "NL"]
+publishedAt: 2026-04-11
+order: 2
+relatedArticles: ["sap-s4hana"]
+---
+
+AFAS Profit is the most common ERP among Dutch mid-market distributors and manufacturers. OrderPilot's AFAS connector is built by Dutch engineers and certified against the current App Connector API.
+
+## Connector architecture
+
+AFAS Profit exposes two APIs we use:
+
+- **GetConnector** (read) - pulls the vendor master and the product master so OrderPilot can match suppliers and SKUs without you exporting CSVs.
+- **UpdateConnector** (write) - posts validated POs as `KnInkoopOrder` entities.
+
+Both go through the AFAS App Connector, so your IT team sees every OrderPilot call in the AFAS access logs.
+
+## Supplier matching
+
+AFAS has a separate `Verkooprelatie` (vendor) master. OrderPilot syncs this nightly and matches incoming POs by:
+
+1. Exact email domain match
+2. VAT number match
+3. Fuzzy name match (requires review)
+
+Unmapped vendors show up in a dedicated queue. One click maps them; the mapping is stored against the supplier identity and reused forever.
+
+## PO creation flow
+
+A validated PO in OrderPilot posts to AFAS as:
+
+- One `KnInkoopOrder` header with supplier, PO number, order date, delivery date
+- Multiple `KnInkoopOrderRegel` lines with article code, quantity, unit price
+- Notes and payment terms as metadata
+
+If your AFAS configuration uses cost-centre routing (`KostenplaatsCode`), OrderPilot derives the cost centre from the requester's email or from a line-item rule you configure.
+
+## Reconciliation
+
+At month-end, OrderPilot runs a reconciliation report: POs we posted vs POs that exist in AFAS. Any mismatch (rare - usually a network hiccup during a 5xx retry) shows up as a one-click **Re-post** action.
+
+## Limitations we're upfront about
+
+- AFAS batches UpdateConnector calls every 15 minutes for performance; POs may not appear instantly after posting from OrderPilot. This is an AFAS behaviour, not ours.
+- If your AFAS landscape uses a separate "Inkoopbestelling" entity via custom extensions, we'll need a 30-minute scoping call first.
+
+## Typical onboarding time
+
+A standard AFAS Profit setup takes 2–4 hours end-to-end: credentials, mapping verification, one sandbox PO, then live.

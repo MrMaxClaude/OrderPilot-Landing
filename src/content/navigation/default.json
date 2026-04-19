@@ -1,0 +1,9 @@
+{
+  "primaryLinks": [
+    { "text": "How It Works", "href": "/#how-it-works" },
+    { "text": "Cases", "href": "/cases" },
+    { "text": "Calculator", "href": "/calculator" },
+    { "text": "Pricing", "href": "/pricing" }
+  ],
+  "cta": { "text": "Get in Touch", "href": "/#contact" }
+}

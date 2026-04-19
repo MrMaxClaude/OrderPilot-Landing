@@ -1,5 +1,5 @@
 /**
- * OrderPilot — Vercel Serverless Endpoint
+ * OrderPilot - Vercel Serverless Endpoint
  *
  * POST /api/generate-and-send
  *
@@ -17,8 +17,8 @@
  *   }
  *
  * Requires env vars:
- *   RESEND_API_KEY    — Resend transactional email
- *   HUBSPOT_API_KEY   — HubSpot CRM (optional)
+ *   RESEND_API_KEY    - Resend transactional email
+ *   HUBSPOT_API_KEY   - HubSpot CRM (optional)
  */
 
 // NOTE: For Vercel deployment, move this file to /api/generate-and-send.js
@@ -88,7 +88,7 @@ async function sendEmail(email, companyName, pdfBuffer, data) {
   const emailResult = await resend.emails.send({
     from: process.env.RESEND_FROM || 'OrderPilot <info@order-pilot.ai>',
     to: email,
-    subject: `Your PO Processing Cost Analysis — ${data.totalAnnualCost}/year in hidden costs`,
+    subject: `Your PO Processing Cost Analysis - ${data.totalAnnualCost}/year in hidden costs`,
     html: `
       <div style="font-family: Inter, -apple-system, sans-serif; max-width: 520px; margin: 0 auto; padding: 24px;">
         <p style="font-size: 15px; color: #111827;">Hi${companyName ? ` ${companyName} team` : ''},</p>
@@ -134,7 +134,7 @@ async function sendEmail(email, companyName, pdfBuffer, data) {
     emailId: emailResult.data?.id,
     error: emailResult.error,
     to: email,
-    subject: `Your PO Processing Cost Analysis — ${data.totalAnnualCost}/year in hidden costs`
+    subject: `Your PO Processing Cost Analysis - ${data.totalAnnualCost}/year in hidden costs`
   });
 
   // Clean up temp file
@@ -173,7 +173,7 @@ async function upsertHubSpotContact(email, companyName, data) {
   });
 
   if (response.status === 409) {
-    // Contact exists — update instead
+    // Contact exists - update instead
     const existing = await response.json();
     const contactId = existing?.message?.match(/ID: (\d+)/)?.[1];
     if (contactId) {

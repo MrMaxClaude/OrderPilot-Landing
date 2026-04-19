@@ -1,0 +1,54 @@
+---
+title: Your first PO upload - what good looks like
+description: >-
+  How to validate OrderPilot's first extraction, spot common parsing issues, and
+  signal corrections so the model improves for your supplier base.
+category: getting-started
+draft: false
+tags:
+  - onboarding
+  - validation
+publishedAt: 2026-04-16
+relatedArticles:
+  - quickstart
+order: 2
+---
+Your first PO is a calibration event. Whether it lands with 100 % accuracy or needs two corrections, the important thing is that you give OrderPilot the right signal.
+
+## The validation queue in 60 seconds
+
+After upload, you'll see three sections on the PO page:
+
+1. **Header** - supplier, PO number, issue date, currency, total
+2. **Line items** - quantity, SKU, description, unit price, line total
+3. **Meta** - payment terms, delivery address, notes
+
+Each field shows a confidence badge:
+
+* **Green (≥95 %)** - auto-approved, no action needed
+* **Amber (80–95 %)** - review recommended
+* **Red (under 80 %)** - manual check required
+
+## Fix once, learn forever
+
+When you correct a field, OrderPilot stores the correction against two anchors: the supplier identity (domain, address) and the layout fingerprint. Next time either match, the model uses your correction as a strong prior.
+
+In practice this means the first PO from a new supplier might need 1–3 corrections. The second PO usually needs zero.
+
+## Common day-one issues
+
+**Multi-page POs with continuation headers:** if a line-item table spans pages, check the page break. OrderPilot usually handles these, but scanned PDFs with OCR artifacts can drop rows.
+
+**Decimal vs thousand separator:** European suppliers use `1.234,56` for 1234.56. We detect the locale from the supplier profile; if an amount looks off by 100x, correct it once and the supplier profile will sticky.
+
+**SKU fuzzy matches:** if a supplier ships with their internal part number and your ERP uses a different one, go to the line item and click "Map SKU." The mapping persists.
+
+## What "good" looks like
+
+After your first 10 POs you should see:
+
+* 95 %+ fields green on first pass
+* 0 blocking corrections by week 2 for repeat suppliers
+* Queue review time under 30 seconds per PO
+
+If you're above those numbers, open a thread in the validation queue with the supplier name - we'll investigate the template.

@@ -7,7 +7,7 @@ import CookieConsent from '../components/astro/CookieConsent.astro';
 const pageMeta = await getEntry('pages', 'pdf-demo');
 ---
 
-<BaseLayout title={pageMeta.data.title} description={pageMeta.data.description} ogImage={pageMeta.data.ogImage}>
+<BaseLayout title={pageMeta.data.title} description={pageMeta.data.description} ogImage={pageMeta.data.ogImage} noindex={pageMeta.data.noindex}>
   <PdfDemoPage />
   <CookieConsent />
 </BaseLayout>

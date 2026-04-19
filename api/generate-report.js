@@ -63,6 +63,8 @@ export default async function handler(req, res) {
       errorRate,
       erpSystem,
       gaClientId,
+      privacyConsent,
+      delayDays,
     } = body;
 
     // Validate required fields
@@ -71,6 +73,27 @@ export default async function handler(req, res) {
         error: 'Missing required fields: email, monthlyVolume, timePerPO, errorRate'
       });
     }
+    if (privacyConsent !== true) {
+      return res.status(400).json({
+        error: 'Privacy consent is required to receive the report',
+      });
+    }
+
+    // Log consent trail for audit (GDPR art. 7: demonstrable consent). No cookies,
+    // just a timestamp + hashed IP paired with the email on the server log.
+    const rawIp =
+      req.headers?.['x-forwarded-for']?.split(',')[0]?.trim() ||
+      req.headers?.['x-real-ip'] ||
+      req.socket?.remoteAddress ||
+      'unknown';
+    const ipHash = require('crypto').createHash('sha256').update(String(rawIp)).digest('hex').slice(0, 16);
+    console.log('Consent recorded:', {
+      email,
+      companyName: companyName || '(none)',
+      ipHash,
+      timestamp: new Date().toISOString(),
+      surface: 'calculator-pdf-modal',
+    });
 
     console.log('Generating PDF for:', { email, companyName, monthlyVolume });
 
@@ -80,7 +103,8 @@ export default async function handler(req, res) {
       monthlyVolume: parseInt(monthlyVolume, 10),
       timePerPO: parseInt(timePerPO, 10),
       errorRate: parseInt(errorRate, 10),
-      erpSystem: erpSystem || 'ERP'
+      erpSystem: erpSystem || 'ERP',
+      delayDays: delayDays != null ? Number(delayDays) : undefined,
     });
 
     // Send email with Resend
@@ -130,7 +154,7 @@ async function generatePdfBuffer(input) {
     chromium = null;
   }
 
-  const data = calculateCosts(input);
+  const data = await calculateCosts(input);
   const templatePath = path.join(process.cwd(), 'src', 'pdf-report', 'template.html');
   const templateHtml = fs.readFileSync(templatePath, 'utf-8');
 

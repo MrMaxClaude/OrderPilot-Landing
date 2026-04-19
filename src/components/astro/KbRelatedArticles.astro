@@ -1,0 +1,51 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { articleUrl, getCategoryLabel } from '../../lib/kbHelpers';
+import type { KbCategorySlug } from '../../lib/kbHelpers';
+
+interface Props {
+  articles: CollectionEntry<'kb'>[];
+}
+
+const { articles } = Astro.props;
+---
+
+{
+  articles.length > 0 && (
+    <section
+      class="mt-12 border-t border-gray-100 pt-10"
+      aria-labelledby="kb-related-heading"
+    >
+      <h2
+        id="kb-related-heading"
+        class="text-[10px] font-bold uppercase tracking-[0.18em] text-text-muted mb-5"
+      >
+        Related articles
+      </h2>
+      <ul class="grid sm:grid-cols-2 gap-4">
+        {articles.map((a) => (
+          <li>
+            <a
+              href={articleUrl(a)}
+              class="group flex h-full flex-col rounded-2xl border border-gray-100 bg-card-white p-5 shadow-sm hover:shadow-md hover:border-rb2-orange/25 transition-all"
+            >
+              <span class="text-[10px] font-bold uppercase tracking-wider text-text-muted mb-2">
+                {getCategoryLabel(a.data.category as KbCategorySlug)}
+              </span>
+              <span class="text-base font-black text-text-primary group-hover:text-rb2-orange transition-colors mb-2 leading-snug">
+                {a.data.title}
+              </span>
+              <span class="text-sm text-text-secondary leading-relaxed flex-1 line-clamp-3">
+                {a.data.description}
+              </span>
+              <span class="mt-3 text-sm font-semibold text-rb2-orange inline-flex items-center gap-1">
+                Read
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}

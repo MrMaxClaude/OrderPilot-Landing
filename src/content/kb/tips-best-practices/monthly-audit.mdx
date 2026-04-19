@@ -1,0 +1,64 @@
+---
+title: "Running a monthly accuracy audit (15 minutes)"
+description: "A short, repeatable audit that catches drift before it becomes a problem. Runs in under 15 minutes and only requires OrderPilot's built-in reports."
+category: "tips-best-practices"
+tags: ["process", "audit"]
+publishedAt: 2026-04-13
+order: 2
+relatedArticles: ["reduce-po-errors"]
+---
+
+The point of an audit isn't bureaucracy - it's spotting regressions before they become invoices you pay twice. Run this on the 1st of every month.
+
+## The 4-step audit
+
+### 1. Pull the report
+
+In OrderPilot, go to **Reports › Accuracy** and set the window to "Last 30 days." Export to CSV.
+
+### 2. Check the headline numbers
+
+You're looking for three metrics:
+
+- **Document-level accuracy** - target ≥99 %
+- **Field-level accuracy** - target ≥99.5 %
+- **Auto-approved rate** - target ≥95 %
+
+If any number is more than 0.5 pp below target, dig deeper.
+
+### 3. Segment by supplier
+
+Sort the report by supplier, descending by error count. The distribution should be long-tailed: one or two suppliers with 3–5 errors, most with zero. If any supplier has >10 errors in the month, that's your investigation for the month.
+
+Common causes:
+
+- New template (check the supplier page for "Template changed" flags)
+- Supplier changed their PO numbering scheme
+- Supplier started sending POs via a different email address
+
+### 4. Segment by field
+
+Still in the report, switch the grouping to "By field." Look for fields with >2 % error rate. Typical culprits:
+
+- `delivery_date` - often ambiguous when the supplier writes "week 23"
+- `unit_price` - currency or UoM confusion
+- `line_notes` - unstructured text; consider whether you actually need this
+
+For each field with drift, ask: is this worth a supplier conversation, a rule, or is the current rate acceptable?
+
+## Close the loop
+
+Write two sentences in your shared doc:
+
+- **What changed:** one fix you made
+- **What to watch:** the thing you'll re-check next month
+
+The whole audit should take 15 minutes. Teams that skip it for 2–3 months let drift compound and end up with a half-day cleanup instead.
+
+## Escalation triggers
+
+Escalate to OrderPilot support if you see:
+
+- Document-level accuracy below 97 % for two consecutive weeks
+- Any supplier with a sudden step-change in error rate (was 0 %, is now >5 %)
+- A field you can't correct in the UI (rare, but means a schema issue)

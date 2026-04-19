@@ -1,5 +1,10 @@
 ---
+import { getEntry } from 'astro:content';
 import Logo from './Logo.astro';
+
+const footerData = await getEntry('footer', 'default');
+if (!footerData) throw new Error('Missing content: footer/default.json');
+const { tagline, linkGroups, copyright, complianceLabels } = footerData.data;
 ---
 
 <footer class="bg-text-primary text-white py-16 px-4 sm:px-6 lg:px-8">
@@ -10,71 +15,47 @@ import Logo from './Logo.astro';
           <Logo size={48} />
         </a>
         <p class="text-white/60 text-sm leading-relaxed">
-          The world&apos;s most accurate purchase order processing platform. Built for procurement
-          teams that demand 100% accuracy.
+          {tagline}
         </p>
       </div>
 
-      <div class="min-w-0">
-        <h4 class="text-xs font-bold uppercase tracking-widest mb-6">Product</h4>
-        <ul class="space-y-4 text-sm">
-          <li><a href="/#benefits" class="text-white/60 hover:text-white transition-colors">Benefits</a></li>
-          <li><a href="/#how-it-works" class="text-white/60 hover:text-white transition-colors">How it Works</a></li>
-          <li><a href="/#results" class="text-white/60 hover:text-white transition-colors">Results</a></li>
-          <li><a href="/pricing" class="text-white/60 hover:text-white transition-colors">Pricing</a></li>
-          <li><a href="/knowledge-base/" class="text-white/60 hover:text-white transition-colors">Knowledge base</a></li>
-        </ul>
-      </div>
-
-      <div class="min-w-0">
-        <h4 class="text-xs font-bold uppercase tracking-widest mb-6">Industry solutions</h4>
-        <ul class="space-y-4 text-sm">
-          <li>
-            <a href="/purchase-order-automation-manufacturing/" class="text-white/60 hover:text-white transition-colors"
-              >Manufacturing PO automation</a
-            >
-          </li>
-          <li>
-            <a href="/purchase-order-automation-distribution/" class="text-white/60 hover:text-white transition-colors"
-              >Distribution &amp; wholesale</a
-            >
-          </li>
-          <li>
-            <a href="/purchase-order-automation-sap/" class="text-white/60 hover:text-white transition-colors">SAP</a>
-          </li>
-          <li>
-            <a href="/purchase-order-automation-afas/" class="text-white/60 hover:text-white transition-colors">AFAS</a>
-          </li>
-          <li>
-            <a href="/po-processing-software-mid-market/" class="text-white/60 hover:text-white transition-colors"
-              >Mid-market PO software</a
-            >
-          </li>
-        </ul>
-      </div>
-
-      <div class="min-w-0">
-        <h4 class="text-xs font-bold uppercase tracking-widest mb-6">Legal</h4>
-        <ul class="space-y-4 text-sm">
-          <li><a href="/privacy" class="text-white/60 hover:text-white transition-colors">Privacy Policy</a></li>
-          <li>
-            <button
-              type="button"
-              id="open-cookie-settings"
-              class="text-white/60 hover:text-white transition-colors text-left w-full"
-            >
-              Cookie settings
-            </button>
-          </li>
-        </ul>
-      </div>
+      {
+        linkGroups.map((group, gi) => (
+          <div class="min-w-0">
+            <h3 class="text-xs font-bold uppercase tracking-widest mb-6">{group.heading}</h3>
+            <ul class="space-y-4 text-sm">
+              {group.links.map((link) => (
+                <li>
+                  <a
+                    href={link.href}
+                    class="text-white/60 hover:text-white transition-colors"
+                  >
+                    {link.text}
+                  </a>
+                </li>
+              ))}
+              {/* The cookie settings button is appended to the Legal group for GDPR UX */}
+              {gi === linkGroups.length - 1 && group.heading.toLowerCase().includes('legal') && (
+                <li>
+                  <button
+                    type="button"
+                    id="open-cookie-settings"
+                    class="text-white/60 hover:text-white transition-colors text-left w-full"
+                  >
+                    Cookie settings
+                  </button>
+                </li>
+              )}
+            </ul>
+          </div>
+        ))
+      }
     </div>
 
     <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] font-bold uppercase tracking-widest text-white/40">
-      <p>&copy; 2026 ORDERPILOT BY RB2. ALL RIGHTS RESERVED.</p>
+      <p>{copyright}</p>
       <div class="flex items-center gap-8">
-        <span>ISO 27001 CERTIFIED</span>
-        <span>GDPR COMPLIANT</span>
+        {complianceLabels.map((label) => <span>{label}</span>)}
       </div>
     </div>
   </div>

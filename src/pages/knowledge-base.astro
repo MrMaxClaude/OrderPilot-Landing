@@ -5,13 +5,22 @@ import PageLayout from '../layouts/PageLayout.astro';
 import FAQ from '../components/astro/FAQ.astro';
 import { ABOUT_ORDERPILOT_KB, GEO_HIDDEN_FAQ_PAIRS } from '../data/geoKnowledgeBase';
 import { GEO_USE_CASES } from '../data/geoUseCases';
-import { KB_RESOURCE_CARDS, KB_SUPPORT_TIPS } from '../data/kbPageContent';
 import { buildFaqPageSchema, stripHtmlToPlainText } from '../lib/geoFaqSchema';
+import {
+  articleUrl,
+  articlesByCategory,
+  estimateReadingTime,
+  filterPublished,
+  getCategoryLabel,
+} from '../lib/kbHelpers';
+import type { KbCategorySlug } from '../lib/kbHelpers';
+import { KB_CATEGORIES } from '../content.config';
 
 const pageMeta = await getEntry('pages', 'knowledge-base');
 if (!pageMeta) {
   throw new Error('Missing content collection entry: pages/knowledge-base');
 }
+
 const faqEntries = await getCollection('faqs');
 const mdProcessor = await getMarkdownProcessor();
 const faqs = await Promise.all(
@@ -33,6 +42,57 @@ const kbFaqSchema = buildFaqPageSchema({
   mainEntity: [...visiblePairs, ...GEO_HIDDEN_FAQ_PAIRS],
 });
 
+// KB article data for search index + category cards
+const allArticles = filterPublished(await getCollection('kb'));
+const byCategory = articlesByCategory(allArticles);
+
+// Curated "popular" shelf — editors flag popular:true in Keystatic; falls back
+// to the 3 newest articles if nothing is flagged.
+const popularArticles = (() => {
+  const flagged = allArticles.filter((a) => a.data.popular);
+  if (flagged.length > 0) return flagged.slice(0, 6);
+  return [...allArticles]
+    .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+    .slice(0, 3);
+})();
+
+const categoryMeta: Record<KbCategorySlug, { tagline: string; iconId: string }> = {
+  'getting-started': {
+    tagline: 'First-time setup, onboarding, and your first clean PO.',
+    iconId: 'rocket',
+  },
+  'integraties': {
+    tagline: 'ERP connectors for SAP, AFAS, Exact, Dynamics and more.',
+    iconId: 'plug',
+  },
+  'tips-best-practices': {
+    tagline: 'Playbooks from teams running OrderPilot in production.',
+    iconId: 'sparkles',
+  },
+  'faq': {
+    tagline: 'Direct answers on accuracy, security, formats, and pricing.',
+    iconId: 'help',
+  },
+  'updates': {
+    tagline: 'Monthly product changelog and new features.',
+    iconId: 'calendar',
+  },
+};
+
+const searchIndex = allArticles.map((entry) => ({
+  id: entry.id,
+  title: entry.data.title,
+  description: entry.data.description,
+  category: entry.data.category,
+  categoryLabel: getCategoryLabel(entry.data.category as KbCategorySlug),
+  tags: entry.data.tags,
+  url: articleUrl(entry),
+  publishedAt: entry.data.publishedAt.toISOString(),
+  readingTime: entry.data.readingTime ?? estimateReadingTime(entry.body ?? ''),
+  bodyPreview: stripHtmlToPlainText(entry.body ?? '').slice(0, 1200),
+  popular: entry.data.popular,
+}));
+
 function searchBlob(parts: string[]): string {
   return parts
     .join(' ')
@@ -40,22 +100,20 @@ function searchBlob(parts: string[]): string {
     .normalize('NFD')
     .replace(/\p{M}/gu, '');
 }
-
 const industrySearchStrings = GEO_USE_CASES.map((u) =>
   searchBlob([u.h1, u.title, u.description, u.path.replace(/-/g, ' ')]),
 );
-
-const aboutSearchBlob = searchBlob([ABOUT_ORDERPILOT_KB, 'about orderpilot', 'orderpilot']);
 ---
 
 <PageLayout
   title={pageMeta.data.title}
   description={pageMeta.data.description}
   ogImage={pageMeta.data.ogImage}
+  noindex={pageMeta.data.noindex}
   extraJsonLd={[kbFaqSchema]}
 >
   <div id="kb-page-root">
-    <!-- Hero + search (reference-style layout, OrderPilot colours) -->
+    <!-- Hero + search -->
     <section
       class="relative border-b border-gray-100/80 bg-card-white"
       aria-labelledby="kb-hero-heading"
@@ -69,119 +127,179 @@ const aboutSearchBlob = searchBlob([ABOUT_ORDERPILOT_KB, 'about orderpilot', 'or
       <div class="relative max-w-3xl mx-auto px-4 sm:px-6 pt-28 pb-14 text-center">
         <p class="text-xs font-bold uppercase tracking-[0.2em] text-text-muted mb-4">Knowledge base</p>
         <h1 id="kb-hero-heading" class="text-3xl sm:text-4xl md:text-5xl font-black text-text-primary tracking-tight mb-4">
-          How can we <span class="relative inline-block pb-1 border-b-[5px] border-rb2-orange">help</span> you?
+          How can we <span class="font-serif italic text-rb2-orange">help</span> you?
         </h1>
         <p class="text-text-secondary text-base sm:text-lg max-w-xl mx-auto mb-8">
-          Search guides, FAQs, and topics — or jump straight to industry automation, tools, and support tips.
+          Search guides, FAQs, and playbooks - or jump straight to a category below.
         </p>
 
-        <div
-          class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 rounded-2xl bg-card-white p-2 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)] border border-gray-100 max-w-xl mx-auto"
-        >
-          <label class="sr-only" for="kb-search-input">Search knowledge base</label>
-          <input
-            id="kb-search-input"
-            type="search"
-            autocomplete="off"
-            placeholder="Start typing your search…"
-            class="flex-1 min-w-0 rounded-xl px-4 py-3.5 text-sm text-text-primary placeholder:text-text-muted outline-none focus:ring-2 focus:ring-rb2-orange/25 bg-warm-bg/50 border border-transparent focus:border-rb2-orange/30"
-          />
-          <button
-            type="button"
-            id="kb-search-button"
-            class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-rb2-orange text-white hover:bg-rb2-orange-hover transition-colors shadow-md"
-            aria-label="Search"
+        <div class="relative max-w-xl mx-auto" data-kb-search-root>
+          <div
+            class="flex items-stretch gap-2 rounded-2xl bg-card-white p-2 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)] border border-gray-100"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          </button>
+            <label class="sr-only" for="kb-search-input">Search knowledge base</label>
+            <input
+              id="kb-search-input"
+              type="search"
+              autocomplete="off"
+              placeholder="Start typing your search…"
+              aria-controls="kb-search-listbox"
+              aria-expanded="false"
+              aria-autocomplete="list"
+              role="combobox"
+              class="flex-1 min-w-0 rounded-xl px-4 py-3.5 text-sm text-text-primary placeholder:text-text-muted outline-none focus:ring-2 focus:ring-rb2-orange/25 bg-warm-bg/50 border border-transparent focus:border-rb2-orange/30"
+            />
+            <button
+              type="button"
+              id="kb-search-clear"
+              class="hidden shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-warm-bg/60 text-text-muted hover:bg-warm-bg transition-colors"
+              aria-label="Clear search"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </div>
+
+          <!-- Autocomplete dropdown — absolutely anchored to the input, keyboard-navigable -->
+          <div
+            id="kb-search-dropdown"
+            class="hidden absolute left-0 right-0 top-[calc(100%+0.5rem)] z-20 rounded-2xl bg-card-white shadow-[0_20px_60px_-20px_rgba(0,0,0,0.2)] border border-gray-100 max-h-[60vh] overflow-y-auto text-left"
+          >
+            <ul
+              id="kb-search-listbox"
+              role="listbox"
+              aria-label="Search suggestions"
+              class="divide-y divide-gray-100"
+            ></ul>
+            <p
+              id="kb-search-empty"
+              class="hidden px-5 py-6 text-center text-sm text-text-muted"
+            >
+              No matches — try another keyword.
+            </p>
+            <a
+              id="kb-search-see-all"
+              href="#kb-categories"
+              class="hidden px-5 py-3 text-xs font-semibold text-rb2-orange text-center border-t border-gray-100 hover:bg-warm-bg/50 transition-colors"
+            >
+              Browse all categories →
+            </a>
+          </div>
         </div>
-        <p class="mt-4 text-sm text-text-muted">
-          Or <a href="#kb-pillars" class="font-semibold text-rb2-orange hover:underline">choose</a> a starting point below.
+        <p class="mt-4 text-sm text-text-muted" id="kb-search-hint">
+          Or <a href="#kb-categories" class="font-semibold text-rb2-orange hover:underline">choose</a> a category below.
         </p>
       </div>
     </section>
 
-    <!-- Three main pillars -->
+    <!-- 5 category cards grid -->
     <section
-      id="kb-pillars"
+      id="kb-categories"
       class="max-w-6xl mx-auto px-4 sm:px-6 py-14 md:py-16"
-      aria-labelledby="pillars-heading"
-      data-kb-section
+      aria-labelledby="categories-heading"
+      data-kb-default-section
     >
-      <h2 id="pillars-heading" class="sr-only">Main topics</h2>
-      <div class="grid md:grid-cols-3 gap-6 md:gap-8">
-        <a
-          href="#industry-guides"
-          class="group rounded-2xl border border-gray-100 bg-card-white p-8 shadow-sm hover:shadow-[0_16px_48px_-16px_rgba(0,0,0,0.12)] hover:border-rb2-orange/25 transition-all duration-300 flex flex-col text-left"
-          data-kb-block
-          data-kb-item={searchBlob(['industry guides', 'manufacturing', 'distribution', 'sap', 'afas', 'mid-market', 'purchase order automation'])}
-        >
-          <div class="w-12 h-12 rounded-xl bg-rb2-orange/10 text-rb2-orange flex items-center justify-center mb-5 group-hover:bg-rb2-orange/15 transition-colors" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8"/><path d="M8 11h8"/></svg>
-          </div>
-          <h3 class="text-lg font-black text-text-primary mb-2">Industry guides</h3>
-          <p class="text-sm text-text-secondary leading-relaxed flex-1">
-            Deep pages for manufacturing, wholesale, SAP, AFAS, and general mid-market PO programs — written for buyers and finance leaders.
-          </p>
-          <span class="mt-5 text-sm font-semibold text-rb2-orange group-hover:underline inline-flex items-center gap-1">
-            Browse guides
-            <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </span>
-        </a>
-
-        <a
-          href="#kb-faq"
-          class="group rounded-2xl border border-gray-100 bg-card-white p-8 shadow-sm hover:shadow-[0_16px_48px_-16px_rgba(0,0,0,0.12)] hover:border-rb2-orange/25 transition-all duration-300 flex flex-col text-left"
-          data-kb-block
-          data-kb-item={searchBlob(['faq', 'questions', 'pricing', 'accuracy', 'erp', 'integration', 'orderpilot'])}
-        >
-          <div class="w-12 h-12 rounded-xl bg-rb2-orange/10 text-rb2-orange flex items-center justify-center mb-5 group-hover:bg-rb2-orange/15 transition-colors" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
-          </div>
-          <h3 class="text-lg font-black text-text-primary mb-2">FAQ</h3>
-          <p class="text-sm text-text-secondary leading-relaxed flex-1">
-            Answers on accuracy, ERP connectors, security, and how OrderPilot fits next to your existing procurement stack.
-          </p>
-          <span class="mt-5 text-sm font-semibold text-rb2-orange group-hover:underline inline-flex items-center gap-1">
-            Open questions
-            <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </span>
-        </a>
-
-        <a
-          href="#kb-resources"
-          class="group rounded-2xl border border-gray-100 bg-card-white p-8 shadow-sm hover:shadow-[0_16px_48px_-16px_rgba(0,0,0,0.12)] hover:border-rb2-orange/25 transition-all duration-300 flex flex-col text-left"
-          data-kb-block
-          data-kb-item={searchBlob(['calculator', 'roi', 'pricing', 'cases', 'privacy', 'resources', 'tools'])}
-        >
-          <div class="w-12 h-12 rounded-xl bg-rb2-orange/10 text-rb2-orange flex items-center justify-center mb-5 group-hover:bg-rb2-orange/15 transition-colors" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-          </div>
-          <h3 class="text-lg font-black text-text-primary mb-2">Tools &amp; resources</h3>
-          <p class="text-sm text-text-secondary leading-relaxed flex-1">
-            ROI calculator, pricing, customer stories, and privacy — everything to evaluate OrderPilot with your CFO and IT lead.
-          </p>
-          <span class="mt-5 text-sm font-semibold text-rb2-orange group-hover:underline inline-flex items-center gap-1">
-            Explore resources
-            <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </span>
-        </a>
+      <h2 id="categories-heading" class="sr-only">Categories</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+        {
+          KB_CATEGORIES.map((cat) => {
+            const meta = categoryMeta[cat.slug];
+            const count = byCategory.get(cat.slug)?.length ?? 0;
+            return (
+              <a
+                href={`/knowledge-base/${cat.slug}/`}
+                class="group rounded-2xl border border-gray-100 bg-card-white p-8 shadow-sm hover:shadow-[0_16px_48px_-16px_rgba(0,0,0,0.12)] hover:border-rb2-orange/25 transition-all duration-300 flex flex-col text-left"
+              >
+                <div class="w-12 h-12 rounded-xl bg-rb2-orange/10 text-rb2-orange flex items-center justify-center mb-5 group-hover:bg-rb2-orange/15 transition-colors" aria-hidden="true">
+                  {meta.iconId === 'rocket' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+                  )}
+                  {meta.iconId === 'plug' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-5"/><path d="M9 7V2"/><path d="M15 7V2"/><path d="M6 13V8a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4Z"/></svg>
+                  )}
+                  {meta.iconId === 'sparkles' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M3 12h18"/><path d="m5.63 5.63 12.74 12.74"/><path d="m18.37 5.63L5.63 18.37"/></svg>
+                  )}
+                  {meta.iconId === 'help' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                  )}
+                  {meta.iconId === 'calendar' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+                  )}
+                </div>
+                <h3 class="text-lg font-black text-text-primary mb-2">{cat.label}</h3>
+                <p class="text-sm text-text-secondary leading-relaxed flex-1">
+                  {meta.tagline}
+                </p>
+                <div class="mt-5 flex items-center justify-between">
+                  <span class="text-sm font-semibold text-rb2-orange group-hover:underline inline-flex items-center gap-1">
+                    Browse
+                    <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                  </span>
+                  <span class="text-xs text-text-muted">
+                    {count} {count === 1 ? 'article' : 'articles'}
+                  </span>
+                </div>
+              </a>
+            );
+          })
+        }
       </div>
     </section>
 
-    <!-- Industry guides (wide link rows + chevron) -->
+    <!-- Popular articles shelf -->
+    {
+      popularArticles.length > 0 && (
+        <section
+          id="kb-popular"
+          class="max-w-6xl mx-auto px-4 sm:px-6 pb-12 md:pb-14"
+          aria-labelledby="popular-heading"
+          data-kb-default-section
+        >
+          <div class="flex items-end justify-between gap-4 mb-6">
+            <h2 id="popular-heading" class="text-lg font-black text-text-primary">
+              Popular articles
+            </h2>
+            <a href="#kb-categories" class="text-xs font-semibold text-rb2-orange hover:underline shrink-0">
+              See all categories
+            </a>
+          </div>
+          <ul class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {popularArticles.map((a) => (
+              <li>
+                <a
+                  href={articleUrl(a)}
+                  class="group flex h-full flex-col rounded-2xl border border-gray-100 bg-card-white p-5 shadow-sm hover:shadow-md hover:border-rb2-orange/25 transition-all"
+                >
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-text-muted mb-2">
+                    {getCategoryLabel(a.data.category as KbCategorySlug)}
+                  </span>
+                  <span class="text-[15px] font-black text-text-primary group-hover:text-rb2-orange transition-colors leading-snug mb-2">
+                    {a.data.title}
+                  </span>
+                  <span class="text-sm text-text-secondary leading-relaxed flex-1 line-clamp-3">
+                    {a.data.description}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <!-- Industry guides -->
     <section
       id="industry-guides"
       class="max-w-6xl mx-auto px-4 sm:px-6 pb-16 md:pb-20"
       aria-labelledby="industry-guides-heading"
-      data-kb-section
+      data-kb-default-section
     >
       <div class="max-w-2xl mx-auto text-center mb-10">
         <h2 id="industry-guides-heading" class="text-2xl md:text-3xl font-black text-text-primary tracking-tight mb-3">
-          Industry-specific guides
+          Industry guides
         </h2>
         <p class="text-sm md:text-base text-text-secondary leading-relaxed">
-          SEO-focused landing pages for how OrderPilot applies to your sector and stack — each with its own FAQs for long-tail discovery.
+          Deep landing pages for how OrderPilot applies to your sector and stack.
         </p>
       </div>
       <ul class="max-w-3xl mx-auto space-y-2.5" id="kb-industry-list">
@@ -212,218 +330,206 @@ const aboutSearchBlob = searchBlob([ABOUT_ORDERPILOT_KB, 'about orderpilot', 'or
       </ul>
     </section>
 
-    <!-- Support tips (accordion) -->
-    <section
-      class="max-w-6xl mx-auto px-4 sm:px-6 pb-16 md:pb-20"
-      aria-labelledby="support-tips-heading"
-      data-kb-section
-    >
-      <div class="max-w-2xl mx-auto text-center mb-10">
-        <h2 id="support-tips-heading" class="text-2xl md:text-3xl font-black text-text-primary tracking-tight mb-3">
-          Support &amp; tips
-        </h2>
-        <p class="text-sm md:text-base text-text-secondary leading-relaxed">
-          Practical notes for procurement and finance teams rolling out automated PO intake.
-        </p>
-      </div>
-      <div class="max-w-3xl mx-auto space-y-2.5" data-kb-accordion="tips">
-        {
-          KB_SUPPORT_TIPS.map((tip, i) => (
-            <details
-              class="group rounded-xl border border-gray-100 bg-card-white transition-all duration-300 open:border-rb2-orange/40 open:shadow-md"
-              open={i === 0}
-              data-kb-row
-              data-kb-item={searchBlob([tip.title, tip.text])}
-            >
-              <summary class="w-full text-left px-5 py-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden gap-3">
-                <span class="text-[15px] font-bold text-rb2-orange">{tip.title}</span>
-                <svg
-                  class="w-5 h-5 text-rb2-orange shrink-0 transition-transform group-open:rotate-180"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </summary>
-              <div class="px-5 pb-5 text-sm text-text-secondary leading-relaxed border-t border-gray-50 pt-4">
-                {tip.text}
-              </div>
-            </details>
-          ))
-        }
-      </div>
-    </section>
-
-    <!-- Resource cards -->
-    <section
-      id="kb-resources"
-      class="border-t border-gray-100 bg-warm-bg-alt/80"
-      aria-labelledby="resources-heading"
-      data-kb-section
-    >
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-20">
-        <div class="max-w-2xl mx-auto text-center mb-10">
-          <h2 id="resources-heading" class="text-2xl md:text-3xl font-black text-text-primary tracking-tight mb-3">
-            Resources
-          </h2>
-          <p class="text-sm md:text-base text-text-secondary leading-relaxed">
-            Shortcuts visitors use before booking a demo — good for SEO internal linking and clearer journeys.
-          </p>
-        </div>
-        <ul class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {
-            KB_RESOURCE_CARDS.map((r) => (
-              <li data-kb-row data-kb-item={searchBlob([r.title, r.excerpt, r.label, r.href])}>
-                <a
-                  href={r.href}
-                  class="flex h-full flex-col rounded-2xl border border-gray-100 bg-card-white p-6 shadow-sm hover:shadow-lg hover:border-rb2-orange/25 transition-all group"
-                >
-                  <span class="text-[10px] font-bold uppercase tracking-wider text-text-muted mb-2">{r.label}</span>
-                  <span class="text-base font-black text-text-primary group-hover:text-rb2-orange transition-colors mb-2">{r.title}</span>
-                  <span class="text-sm text-text-secondary leading-relaxed flex-1">{r.excerpt}</span>
-                  <span class="mt-4 text-sm font-semibold text-rb2-orange inline-flex items-center gap-1">
-                    Open
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                  </span>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-    </section>
-
-    <!-- Featured SEO articles (same guides, card layout) -->
-    <section class="max-w-6xl mx-auto px-4 sm:px-6 py-16 md:py-20" aria-labelledby="featured-heading" data-kb-section>
-      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
-        <div>
-          <h2 id="featured-heading" class="text-2xl md:text-3xl font-black text-text-primary tracking-tight mb-2">
-            Featured articles
-          </h2>
-          <p class="text-sm text-text-secondary max-w-xl">
-            Long-form hubs aligned to how buyers search for purchase order automation.
-          </p>
-        </div>
-        <a href="#industry-guides" class="text-sm font-semibold text-rb2-orange hover:underline shrink-0">All guides</a>
-      </div>
-      <ul class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {
-          GEO_USE_CASES.map((u, i) => (
-            <li data-kb-row data-kb-item={industrySearchStrings[i]}>
-              <article class="h-full rounded-2xl border border-gray-100 bg-card-white p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col">
-                <p class="text-xs text-text-muted mb-2">Updated {i === 0 ? 'April' : 'March'} 2026</p>
-                <h3 class="text-lg font-black text-rb2-orange leading-snug mb-3">
-                  <a href={`/${u.path}/`} class="hover:underline">
-                    {u.h1}
-                  </a>
-                </h3>
-                <p class="text-sm text-text-secondary leading-relaxed flex-1 line-clamp-4">{u.intro}</p>
-                <a
-                  href={`/${u.path}/`}
-                  class="mt-4 text-sm font-semibold text-text-primary hover:text-rb2-orange inline-flex items-center gap-1"
-                >
-                  Read guide
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                </a>
-              </article>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
-
-    <!-- About (GEO-visible copy) -->
+    <!-- About (GEO copy) -->
     <section
       class="max-w-3xl mx-auto px-4 sm:px-6 pb-8"
       aria-labelledby="about-kb-heading"
-      data-kb-section
+      data-kb-default-section
     >
       <h2 id="about-kb-heading" class="text-lg font-black text-text-primary mb-3">About OrderPilot</h2>
-      <p class="text-text-secondary leading-relaxed text-sm sm:text-base" data-kb-row data-kb-item={aboutSearchBlob}>
+      <p class="text-text-secondary leading-relaxed text-sm sm:text-base">
         {ABOUT_ORDERPILOT_KB}
       </p>
     </section>
 
     <FAQ faqs={faqs} sectionId="kb-faq" variant="minimal" />
-
-    <p id="kb-search-empty" class="hidden max-w-xl mx-auto px-4 text-center text-sm text-text-muted pb-10" role="status">
-      No matches — try another keyword or scroll the sections below.
-    </p>
   </div>
 </PageLayout>
 
+<script type="application/json" id="kb-search-index" set:html={JSON.stringify(searchIndex)} />
+
 <script>
-  function runKbSearch() {
-    const input = document.getElementById('kb-search-input') as HTMLInputElement | null;
-    const empty = document.getElementById('kb-search-empty');
-    if (!input) return;
+  import Fuse from 'fuse.js';
+  import posthog from 'posthog-js';
 
-    const q = input.value
-      .trim()
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/\p{M}/gu, '');
+  type IndexItem = {
+    id: string;
+    title: string;
+    description: string;
+    category: string;
+    categoryLabel: string;
+    tags: string[];
+    url: string;
+    publishedAt: string;
+    readingTime: number;
+    bodyPreview: string;
+    popular: boolean;
+  };
 
-    const rows = document.querySelectorAll('#kb-page-root [data-kb-row]');
-    const blocks = document.querySelectorAll('#kb-page-root [data-kb-block]');
-    const sections = document.querySelectorAll('#kb-page-root [data-kb-section]');
+  const indexEl = document.getElementById('kb-search-index');
+  const input = document.getElementById('kb-search-input') as HTMLInputElement | null;
+  const clearBtn = document.getElementById('kb-search-clear') as HTMLButtonElement | null;
+  const dropdown = document.getElementById('kb-search-dropdown');
+  const listbox = document.getElementById('kb-search-listbox');
+  const emptyMsg = document.getElementById('kb-search-empty');
+  const seeAllLink = document.getElementById('kb-search-see-all');
 
-    let anyMatch = false;
-
-    const match = (hay: string) => !q || hay.includes(q);
-
-    rows.forEach((el) => {
-      let hay = (el.getAttribute('data-kb-item') || '').toLowerCase();
-      if (el instanceof HTMLDetailsElement || el.tagName === 'DETAILS') {
-        const d = el as HTMLDetailsElement;
-        hay = `${hay} ${(d.textContent || '').toLowerCase()}`;
-      }
-      const ok = match(hay);
-      if (ok) anyMatch = true;
-      (el as HTMLElement).classList.toggle('hidden', !ok);
+  if (indexEl && input && dropdown && listbox && emptyMsg) {
+    const data: IndexItem[] = JSON.parse(indexEl.textContent || '[]');
+    const fuse = new Fuse(data, {
+      keys: [
+        { name: 'title', weight: 0.4 },
+        { name: 'description', weight: 0.2 },
+        { name: 'tags', weight: 0.2 },
+        { name: 'categoryLabel', weight: 0.1 },
+        { name: 'bodyPreview', weight: 0.1 },
+      ],
+      threshold: 0.35,
+      ignoreLocation: true,
+      minMatchCharLength: 2,
     });
 
-    blocks.forEach((el) => {
-      const hay = (el.getAttribute('data-kb-item') || '').toLowerCase();
-      const ok = match(hay);
-      if (ok) anyMatch = true;
-      (el as HTMLElement).classList.toggle('hidden', !ok);
-    });
+    let activeIndex = -1;
+    let currentHits: IndexItem[] = [];
+    let lastQuery = '';
 
-    sections.forEach((section) => {
-      const visible = section.querySelector(
-        '[data-kb-row]:not(.hidden), [data-kb-block]:not(.hidden), details:not(.hidden)',
+    function escape(s: string): string {
+      return s.replace(/[&<>"']/g, (c) =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] ?? c,
       );
-      (section as HTMLElement).classList.toggle('hidden', !!(q && !visible));
+    }
+
+    function render() {
+      listbox!.innerHTML = currentHits
+        .map(
+          (it, i) => `
+          <li role="option" id="kb-search-opt-${i}" aria-selected="${i === activeIndex}" data-index="${i}">
+            <a href="${escape(it.url)}" data-search-link class="group flex items-start gap-3 px-5 py-3 text-left hover:bg-warm-bg/60 ${i === activeIndex ? 'bg-warm-bg/60' : ''} transition-colors">
+              <span class="shrink-0 mt-1 text-rb2-orange" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </span>
+              <span class="min-w-0 flex-1">
+                <span class="block text-[10px] font-bold uppercase tracking-wider text-text-muted">${escape(it.categoryLabel)}</span>
+                <span class="block text-sm font-semibold text-text-primary group-hover:text-rb2-orange transition-colors leading-snug truncate">${escape(it.title)}</span>
+                <span class="block text-xs text-text-muted leading-snug line-clamp-1 mt-0.5">${escape(it.description)}</span>
+              </span>
+            </a>
+          </li>`,
+        )
+        .join('');
+    }
+
+    function openDropdown() {
+      dropdown!.classList.remove('hidden');
+      input!.setAttribute('aria-expanded', 'true');
+    }
+    function closeDropdown() {
+      dropdown!.classList.add('hidden');
+      input!.setAttribute('aria-expanded', 'false');
+      input!.removeAttribute('aria-activedescendant');
+      activeIndex = -1;
+    }
+
+    function runSearch(q: string) {
+      lastQuery = q;
+      if (q.length < 2) {
+        closeDropdown();
+        clearBtn?.classList.toggle('hidden', q.length === 0);
+        return;
+      }
+      const hits = fuse.search(q).map((r) => r.item).slice(0, 8);
+      currentHits = hits;
+      activeIndex = hits.length > 0 ? 0 : -1;
+      render();
+      emptyMsg!.classList.toggle('hidden', hits.length > 0);
+      listbox!.classList.toggle('hidden', hits.length === 0);
+      seeAllLink!.classList.toggle('hidden', hits.length === 0);
+      clearBtn?.classList.remove('hidden');
+      openDropdown();
+      if (activeIndex >= 0) {
+        input!.setAttribute('aria-activedescendant', `kb-search-opt-${activeIndex}`);
+      }
+      try {
+        posthog.capture('kb_search', { query: q, result_count: hits.length });
+      } catch {}
+    }
+
+    function moveActive(delta: number) {
+      if (currentHits.length === 0) return;
+      activeIndex = (activeIndex + delta + currentHits.length) % currentHits.length;
+      input!.setAttribute('aria-activedescendant', `kb-search-opt-${activeIndex}`);
+      render();
+      const activeEl = listbox!.querySelector(`#kb-search-opt-${activeIndex}`);
+      activeEl?.scrollIntoView({ block: 'nearest' });
+    }
+
+    input.addEventListener('input', () => runSearch(input!.value.trim()));
+    input.addEventListener('focus', () => {
+      if (lastQuery.length >= 2) openDropdown();
+    });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (dropdown!.classList.contains('hidden')) runSearch(input!.value.trim());
+        else moveActive(1);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        moveActive(-1);
+      } else if (e.key === 'Enter') {
+        if (activeIndex >= 0 && currentHits[activeIndex]) {
+          e.preventDefault();
+          try {
+            posthog.capture('kb_search_result_click', {
+              query: lastQuery,
+              slug: currentHits[activeIndex].id,
+              rank: activeIndex + 1,
+            });
+          } catch {}
+          window.location.href = currentHits[activeIndex].url;
+        }
+      } else if (e.key === 'Escape') {
+        closeDropdown();
+      }
     });
 
-    if (empty) {
-      empty.classList.toggle('hidden', !q || anyMatch);
-    }
+    listbox.addEventListener('mousemove', (e) => {
+      const li = (e.target as HTMLElement).closest('li[data-index]');
+      if (!li) return;
+      const idx = Number(li.getAttribute('data-index'));
+      if (Number.isFinite(idx) && idx !== activeIndex) {
+        activeIndex = idx;
+        render();
+      }
+    });
+
+    listbox.addEventListener('click', (e) => {
+      const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[data-search-link]');
+      if (!a) return;
+      const li = a.closest('li[data-index]');
+      const idx = Number(li?.getAttribute('data-index') ?? -1);
+      if (idx >= 0 && currentHits[idx]) {
+        try {
+          posthog.capture('kb_search_result_click', {
+            query: lastQuery,
+            slug: currentHits[idx].id,
+            rank: idx + 1,
+          });
+        } catch {}
+      }
+    });
+
+    clearBtn?.addEventListener('click', () => {
+      input!.value = '';
+      lastQuery = '';
+      clearBtn.classList.add('hidden');
+      closeDropdown();
+      input!.focus();
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      const root = document.querySelector('[data-kb-search-root]');
+      if (root && !root.contains(e.target as Node)) closeDropdown();
+    });
   }
-
-  const input = document.getElementById('kb-search-input');
-  const btn = document.getElementById('kb-search-button');
-  input?.addEventListener('input', runKbSearch);
-  input?.addEventListener('search', runKbSearch);
-  btn?.addEventListener('click', runKbSearch);
-
-  document.querySelectorAll('[data-kb-accordion="tips"]').forEach((root) => {
-    root.addEventListener(
-      'toggle',
-      (e) => {
-        const target = e.target as HTMLDetailsElement;
-        if (!target.open || !(target instanceof HTMLDetailsElement)) return;
-        root.querySelectorAll('details[open]').forEach((el) => {
-          if (el !== target) (el as HTMLDetailsElement).open = false;
-        });
-      },
-      true,
-    );
-  });
 </script>

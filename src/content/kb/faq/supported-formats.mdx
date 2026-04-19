@@ -1,0 +1,59 @@
+---
+title: "What file formats and languages does OrderPilot support?"
+description: "Complete list of supported input formats, languages, and known edge cases - plus what happens when a format falls outside the supported set."
+category: "faq"
+tags: ["formats", "compatibility"]
+publishedAt: 2026-04-14
+order: 2
+---
+
+OrderPilot is designed to handle the messy reality of supplier PO flows, not a clean happy-path. Here's what that means in practice.
+
+## Supported file formats
+
+| Format | Supported | Notes |
+| --- | --- | --- |
+| PDF (text) | Yes | Native text extraction, fastest |
+| PDF (scanned) | Yes | OCR path, slightly slower |
+| PNG / JPG | Yes | Treated as scanned docs |
+| TIFF | Yes | Multi-page supported |
+| XLSX / CSV | Yes | Structured tabular format |
+| EDIFACT / X12 | Yes | Via separate EDI module |
+| DOCX | Yes | Converted to PDF internally |
+| HTML email bodies | Yes | Plain-text and HTML both parsed |
+| XML (UBL, cXML) | Yes | Native structured parse |
+
+## Languages
+
+Document extraction works across 20+ languages including all major European languages. Our European customer base uses OrderPilot daily in:
+
+- English, Dutch, German, French
+- Spanish, Italian, Portuguese
+- Polish, Czech, Hungarian
+- Danish, Swedish, Norwegian, Finnish
+
+We auto-detect the language per document - no config needed.
+
+## Handwritten content
+
+Any handwritten fields are flagged for manual review by default. Printed-and-signed POs extract normally; the signature doesn't confuse the model.
+
+## Edge cases worth knowing about
+
+**Password-protected PDFs.** We don't break passwords. If a supplier sends protected PDFs, either strip the password upstream or ask them to disable it.
+
+**Extremely large PDFs (>500 pages).** Split them first. PDFs that large are almost always multiple POs in one file - we flag them in the queue.
+
+**Legacy EDIFACT variants.** If your supplier sends a non-standard EDIFACT profile (custom segment order, proprietary tags), we may need a 30-minute mapping session. This is rare.
+
+**Faxed POs.** Fax is a scanned image. Works fine.
+
+## What happens when a format isn't supported
+
+The document lands in the **Unsupported formats** queue with a clear reason. You can then:
+
+- Convert it upstream and re-submit
+- Send a sample to support for format evaluation
+- Skip it (we'll exclude it from accuracy reports)
+
+We support adding new formats for customers with a consistent volume; ask during onboarding if you have something unusual.

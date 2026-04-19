@@ -1,0 +1,61 @@
+---
+title: "Reducing PO errors systematically - a 4-week playbook"
+description: "Teams that cut PO error rate from 3 % to under 0.5 % in one month follow this exact sequence. Each week builds on the last and the work is small but non-negotiable."
+category: "tips-best-practices"
+tags: ["process", "quality"]
+publishedAt: 2026-04-12
+order: 1
+popular: true
+relatedArticles: ["monthly-audit"]
+---
+
+The teams with the cleanest PO accuracy aren't doing anything magical - they're being deliberate about feedback loops. Here's what they do.
+
+## Week 1: Measure the baseline
+
+Before you can reduce errors, write down what counts as an error. Most teams use:
+
+- **Field-level accuracy** - any corrected field is an error
+- **Document-level accuracy** - any PO requiring a correction is an error
+
+Pick one definition and stick to it. Export OrderPilot's accuracy report for the last 30 days. Expect 97–99 % field accuracy and 85–95 % document accuracy on your first measurement.
+
+## Week 2: Fix the top 3 suppliers
+
+Sort your error log by supplier. In almost every case, 60–70 % of errors come from the top 3–5 suppliers - usually because their PDF templates have a quirk (merged header cells, multi-currency totals, non-standard date formats).
+
+For each, do one of three things:
+
+1. Upload an updated layout template to OrderPilot's supplier profile
+2. Ask the supplier to switch to a cleaner PDF export
+3. Create a rule in **Settings › Supplier rules** (e.g., "this supplier always sends kg, not lbs")
+
+You'll usually cut the error rate by half just from this step.
+
+## Week 3: Tighten SKU mapping
+
+The second biggest error source is SKU mismatches. Common patterns:
+
+- Supplier uses product name; your ERP uses SKU
+- Supplier uses old SKU; you've renumbered
+- Supplier uses UoM "case of 12"; you store as "12 x each"
+
+Upload a **supplier ↔ SKU ↔ UoM** table once. OrderPilot will match aggressively and you'll only see uncertain cases in the queue.
+
+## Week 4: Institute a weekly review
+
+By now you should be under 1 % document error rate. Keep it there with a 15-minute weekly ritual:
+
+- Pull the accuracy report
+- Look at the top 3 error causes that week
+- Fix one (template, rule, mapping) - just one
+- Note the fix in a shared doc
+
+Compounding weekly gains beat one-time cleanups.
+
+## Common traps
+
+- **Don't disable auto-approval prematurely.** If you route everything to manual review, you lose the active learning signal. Trust the confidence scores.
+- **Don't correct silently in the ERP.** If you fix a PO in AFAS/SAP without correcting it in OrderPilot, the model never learns. Always correct in OrderPilot first.
+
+After 4 weeks, most teams settle at 0.3–0.5 % error rate indefinitely. That's where the ROI really shows up.

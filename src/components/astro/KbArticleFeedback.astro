@@ -1,0 +1,191 @@
+---
+interface Props {
+  articleSlug: string;
+}
+
+const { articleSlug } = Astro.props;
+---
+
+<aside
+  class="mt-16 rounded-2xl border border-gray-100 bg-card-white p-6 sm:p-8 shadow-sm"
+  data-kb-feedback
+  data-article-slug={articleSlug}
+  aria-labelledby="kb-feedback-heading"
+>
+  <div data-kb-feedback-prompt>
+    <h2
+      id="kb-feedback-heading"
+      class="text-base sm:text-lg font-black text-text-primary mb-4"
+    >
+      Was this article helpful?
+    </h2>
+    <div class="flex flex-wrap gap-3">
+      <button
+        type="button"
+        data-kb-feedback-btn="yes"
+        aria-label="Yes, this article was helpful"
+        class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-warm-bg/60 px-5 py-2.5 text-sm font-semibold text-text-primary hover:border-rb2-orange/40 hover:text-rb2-orange hover:bg-card-white transition-all"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M7.493 18.75c-.425 0-.82-.236-.975-.632A7.48 7.48 0 0 1 6 15.375c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V3a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23h-.777z"/>
+          <path d="M2.331 10.977a11.969 11.969 0 0 0-.831 4.398 12 12 0 0 0 .52 3.507c.26.85 1.084 1.368 1.973 1.368H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 0 1-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227z"/>
+        </svg>
+        Yes
+      </button>
+      <button
+        type="button"
+        data-kb-feedback-btn="no"
+        aria-label="No, this article was not helpful"
+        class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-warm-bg/60 px-5 py-2.5 text-sm font-semibold text-text-primary hover:border-rb2-orange/40 hover:text-rb2-orange hover:bg-card-white transition-all"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M15.73 5.25h1.035A7.465 7.465 0 0 1 18 9.375a7.465 7.465 0 0 1-1.235 4.125h-.148c-.806 0-1.534.446-2.031 1.08a9.04 9.04 0 0 1-2.861 2.4c-.723.384-1.35.956-1.653 1.715a4.498 4.498 0 0 0-.322 1.672V21a.75.75 0 0 1-.75.75 2.25 2.25 0 0 1-2.25-2.25c0-1.152.26-2.243.723-3.218.266-.558-.107-1.282-.725-1.282H3.622c-1.026 0-1.945-.694-2.054-1.715a12.137 12.137 0 0 1-.068-1.285c0-2.848.992-5.464 2.649-7.521C4.537 4.247 5.136 4 5.754 4H9.77a4.5 4.5 0 0 1 1.423.23l3.114 1.04a4.5 4.5 0 0 0 1.423.23zM21.669 13.023c.536-1.362.831-2.845.831-4.398 0-1.22-.182-2.398-.52-3.507-.26-.85-1.084-1.368-1.973-1.368H19.1c-.445 0-.72.498-.523.898.591 1.2.924 2.55.924 3.977a8.959 8.959 0 0 1-1.302 4.666c-.245.403.028.959.5.959h1.053c.832 0 1.612-.453 1.918-1.227z"/>
+        </svg>
+        No
+      </button>
+    </div>
+    <p class="mt-4 text-xs text-text-muted">
+      Feedback helps us prioritise what to improve next.
+    </p>
+  </div>
+
+  <form
+    data-kb-feedback-form
+    class="hidden space-y-4"
+    aria-label="Share why this article was not helpful"
+  >
+    <h2 class="text-base sm:text-lg font-black text-text-primary">
+      Thanks - what could we improve?
+    </h2>
+    <label class="block">
+      <span class="sr-only">Your feedback</span>
+      <textarea
+        name="comment"
+        rows="3"
+        maxlength="500"
+        placeholder="Optional: tell us what was missing or unclear."
+        class="w-full rounded-xl border border-gray-200 bg-warm-bg/40 px-4 py-3 text-sm text-text-primary placeholder:text-text-muted outline-none focus:ring-2 focus:ring-rb2-orange/25 focus:border-rb2-orange/30"
+      ></textarea>
+    </label>
+    <div class="flex items-center gap-3">
+      <button
+        type="submit"
+        class="inline-flex items-center rounded-full bg-rb2-orange px-5 py-2.5 text-sm font-semibold text-white hover:bg-rb2-orange-hover transition-colors"
+      >
+        Send feedback
+      </button>
+      <button
+        type="button"
+        data-kb-feedback-skip
+        class="text-sm font-medium text-text-muted hover:text-text-primary transition-colors"
+      >
+        Skip
+      </button>
+    </div>
+  </form>
+
+  <div
+    data-kb-feedback-thanks
+    class="hidden text-sm text-text-secondary"
+    role="status"
+  >
+    Thanks for the feedback - we use it to improve the knowledge base.
+  </div>
+</aside>
+
+<script>
+  import posthog from 'posthog-js';
+
+  const STORAGE_KEY_PREFIX = 'kb-feedback:';
+
+  function readStoredVote(slug: string): string | null {
+    try {
+      return localStorage.getItem(STORAGE_KEY_PREFIX + slug);
+    } catch {
+      return null;
+    }
+  }
+  function writeStoredVote(slug: string, rating: string) {
+    try {
+      localStorage.setItem(STORAGE_KEY_PREFIX + slug, rating);
+    } catch {
+      // private-mode Safari etc — ignore, worst case we ask again next visit
+    }
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-kb-feedback]').forEach((root) => {
+    const slug = root.dataset.articleSlug ?? '';
+    const prompt = root.querySelector<HTMLElement>('[data-kb-feedback-prompt]');
+    const form = root.querySelector<HTMLFormElement>('[data-kb-feedback-form]');
+    const thanks = root.querySelector<HTMLElement>('[data-kb-feedback-thanks]');
+    const skipBtn = root.querySelector<HTMLButtonElement>('[data-kb-feedback-skip]');
+
+    let voted = false;
+
+    function showThanks() {
+      prompt?.classList.add('hidden');
+      form?.classList.add('hidden');
+      thanks?.classList.remove('hidden');
+    }
+
+    // If the visitor already voted in a past session, skip straight to thanks
+    // so we don't nag them for every repeat visit.
+    const prior = readStoredVote(slug);
+    if (prior === 'yes' || prior === 'no') {
+      voted = true;
+      showThanks();
+    }
+
+    root.querySelectorAll<HTMLButtonElement>('[data-kb-feedback-btn]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const rating = btn.dataset.kbFeedbackBtn ?? '';
+        voted = true;
+        writeStoredVote(slug, rating);
+        try {
+          posthog.capture('kb_article_feedback', {
+            article_slug: slug,
+            rating,
+            url: window.location.pathname,
+          });
+        } catch {}
+        if (rating === 'yes') {
+          showThanks();
+        } else {
+          prompt?.classList.add('hidden');
+          form?.classList.remove('hidden');
+          form?.querySelector('textarea')?.focus();
+        }
+      });
+    });
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const comment = (form.querySelector<HTMLTextAreaElement>('textarea')?.value ?? '').trim();
+      try {
+        posthog.capture('kb_article_feedback_comment', {
+          article_slug: slug,
+          comment,
+          url: window.location.pathname,
+        });
+      } catch {}
+      showThanks();
+    });
+
+    skipBtn?.addEventListener('click', () => {
+      showThanks();
+    });
+
+    // If the visitor leaves without voting, record that — it's a signal
+    // distinct from a "no" (disengaged vs unhelpful).
+    window.addEventListener('pagehide', () => {
+      if (!voted) {
+        try {
+          posthog.capture('kb_article_no_vote', {
+            article_slug: slug,
+            url: window.location.pathname,
+          });
+        } catch {}
+      }
+    });
+  });
+</script>

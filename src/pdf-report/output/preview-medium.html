@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PO Processing Cost Analysis — MidMarket Industries</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<title>PO Processing Cost Analysis - IPN Pet Food</title>
+<!-- External fonts removed for PDF reliability -->
 <style>
   :root {
     --orange: #FF4500;
@@ -33,7 +33,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
     color: var(--dark);
     background: var(--white);
     font-size: 11px;
@@ -52,7 +52,7 @@
   .page:last-child { page-break-after: avoid; }
 
   /* Typography */
-  .accent { font-family: 'Playfair Display', serif; font-style: italic; }
+  .accent { font-family: Georgia, 'Times New Roman', serif; font-style: italic; }
   h1 { font-size: 28px; font-weight: 800; line-height: 1.15; letter-spacing: -0.5px; }
   h2 { font-size: 20px; font-weight: 700; line-height: 1.25; letter-spacing: -0.3px; }
   h3 { font-size: 14px; font-weight: 700; line-height: 1.3; }
@@ -203,15 +203,28 @@
   .table .highlight-row { background: var(--orange-light); }
   .table .highlight-row td { font-weight: 600; }
 
-  /* Meter */
+  /* Meter: green (top performers, left) to red (worst, right) so the marker
+     reads naturally: further right means higher cost per PO. */
   .meter {
     width: 100%;
     height: 10px;
-    background: linear-gradient(to right, var(--red), #F59E0B, var(--green));
+    background: linear-gradient(to right, var(--green), #F59E0B, var(--red));
     border-radius: 5px;
     position: relative;
     margin: 8px 0;
   }
+  .meter-legend {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--gray-500, #9CA3AF);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .meter-legend span:first-child { color: var(--green); }
+  .meter-legend span:last-child { color: var(--red); }
   .meter-marker {
     position: absolute;
     top: -4px;
@@ -405,10 +418,10 @@
   <h1>PO Processing<br>Cost Analysis</h1>
   <p class="cover-sub">A personalized breakdown of your purchase order processing costs, benchmarked against industry standards.</p>
   <div class="cover-meta">
-    <p>Prepared for <strong>MidMarket Industries</strong></p>
-    <p style="margin-top: 4px;">10 March 2026</p>
+    <p>Prepared for <strong>IPN Pet Food</strong></p>
+    <p style="margin-top: 4px;">19 April 2026</p>
   </div>
-  <div class="cover-footer">order-pilot.ai &mdash; AI-powered PO processing</div>
+  <div class="cover-footer">order-pilot.ai - AI-powered PO processing</div>
 </div>
 
 <!-- ==================== PAGE 2: EXECUTIVE SUMMARY ==================== -->
@@ -427,24 +440,24 @@
   </div>
 
   <h2>Your PO processing costs you</h2>
-  <div class="big-number mt-8">€99.846</div>
-  <p class="small text-gray mt-4">per year &middot; that's <strong class="text-orange">€37</strong> per purchase order</p>
+  <div class="big-number mt-8">€91.746</div>
+  <p class="small text-gray mt-4">per year &middot; that's <strong class="text-orange">€34</strong> per purchase order</p>
 
   <div class="grid-4 mt-20">
     <div class="card">
       <div class="label mb-4">Direct Labor</div>
       <div class="stat-value">€34.020</div>
-      <div class="stat-label">34% of total</div>
+      <div class="stat-label">37% of total</div>
     </div>
     <div class="card">
       <div class="label mb-4">Processing Delays</div>
-      <div class="stat-value">€48.600</div>
-      <div class="stat-label">49% of total</div>
+      <div class="stat-value">€40.500</div>
+      <div class="stat-label">44% of total</div>
     </div>
     <div class="card">
       <div class="label mb-4">Rework & Escalation</div>
       <div class="stat-value">€12.690</div>
-      <div class="stat-label">13% of total</div>
+      <div class="stat-label">14% of total</div>
     </div>
     <div class="card">
       <div class="label mb-4">Error Correction</div>
@@ -458,34 +471,37 @@
     <div class="bar-chart">
       <div class="bar-row">
         <div class="bar-label">Labor</div>
-        <div class="bar-track"><div class="bar-fill bar-fill--orange" style="width: 67%">34%</div></div>
+        <div class="bar-track"><div class="bar-fill bar-fill--orange" style="width: 80%">37%</div></div>
         <div class="bar-amount">€34.020</div>
       </div>
       <div class="bar-row">
         <div class="bar-label">Delays</div>
-        <div class="bar-track"><div class="bar-fill bar-fill--dark" style="width: 95%">49%</div></div>
-        <div class="bar-amount">€48.600</div>
+        <div class="bar-track"><div class="bar-fill bar-fill--dark" style="width: 95%">44%</div></div>
+        <div class="bar-amount">€40.500</div>
       </div>
       <div class="bar-row">
         <div class="bar-label">Rework</div>
-        <div class="bar-track"><div class="bar-fill bar-fill--gray" style="width: 25%">13%</div></div>
+        <div class="bar-track"><div class="bar-fill bar-fill--gray" style="width: 30%">14%</div></div>
         <div class="bar-amount">€12.690</div>
       </div>
       <div class="bar-row">
         <div class="bar-label">Errors</div>
-        <div class="bar-track"><div class="bar-fill bar-fill--green" style="width: 9%">5%</div></div>
+        <div class="bar-track"><div class="bar-fill bar-fill--green" style="width: 11%">5%</div></div>
         <div class="bar-amount">€4.536</div>
       </div>
     </div>
+    <p class="tiny text-gray mt-4" style="font-size: 9px;">
+      Calculated from 225 POs/month × 18 min × €42 staff rate (labor); early-payment-discount loss on a €2,500 avg invoice (delays); 25% rework + 10% escalation rate (rework); 12% error rate × 20 min resolution (errors). See page 6 methodology for the full model.
+    </p>
   </div>
 
   <div class="savings-strip mt-20">
     <div class="savings-label">Estimated annual savings with OrderPilot</div>
-    <div class="savings-amount">€83.861</div>
+    <div class="savings-amount">€76.571</div>
   </div>
 
   <div class="page-footer">
-    <span>Confidential &mdash; Prepared for MidMarket Industries</span>
+    <span>Confidential - Prepared for IPN Pet Food</span>
     <span>Page 1 of 6</span>
   </div>
 </div>
@@ -530,7 +546,7 @@
   <div class="card mb-12">
     <div class="flex justify-between items-center mb-8">
       <h3>2. Processing Delays</h3>
-      <span class="big-number--small" style="color: var(--dark)">€48.600</span>
+      <span class="big-number--small" style="color: var(--dark)">€40.500</span>
     </div>
     <p class="small text-gray mb-8">Lost early payment discounts and delayed fulfillment due to slow PO processing.</p>
     <div class="grid-3">
@@ -544,7 +560,7 @@
       </div>
       <div>
         <div class="label mb-4">Delay Factor</div>
-        <div class="font-bold">36%</div>
+        <div class="font-bold">30%</div>
       </div>
     </div>
     <p class="tiny text-gray mt-8">Based on missed early-payment terms and processing bottlenecks.</p>
@@ -597,7 +613,7 @@
   </div>
 
   <div class="page-footer">
-    <span>Confidential &mdash; Prepared for MidMarket Industries</span>
+    <span>Confidential - Prepared for IPN Pet Food</span>
     <span>Page 2 of 6</span>
   </div>
 </div>
@@ -627,7 +643,7 @@
     <tbody>
       <tr>
         <td class="font-semibold">Cost per PO</td>
-        <td class="text-red font-bold">€37</td>
+        <td class="text-red font-bold">€34</td>
         <td>&euro;26.40</td>
         <td class="text-green">&euro;5&ndash;8</td>
       </tr>
@@ -651,7 +667,7 @@
       </tr>
       <tr class="highlight-row">
         <td class="font-semibold">Annual cost</td>
-        <td class="text-orange font-bold">€99.846</td>
+        <td class="text-orange font-bold">€91.746</td>
         <td>&euro;71.280</td>
         <td class="text-green">&euro;17.550</td>
       </tr>
@@ -661,13 +677,16 @@
   <div class="mt-20">
     <h3 class="mb-8">Your Position</h3>
     <div class="meter">
-      <div class="meter-marker" style="left: 58%"></div>
+      <div class="meter-marker" style="left: 53%"></div>
     </div>
     <div class="meter-labels">
       <span>Top performers</span>
       <span>Industry average</span>
       <span>High-cost processors</span>
     </div>
+    <p class="tiny text-gray mt-4" style="font-size: 9px;">
+      Meter position derived from your cost-per-PO (€34) placed on a €5–€60 range. Top performers ≈ €5–€8/PO; industry average ≈ €26/PO. See page 6 methodology.
+    </p>
   </div>
 
   <div class="card card--dark mt-20">
@@ -685,7 +704,7 @@
   <div class="grid-2 mt-16">
     <div class="card card--bordered text-center">
       <div class="label mb-4">Your Efficiency Score</div>
-      <div class="big-number--small text-orange">42/100</div>
+      <div class="big-number--small text-orange">47/100</div>
       <p class="tiny text-gray mt-4">Based on cost, speed, and accuracy metrics</p>
     </div>
     <div class="card card--bordered text-center">
@@ -696,7 +715,7 @@
   </div>
 
   <div class="page-footer">
-    <span>Confidential &mdash; Prepared for MidMarket Industries</span>
+    <span>Confidential - Prepared for IPN Pet Food</span>
     <span>Page 3 of 6</span>
   </div>
 </div>
@@ -717,12 +736,12 @@
   <div class="grid-2 mb-16">
     <div class="card card--dark text-center">
       <div class="label text-gray mb-8" style="color: var(--gray-400)">Annual Savings</div>
-      <div class="big-number--white" style="font-size: 32px;">€83.861</div>
+      <div class="big-number--white" style="font-size: 32px;">€76.571</div>
       <p class="tiny mt-8" style="color: var(--gray-400);">after OrderPilot subscription</p>
     </div>
     <div class="card card--dark text-center">
       <div class="label text-gray mb-8" style="color: var(--gray-400)">ROI Multiple</div>
-      <div class="big-number--white" style="font-size: 32px; color: var(--green);">14x</div>
+      <div class="big-number--white" style="font-size: 32px; color: var(--green);">12.8x</div>
       <p class="tiny mt-8" style="color: var(--gray-400);">return on your investment</p>
     </div>
   </div>
@@ -747,9 +766,9 @@
         </tr>
         <tr>
           <td>Processing delays</td>
-          <td class="text-right">€48.600</td>
-          <td class="text-right text-green">€4.860</td>
-          <td class="text-right font-bold">€43.740</td>
+          <td class="text-right">€40.500</td>
+          <td class="text-right text-green">€4.050</td>
+          <td class="text-right font-bold">€36.450</td>
         </tr>
         <tr>
           <td>Rework & escalation</td>
@@ -765,9 +784,9 @@
         </tr>
         <tr class="highlight-row">
           <td class="font-bold">Total</td>
-          <td class="text-right font-bold">€99.846</td>
-          <td class="text-right font-bold text-green">€9.985</td>
-          <td class="text-right font-bold text-orange">€89.861</td>
+          <td class="text-right font-bold">€91.746</td>
+          <td class="text-right font-bold text-green">€9.175</td>
+          <td class="text-right font-bold text-orange">€82.571</td>
         </tr>
         <tr>
           <td class="text-gray">OrderPilot subscription</td>
@@ -779,7 +798,7 @@
           <td class="font-bold">Net annual savings</td>
           <td class="text-right"></td>
           <td class="text-right"></td>
-          <td class="text-right font-bold text-green" style="font-size: 14px;">€83.861</td>
+          <td class="text-right font-bold text-green" style="font-size: 14px;">€76.571</td>
         </tr>
       </tbody>
     </table>
@@ -789,20 +808,23 @@
   <div class="grid-3">
     <div class="card text-center">
       <div class="label mb-4">Year 1</div>
-      <div class="stat-value text-green">€83.861</div>
+      <div class="stat-value text-green">€76.571</div>
       <div class="stat-label">net savings</div>
     </div>
     <div class="card text-center">
       <div class="label mb-4">Year 2</div>
-      <div class="stat-value text-green">€167.723</div>
+      <div class="stat-value text-green">€153.143</div>
       <div class="stat-label">cumulative</div>
     </div>
     <div class="card text-center">
       <div class="label mb-4">Year 3</div>
-      <div class="stat-value text-green">€251.584</div>
+      <div class="stat-value text-green">€229.714</div>
       <div class="stat-label">cumulative</div>
     </div>
   </div>
+  <p class="tiny text-gray mt-4" style="font-size: 9px;">
+    Projection assumes 90% cost reduction sustained, constant volume, and the OrderPilot subscription line held flat at €6,000/yr. See page 6 methodology.
+  </p>
 
   <div class="card card--orange mt-16">
     <div class="flex items-center gap-12">
@@ -815,7 +837,7 @@
   </div>
 
   <div class="page-footer">
-    <span>Confidential &mdash; Prepared for MidMarket Industries</span>
+    <span>Confidential - Prepared for IPN Pet Food</span>
     <span>Page 4 of 6</span>
   </div>
 </div>
@@ -899,7 +921,7 @@
   </div>
 
   <div class="page-footer">
-    <span>Confidential &mdash; Prepared for MidMarket Industries</span>
+    <span>Confidential - Prepared for IPN Pet Food</span>
     <span>Page 5 of 6</span>
   </div>
 </div>
@@ -918,7 +940,7 @@
 
     <div class="cta-box mb-24">
       <img src="../../../brand/assets/orderpilot-logo-icon.svg" alt="" style="width: 48px; height: 48px; margin-bottom: 16px;">
-      <h2 class="text-white mb-8" style="font-size: 24px;">Ready to save €83.861 per year?</h2>
+      <h2 class="text-white mb-8" style="font-size: 24px;">Ready to save €76.571 per year?</h2>
       <p style="color: var(--gray-400); font-size: 12px; max-width: 380px; margin: 0 auto; line-height: 1.6;">
         Book a 20-minute demo with our team. We'll show you exactly how OrderPilot handles your PO formats and connects to SAP.
       </p>
@@ -956,7 +978,7 @@
   </div>
 
   <div class="page-footer">
-    <span>Confidential &mdash; Prepared for MidMarket Industries</span>
+    <span>Confidential - Prepared for IPN Pet Food</span>
     <span>Page 6 of 6</span>
   </div>
 </div>

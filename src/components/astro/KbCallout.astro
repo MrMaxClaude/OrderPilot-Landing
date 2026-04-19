@@ -1,0 +1,79 @@
+---
+type Tone = 'info' | 'tip' | 'warn' | 'danger';
+
+interface Props {
+  tone?: Tone;
+  title?: string;
+}
+
+const { tone = 'info', title } = Astro.props;
+
+const toneMap: Record<Tone, { bg: string; border: string; accent: string; defaultTitle: string; icon: string }> = {
+  info: {
+    bg: 'bg-warm-bg-alt/60',
+    border: 'border-l-rb2-orange',
+    accent: 'text-rb2-orange',
+    defaultTitle: 'Note',
+    icon: 'info',
+  },
+  tip: {
+    bg: 'bg-green-accent/10',
+    border: 'border-l-green-accent',
+    accent: 'text-green-accent',
+    defaultTitle: 'Tip',
+    icon: 'sparkles',
+  },
+  warn: {
+    bg: 'bg-amber-accent/10',
+    border: 'border-l-amber-accent',
+    accent: 'text-amber-accent',
+    defaultTitle: 'Heads up',
+    icon: 'alert',
+  },
+  danger: {
+    bg: 'bg-red-50',
+    border: 'border-l-red-500',
+    accent: 'text-red-600',
+    defaultTitle: 'Warning',
+    icon: 'alert',
+  },
+};
+
+const tokens = toneMap[tone];
+const heading = title ?? tokens.defaultTitle;
+---
+
+<aside
+  class:list={[
+    'kb-callout not-prose my-6 rounded-xl border-l-4 px-5 py-4 flex gap-3',
+    tokens.bg,
+    tokens.border,
+  ]}
+  role={tone === 'danger' || tone === 'warn' ? 'alert' : undefined}
+>
+  <span class:list={['shrink-0 mt-0.5', tokens.accent]} aria-hidden="true">
+    {
+      tokens.icon === 'info' && (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      )
+    }
+    {
+      tokens.icon === 'sparkles' && (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+      )
+    }
+    {
+      tokens.icon === 'alert' && (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+      )
+    }
+  </span>
+  <div class="min-w-0 flex-1">
+    <p class:list={['text-[10px] font-bold uppercase tracking-[0.18em] mb-1', tokens.accent]}>
+      {heading}
+    </p>
+    <div class="text-sm text-text-secondary leading-relaxed kb-callout-body">
+      <slot />
+    </div>
+  </div>
+</aside>

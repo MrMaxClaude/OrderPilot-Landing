@@ -1,0 +1,358 @@
+---
+import { getCollection, render } from 'astro:content';
+import PageLayout from '../../../layouts/PageLayout.astro';
+import KbBreadcrumbs from '../../../components/astro/KbBreadcrumbs.astro';
+import KbSidebar from '../../../components/astro/KbSidebar.astro';
+import KbTableOfContents from '../../../components/astro/KbTableOfContents.astro';
+import KbArticleFeedback from '../../../components/astro/KbArticleFeedback.astro';
+import KbRelatedArticles from '../../../components/astro/KbRelatedArticles.astro';
+import KbArticleAnalytics from '../../../components/astro/KbArticleAnalytics.astro';
+import KbVideo from '../../../components/astro/KbVideo.astro';
+import KbAccordion from '../../../components/astro/KbAccordion.astro';
+import KbSteps from '../../../components/astro/KbSteps.astro';
+import KbStep from '../../../components/astro/KbStep.astro';
+import KbCallout from '../../../components/astro/KbCallout.astro';
+
+const mdxComponents = {
+  Video: KbVideo,
+  Accordion: KbAccordion,
+  Steps: KbSteps,
+  Step: KbStep,
+  Callout: KbCallout,
+};
+import {
+  articleSlug,
+  articlesByCategory,
+  estimateReadingTime,
+  filterPublished,
+  getCategoryLabel,
+} from '../../../lib/kbHelpers';
+import type { KbCategorySlug } from '../../../lib/kbHelpers';
+import { buildArticleSchema } from '../../../lib/kbArticleSchema';
+import { buildFaqPageSchema, stripHtmlToPlainText } from '../../../lib/geoFaqSchema';
+import { KB_CATEGORY_SLUGS } from '../../../content.config';
+
+export async function getStaticPaths() {
+  const entries = filterPublished(await getCollection('kb'));
+  return entries.map((entry) => ({
+    params: {
+      category: entry.data.category,
+      slug: articleSlug(entry),
+    },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const allArticles = filterPublished(await getCollection('kb'));
+const byCategory = articlesByCategory(allArticles);
+const categorySlug = entry.data.category as KbCategorySlug;
+const categoryArticles = byCategory.get(categorySlug) ?? [];
+
+const related = (() => {
+  const relatedIds = entry.data.relatedArticles;
+  if (relatedIds.length > 0) {
+    return allArticles.filter((a) => {
+      const slug = articleSlug(a);
+      return relatedIds.includes(slug) || relatedIds.includes(a.id);
+    });
+  }
+  // No explicit related — score every other article by tag-overlap first,
+  // then same-category, then recency. Return top 2.
+  const currentTags = new Set(entry.data.tags);
+  const scored = allArticles
+    .filter((a) => a.id !== entry.id)
+    .map((a) => {
+      const tagOverlap = a.data.tags.filter((t) => currentTags.has(t)).length;
+      const sameCategory = a.data.category === entry.data.category ? 1 : 0;
+      const recency = a.data.publishedAt.getTime() / 1e13; // tiny tiebreaker
+      const score = tagOverlap * 10 + sameCategory * 3 + recency;
+      return { a, score };
+    })
+    .sort((x, y) => y.score - x.score);
+  return scored.slice(0, 2).map((s) => s.a);
+})();
+
+const categoryLabel = getCategoryLabel(categorySlug);
+const slug = articleSlug(entry);
+const siteOrigin = Astro.site ? new URL(Astro.site).origin : 'https://order-pilot.ai';
+const canonicalUrl = new URL(
+  `/knowledge-base/${categorySlug}/${slug}/`,
+  Astro.site,
+).toString();
+
+const articleSchema = buildArticleSchema({
+  entry,
+  siteOrigin,
+  canonicalUrl,
+});
+
+const extraSchemas: Record<string, unknown>[] = [
+  articleSchema,
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Knowledge base',
+        item: `${siteOrigin}/knowledge-base/`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: categoryLabel,
+        item: `${siteOrigin}/knowledge-base/${categorySlug}/`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: entry.data.title,
+        item: canonicalUrl,
+      },
+    ],
+  },
+];
+
+if (categorySlug === 'faq') {
+  extraSchemas.push(
+    buildFaqPageSchema({
+      description: entry.data.description,
+      mainEntity: [
+        {
+          name: entry.data.title,
+          text: stripHtmlToPlainText(entry.data.description),
+        },
+      ],
+    }),
+  );
+}
+
+const readingTime =
+  entry.data.readingTime ?? estimateReadingTime(entry.body ?? '');
+
+const publishedLabel = entry.data.publishedAt.toLocaleDateString('en-GB', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+const updatedLabel = entry.data.updatedAt
+  ? entry.data.updatedAt.toLocaleDateString('en-GB', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  : null;
+// Validate category slug at build time
+if (!KB_CATEGORY_SLUGS.includes(categorySlug)) {
+  throw new Error(`Unknown KB category: ${categorySlug}`);
+}
+---
+
+<PageLayout
+  title={entry.data.seo?.metaTitle ?? `${entry.data.title} | OrderPilot Knowledge base`}
+  description={entry.data.seo?.metaDescription ?? entry.data.description}
+  ogImage={entry.data.seo?.ogImage}
+  noindex={entry.data.seo?.noindex ?? false}
+  extraJsonLd={extraSchemas}
+>
+  <div class="bg-warm-bg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-6">
+      <KbBreadcrumbs
+        crumbs={[
+          { label: 'Knowledge base', href: '/knowledge-base/' },
+          { label: categoryLabel, href: `/knowledge-base/${categorySlug}/` },
+          { label: entry.data.title },
+        ]}
+      />
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+      <div class="grid lg:grid-cols-[220px_minmax(0,1fr)_220px] gap-10 lg:gap-12">
+        <!-- Sidebar: articles in this category -->
+        <KbSidebar
+          category={categorySlug}
+          articles={categoryArticles}
+          currentSlug={entry.id}
+        />
+
+        <!-- Main article -->
+        <article class="min-w-0">
+          <header class="mb-8">
+            <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-rb2-orange mb-3">
+              {categoryLabel}
+            </p>
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-text-primary tracking-tight leading-tight mb-4">
+              {entry.data.title}
+            </h1>
+            <p class="text-base sm:text-lg text-text-secondary leading-relaxed max-w-3xl">
+              {entry.data.description}
+            </p>
+            <div class="mt-6 flex flex-wrap items-center gap-4 text-xs text-text-muted">
+              <span>Published {publishedLabel}</span>
+              {updatedLabel && <span>· Updated {updatedLabel}</span>}
+              <span>· {readingTime} min read</span>
+              {
+                entry.data.tags.length > 0 && (
+                  <span class="flex flex-wrap gap-2">
+                    {entry.data.tags.map((t) => (
+                      <span class="inline-flex items-center rounded-full bg-rb2-orange/10 text-rb2-orange px-2.5 py-0.5 text-[11px] font-semibold">
+                        {t}
+                      </span>
+                    ))}
+                  </span>
+                )
+              }
+            </div>
+          </header>
+
+          <div
+            class="kb-prose"
+            data-kb-article-body
+          >
+            <Content components={mdxComponents} />
+          </div>
+
+          <KbArticleFeedback articleSlug={slug} />
+
+          <KbArticleAnalytics
+            slug={slug}
+            category={categorySlug}
+            tags={entry.data.tags}
+            readingTime={readingTime}
+            publishedAt={entry.data.publishedAt.toISOString()}
+          />
+
+          <KbRelatedArticles articles={related} />
+        </article>
+
+        <!-- Right: Table of Contents -->
+        <KbTableOfContents />
+      </div>
+    </div>
+  </div>
+</PageLayout>
+
+<style is:global>
+  .kb-prose {
+    color: var(--color-text-primary, #1a1a1a);
+    line-height: 1.75;
+    font-size: 1rem;
+  }
+  .kb-prose > * + * {
+    margin-top: 1.25rem;
+  }
+  .kb-prose h2 {
+    font-size: 1.625rem;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    scroll-margin-top: 6rem;
+    color: var(--color-text-primary, #1a1a1a);
+  }
+  .kb-prose h3 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-top: 2.25rem;
+    margin-bottom: 0.75rem;
+    scroll-margin-top: 6rem;
+    color: var(--color-text-primary, #1a1a1a);
+  }
+  .kb-prose h4 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-top: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+  .kb-prose p,
+  .kb-prose ul,
+  .kb-prose ol {
+    color: var(--color-text-secondary, #4a4a4a);
+  }
+  .kb-prose a {
+    color: #FF6321;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+  .kb-prose a:hover {
+    text-decoration-thickness: 2px;
+  }
+  .kb-prose ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+  }
+  .kb-prose ol {
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+  }
+  .kb-prose li + li {
+    margin-top: 0.375rem;
+  }
+  .kb-prose strong {
+    color: var(--color-text-primary, #1a1a1a);
+    font-weight: 700;
+  }
+  .kb-prose blockquote {
+    border-left: 4px solid #FF6321;
+    padding: 0.75rem 1.25rem;
+    background: rgba(255, 99, 33, 0.05);
+    border-radius: 0 0.75rem 0.75rem 0;
+    font-style: italic;
+    color: var(--color-text-secondary, #4a4a4a);
+  }
+  .kb-prose code {
+    background: rgba(20, 20, 20, 0.06);
+    padding: 0.125rem 0.4rem;
+    border-radius: 0.375rem;
+    font-size: 0.9em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .kb-prose pre {
+    background: #111;
+    color: #f5f5f5;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    overflow-x: auto;
+    font-size: 0.875rem;
+    line-height: 1.65;
+  }
+  .kb-prose pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
+  }
+  .kb-prose table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  .kb-prose th,
+  .kb-prose td {
+    border: 1px solid #eee;
+    padding: 0.625rem 0.875rem;
+    text-align: left;
+  }
+  .kb-prose th {
+    background: rgba(255, 99, 33, 0.06);
+    font-weight: 700;
+    color: var(--color-text-primary, #1a1a1a);
+  }
+  .kb-prose img {
+    border-radius: 0.75rem;
+    margin: 1.25rem auto;
+    max-width: 100%;
+    height: auto;
+  }
+  .kb-prose hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 2.5rem 0;
+  }
+</style>

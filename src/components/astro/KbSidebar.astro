@@ -1,0 +1,55 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { articleUrl, getCategoryLabel } from '../../lib/kbHelpers';
+import type { KbCategorySlug } from '../../lib/kbHelpers';
+
+interface Props {
+  category: KbCategorySlug;
+  articles: CollectionEntry<'kb'>[];
+  currentSlug: string;
+}
+
+const { category, articles, currentSlug } = Astro.props;
+const categoryLabel = getCategoryLabel(category);
+---
+
+<aside
+  aria-label={`${categoryLabel} articles`}
+  class="lg:sticky lg:top-24 lg:self-start"
+>
+  <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-text-muted mb-3">
+    {categoryLabel}
+  </p>
+  <nav>
+    <ul class="space-y-1 border-l-2 border-gray-100">
+      {
+        articles.map((a) => {
+          const isCurrent = a.id === currentSlug;
+          return (
+            <li>
+              <a
+                href={articleUrl(a)}
+                aria-current={isCurrent ? 'page' : undefined}
+                class:list={[
+                  'block py-1.5 pl-4 -ml-[2px] text-sm leading-snug border-l-2 transition-colors',
+                  isCurrent
+                    ? 'border-rb2-orange text-rb2-orange font-semibold'
+                    : 'border-transparent text-text-secondary hover:text-rb2-orange hover:border-rb2-orange/30',
+                ]}
+              >
+                {a.data.title}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </nav>
+  <a
+    href={`/knowledge-base/${category}/`}
+    class="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-text-muted hover:text-rb2-orange transition-colors"
+  >
+    Back to {categoryLabel}
+    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+  </a>
+</aside>

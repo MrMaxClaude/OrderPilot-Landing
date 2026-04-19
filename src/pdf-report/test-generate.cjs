@@ -1,5 +1,5 @@
 /**
- * OrderPilot — Test Report Generator
+ * OrderPilot - Test Report Generator
  *
  * Generates preview HTML files for 3 scenarios:
  *   - Low volume (small company, 25 POs/month)
@@ -51,7 +51,7 @@ async function run() {
   const generatePdf = process.argv.includes('--pdf');
 
   console.log('');
-  console.log('OrderPilot — Cost Report Test Generator');
+  console.log('OrderPilot - Cost Report Test Generator');
   console.log('═══════════════════════════════════════');
   console.log('');
 

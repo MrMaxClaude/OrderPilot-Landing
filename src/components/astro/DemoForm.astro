@@ -137,13 +137,28 @@ const benefits = [
               class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-rb2-orange focus:ring-1 focus:ring-rb2-orange outline-none transition-all resize-none"
             ></textarea>
           </label>
+          <label class="flex items-start gap-3 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              name="privacyConsent"
+              data-privacy-consent
+              required
+              class="mt-0.5 h-4 w-4 rounded border-gray-300 text-rb2-orange focus:ring-rb2-orange focus:ring-offset-0 cursor-pointer"
+            />
+            <span class="text-xs text-text-secondary leading-relaxed">
+              By submitting this form, you agree to our
+              <a href="/privacy/" class="text-rb2-orange font-semibold hover:underline">Privacy Policy</a>
+              and consent to being contacted about OrderPilot.
+            </span>
+          </label>
           <div data-error class="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm hidden"></div>
           <button
             type="submit"
             data-submit-btn
+            disabled
             class="w-full bg-rb2-orange text-white rounded-2xl font-bold py-4 hover:bg-rb2-orange-hover hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Get in Touch
+            Get in touch
             <!-- ArrowRight 18 -->
             <svg data-arrow-icon xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </button>
@@ -171,6 +186,15 @@ const benefits = [
   const arrowIcon = submitBtn?.querySelector('[data-arrow-icon]') as SVGElement;
   const errorDiv = document.querySelector('[data-error]') as HTMLElement;
   const sendAnotherBtn = document.querySelector('[data-send-another]') as HTMLButtonElement;
+  const privacyConsent = document.querySelector<HTMLInputElement>('[data-privacy-consent]');
+
+  // Submit enabled only when privacy consent is checked
+  function syncSubmit() {
+    if (!privacyConsent || !submitBtn) return;
+    submitBtn.disabled = !privacyConsent.checked;
+  }
+  privacyConsent?.addEventListener('change', syncSubmit);
+  syncSubmit();
 
   // IntersectionObserver for tracking form visibility
   let formStarted = false;
@@ -205,6 +229,7 @@ const benefits = [
     const company = formData.get('company') as string;
     const poVolume = formData.get('poVolume') as string;
     const message = formData.get('message') as string;
+    const privacyConsent = formData.get('privacyConsent') === 'on';
 
     const userId = email;
     const companyId = `${company.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`;
@@ -216,7 +241,7 @@ const benefits = [
       const response = await fetch(`${apiBase}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, lastName, email, company, poVolume, message, gaClientId }),
+        body: JSON.stringify({ firstName, lastName, email, company, poVolume, message, gaClientId, privacyConsent }),
       });
 
       if (!response.ok) throw new Error('Failed to submit form');
@@ -255,7 +280,8 @@ const benefits = [
       });
     } finally {
       submitBtn.disabled = false;
-      submitBtn.innerHTML = 'Get in Touch <svg data-arrow-icon xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
+      submitBtn.innerHTML = 'Get in touch <svg data-arrow-icon xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
+      syncSubmit();
     }
   });
 
@@ -265,5 +291,6 @@ const benefits = [
     formView.classList.remove('hidden');
     form.reset();
     errorDiv.classList.add('hidden');
+    syncSubmit();
   });
 </script>

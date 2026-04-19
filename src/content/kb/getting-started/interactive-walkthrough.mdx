@@ -1,0 +1,65 @@
+---
+title: "Interactive walkthrough: your first week with OrderPilot"
+description: "A hands-on week-one plan combining a short video intro, a step-by-step setup guide, and deep-dive FAQs you can expand as you go."
+category: "getting-started"
+tags: ["onboarding", "walkthrough"]
+publishedAt: 2026-04-19
+order: 4
+relatedArticles: ["quickstart", "first-po-upload"]
+---
+
+This is the fast version: watch the intro, follow the five steps, and when something needs more detail, open the expandable sections at the end. You should be processing real POs by Friday.
+
+## Watch the 2-minute intro
+
+<Video
+  url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+  title="OrderPilot in 2 minutes"
+  caption="Replace this URL with your own intro video — the embed auto-handles YouTube, YouTube Shorts and Vimeo."
+/>
+
+<Callout tone="tip" title="Before you start">
+Get your ERP credentials, your supplier email domain list, and at least one real PO PDF in hand. You can skip any step that does not apply, but the guide assumes you have those three things ready.
+</Callout>
+
+## Five steps to a clean PO queue
+
+<Steps>
+  <Step title="Confirm your workspace">
+    Check the workspace name, timezone, and default currency in Settings. These flow into every extracted PO, so getting them right on day one saves re-mapping later.
+  </Step>
+  <Step title="Connect an intake channel">
+    Forward a real supplier PO to `yourcompany@intake.order-pilot.ai`. Within ~30 seconds you'll see it appear in the validation queue.
+  </Step>
+  <Step title="Validate the first document">
+    Open the PO, correct any fields under 95 % confidence once, and hit Approve. OrderPilot learns your corrections against the supplier identity — next PO from the same supplier should skip the queue.
+  </Step>
+  <Step title="Map suppliers and SKUs">
+    Upload your supplier master and SKU table under Settings → Catalog. Accuracy typically jumps from 95 % to 99 %+ after this step.
+  </Step>
+  <Step title="Set approval routing">
+    Default threshold is €10,000 → finance. Adjust under Settings → Workflows if your team has different escalation rules.
+  </Step>
+</Steps>
+
+<Callout tone="warn" title="Don't skip step 3">
+The validation-queue review on your first real PO is where the model picks up your house rules. Teams that skip this step and go straight to bulk upload lose ~20 % accuracy in week two.
+</Callout>
+
+## Common questions, answered on demand
+
+<Accordion title="How long does first-week setup usually take?" hint="Median across our customers">
+Most teams are live with a single intake channel in under 30 minutes and fully mapped (suppliers + SKUs + routing) within two working days. The slowest step is usually getting ERP API credentials approved by IT — plan for that gate in parallel.
+</Accordion>
+
+<Accordion title="What if our first PO lands at 80 % confidence?" hint="When to worry vs when to correct">
+80 % is normal for a supplier OrderPilot has never seen. Correct the flagged fields once and the model learns. If the same supplier stays under 90 % after three POs, flag the supplier profile — usually it means their template is unusually inconsistent and we'll add a template-specific extractor.
+</Accordion>
+
+<Accordion title="Can I undo an auto-approval?">
+Yes. Every posted PO has an edit trail and a "re-open" action. Any downstream changes to your ERP are also visible in the validation queue's activity feed, so nothing vanishes.
+</Accordion>
+
+<Callout tone="info" title="Next">
+Once you've run through the five steps, the [monthly audit playbook](/knowledge-base/tips-best-practices/monthly-audit/) is your week-four ritual.
+</Callout>

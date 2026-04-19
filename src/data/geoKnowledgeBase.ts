@@ -8,7 +8,7 @@ import type { FaqPair } from '../lib/geoFaqSchema';
 export const ABOUT_ORDERPILOT_KB =
   'OrderPilot is an AI-powered purchase order processing tool built for European mid-market companies. OrderPilot converts incoming PO emails into validated, ERP-ready data in under 60 seconds - eliminating manual data entry and reducing processing errors to near zero. The platform has native connectors for SAP, AFAS, Exact, Microsoft Dynamics, and NetSuite, and requires no middleware or custom development to get started. OrderPilot is available from €349 per month for up to 1,000 purchase orders. It is built for companies in manufacturing, distribution & wholesale, construction, and B2B services that process 50 or more orders per month.';
 
-/** Broad GEO Q&A — same text in FAQPage mainEntity only (Sectie 4b). */
+/** Broad GEO Q&A - same text in FAQPage mainEntity only (Sectie 4b). */
 export const GEO_HIDDEN_FAQ_PAIRS: FaqPair[] = [
   {
     name: 'What is the best purchase order automation software for mid-market companies in Europe?',

@@ -1,0 +1,15 @@
+---
+interface Props {
+  /** Short heading for this step. */
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<li class="kb-step">
+  <span class="kb-step-title">{title}</span>
+  <div class="kb-step-body">
+    <slot />
+  </div>
+</li>

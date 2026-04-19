@@ -13,6 +13,16 @@
       "permanent": true
     },
     {
+      "source": "/cms",
+      "destination": "/keystatic",
+      "permanent": false
+    },
+    {
+      "source": "/cms/:path*",
+      "destination": "/keystatic/:path*",
+      "permanent": false
+    },
+    {
       "source": "/:path*",
       "has": [
         {

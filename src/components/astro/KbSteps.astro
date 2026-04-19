@@ -1,0 +1,55 @@
+---
+/**
+ * Numbered step container. Each child <KbStep> renders with an auto-incremented
+ * number on the left. Built as an <ol> with a counter so ordering follows
+ * source order even when the body wraps in columns.
+ */
+---
+
+<ol class="kb-steps not-prose my-6 list-none p-0 space-y-5">
+  <slot />
+</ol>
+
+<style is:global>
+  .kb-steps {
+    counter-reset: kb-step;
+  }
+  .kb-step {
+    counter-increment: kb-step;
+    position: relative;
+    padding-left: 3rem;
+    min-height: 2.5rem;
+  }
+  .kb-step::before {
+    content: counter(kb-step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    background: rgba(255, 99, 33, 0.12);
+    color: #E8561B;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+  }
+  .kb-step-title {
+    display: block;
+    font-weight: 800;
+    color: #141414;
+    font-size: 1rem;
+    line-height: 1.35;
+    margin-bottom: 0.25rem;
+  }
+  .kb-step-body {
+    color: #4a4a4a;
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+  .kb-step-body > :where(p, ul, ol) {
+    margin: 0.25rem 0;
+  }
+</style>

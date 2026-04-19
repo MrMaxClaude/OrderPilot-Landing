@@ -1,0 +1,72 @@
+---
+interface Props {
+  /** Full YouTube, YouTube Shorts, or Vimeo URL. */
+  url: string;
+  /** Optional title for the accessible-name + caption under the player. */
+  title?: string;
+  /** Visible caption. Falls back to title if omitted. */
+  caption?: string;
+}
+
+const { url, title, caption } = Astro.props;
+
+function toEmbedUrl(raw: string): { src: string; host: 'youtube' | 'vimeo' | 'other' } {
+  try {
+    const u = new URL(raw);
+    if (u.hostname.includes('youtube.com') || u.hostname === 'youtu.be') {
+      let id = '';
+      if (u.hostname === 'youtu.be') {
+        id = u.pathname.slice(1);
+      } else if (u.pathname.startsWith('/watch')) {
+        id = u.searchParams.get('v') ?? '';
+      } else if (u.pathname.startsWith('/shorts/')) {
+        id = u.pathname.split('/')[2] ?? '';
+      } else if (u.pathname.startsWith('/embed/')) {
+        id = u.pathname.split('/')[2] ?? '';
+      }
+      if (!id) return { src: raw, host: 'other' };
+      return {
+        src: `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1`,
+        host: 'youtube',
+      };
+    }
+    if (u.hostname.includes('vimeo.com')) {
+      const id = u.pathname.split('/').filter(Boolean).pop() ?? '';
+      if (!id) return { src: raw, host: 'other' };
+      return {
+        src: `https://player.vimeo.com/video/${id}?dnt=1`,
+        host: 'vimeo',
+      };
+    }
+    return { src: raw, host: 'other' };
+  } catch {
+    return { src: raw, host: 'other' };
+  }
+}
+
+const { src } = toEmbedUrl(url);
+const label = title ?? 'Video';
+const displayCaption = caption ?? title;
+---
+
+<figure class="not-prose my-8">
+  <div
+    class="relative w-full overflow-hidden rounded-2xl border border-gray-100 bg-text-primary/5 shadow-sm"
+    style="aspect-ratio: 16 / 9"
+  >
+    <iframe
+      src={src}
+      title={label}
+      loading="lazy"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen
+      referrerpolicy="strict-origin-when-cross-origin"
+      class="absolute inset-0 h-full w-full"
+    ></iframe>
+  </div>
+  {displayCaption && (
+    <figcaption class="mt-2 text-xs text-text-muted text-center">
+      {displayCaption}
+    </figcaption>
+  )}
+</figure>

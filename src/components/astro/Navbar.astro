@@ -1,5 +1,10 @@
 ---
+import { getEntry } from 'astro:content';
 import Logo from './Logo.astro';
+
+const navData = await getEntry('navigation', 'default');
+if (!navData) throw new Error('Missing content: navigation/default.json');
+const { primaryLinks, cta } = navData.data;
 ---
 
 <nav
@@ -13,40 +18,23 @@ import Logo from './Logo.astro';
 
     <!-- Desktop Links -->
     <div class="hidden md:flex items-center space-x-8">
+      {
+        primaryLinks.map((link) => (
+          <a
+            href={link.href}
+            data-nav-link
+            class="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+          >
+            {link.text}
+          </a>
+        ))
+      }
       <a
-        href="/#how-it-works"
-        data-nav-link
-        class="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
-      >
-        How It Works
-      </a>
-      <a
-        href="/cases"
-        data-nav-link
-        class="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
-      >
-        Cases
-      </a>
-      <a
-        href="/calculator"
-        data-nav-link
-        class="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
-      >
-        Calculator
-      </a>
-      <a
-        href="/pricing"
-        data-nav-link
-        class="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
-      >
-        Pricing
-      </a>
-      <a
-        href="/#contact"
+        href={cta.href}
         data-nav-link="cta"
         class="bg-rb2-orange text-white rounded-full px-6 py-2.5 text-sm font-semibold hover:bg-rb2-orange-hover hover:shadow-lg transition-all duration-200"
       >
-        Get in Touch
+        {cta.text}
       </a>
     </div>
 
@@ -68,40 +56,23 @@ import Logo from './Logo.astro';
     data-mobile-menu
     class="md:hidden absolute top-full left-0 right-0 bg-card-white border-b border-gray-100 p-6 space-y-4 shadow-xl hidden"
   >
+    {
+      primaryLinks.map((link) => (
+        <a
+          href={link.href}
+          data-nav-link
+          class="block w-full text-left text-base font-medium text-text-secondary"
+        >
+          {link.text}
+        </a>
+      ))
+    }
     <a
-      href="/#how-it-works"
-      data-nav-link
-      class="block w-full text-left text-base font-medium text-text-secondary"
-    >
-      How It Works
-    </a>
-    <a
-      href="/cases"
-      data-nav-link
-      class="block w-full text-left text-base font-medium text-text-secondary"
-    >
-      Cases
-    </a>
-    <a
-      href="/calculator"
-      data-nav-link
-      class="block w-full text-left text-base font-medium text-text-secondary"
-    >
-      Calculator
-    </a>
-    <a
-      href="/pricing"
-      data-nav-link
-      class="block w-full text-left text-base font-medium text-text-secondary"
-    >
-      Pricing
-    </a>
-    <a
-      href="/#contact"
+      href={cta.href}
       data-nav-link="cta"
       class="block w-full bg-rb2-orange text-white text-center rounded-2xl px-6 py-3 font-semibold"
     >
-      Get in Touch
+      {cta.text}
     </a>
   </div>
 </nav>

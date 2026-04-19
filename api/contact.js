@@ -38,11 +38,32 @@ export default async function handler(req, res) {
   }
 
   const body = parseJsonBody(req);
-  const { firstName, lastName, email, company, poVolume, message, gaClientId } = body;
+  const { firstName, lastName, email, company, poVolume, message, gaClientId, privacyConsent } = body;
 
   if (!firstName || !lastName || !email || !company || !poVolume) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
+  if (privacyConsent !== true) {
+    return res.status(400).json({
+      error: 'Privacy consent is required before we can receive your inquiry',
+    });
+  }
+
+  // Audit trail for GDPR art. 7 - hashed IP + timestamp paired with the email.
+  const rawIp =
+    req.headers?.['x-forwarded-for']?.split(',')[0]?.trim() ||
+    req.headers?.['x-real-ip'] ||
+    req.socket?.remoteAddress ||
+    'unknown';
+  const { createHash } = await import('node:crypto');
+  const ipHash = createHash('sha256').update(String(rawIp)).digest('hex').slice(0, 16);
+  console.log('Consent recorded:', {
+    email,
+    company,
+    ipHash,
+    timestamp: new Date().toISOString(),
+    surface: 'contact-form',
+  });
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -67,7 +88,7 @@ export default async function handler(req, res) {
       subject: `New OrderPilot Lead - ${company}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #FF6B35;">New Lead from OrderPilot</h2>
+          <h2 style="color: #FF6321;">New Lead from OrderPilot</h2>
 
           <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="margin-top: 0;">Contact Information:</h3>
@@ -102,7 +123,7 @@ export default async function handler(req, res) {
       subject: 'Thank you for your interest in OrderPilot',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <div style="text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%); border-radius: 8px 8px 0 0;">
+          <div style="text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #FF6321 0%, #E8561B 100%); border-radius: 8px 8px 0 0;">
             <h1 style="color: white; margin: 0;">Thank You for Reaching Out!</h1>
           </div>
 
@@ -114,7 +135,7 @@ export default async function handler(req, res) {
             </p>
 
             <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 30px 0;">
-              <h3 style="margin-top: 0; color: #FF6B35;">What happens next?</h3>
+              <h3 style="margin-top: 0; color: #FF6321;">What happens next?</h3>
               <ul style="font-size: 15px; line-height: 1.8;">
                 <li>Our specialist will review your requirements</li>
                 <li>We'll schedule a brief call to understand your PO processing challenges</li>
@@ -124,11 +145,11 @@ export default async function handler(req, res) {
             </div>
 
             <p style="font-size: 16px; line-height: 1.6;">
-              In the meantime, feel free to explore our <a href="https://order-pilot.ai/calculator" style="color: #FF6B35;">ROI Calculator</a> to see potential savings for your business.
+              In the meantime, feel free to explore our <a href="https://order-pilot.ai/calculator" style="color: #FF6321;">ROI Calculator</a> to see potential savings for your business.
             </p>
 
             <p style="font-size: 16px; line-height: 1.6;">
-              Questions? Email us at <a href="mailto:${CONTACT_EMAIL}" style="color: #FF6B35;">${CONTACT_EMAIL}</a>.
+              Questions? Email us at <a href="mailto:${CONTACT_EMAIL}" style="color: #FF6321;">${CONTACT_EMAIL}</a>.
             </p>
 
             <p style="font-size: 16px; line-height: 1.6;">
@@ -140,7 +161,7 @@ export default async function handler(req, res) {
           <div style="padding: 20px; background: #f8f9fa; text-align: center; border-radius: 0 0 8px 8px;">
             <p style="color: #666; font-size: 14px; margin: 0;">
               OrderPilot - Automating Purchase Order Processing<br>
-              <a href="https://order-pilot.ai" style="color: #FF6B35;">order-pilot.ai</a>
+              <a href="https://order-pilot.ai" style="color: #FF6321;">order-pilot.ai</a>
             </p>
           </div>
         </div>

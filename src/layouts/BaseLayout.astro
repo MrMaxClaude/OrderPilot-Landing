@@ -6,6 +6,8 @@ interface Props {
   title: string;
   description?: string;
   ogImage?: string;
+  /** When true, adds <meta name="robots" content="noindex,nofollow">. Used for drafts, admin, thank-you pages. */
+  noindex?: boolean;
   /** Extra JSON-LD objects (e.g. FAQPage) rendered as separate script tags */
   extraJsonLd?: Record<string, unknown>[];
 }
@@ -14,6 +16,7 @@ const {
   title,
   description = 'The world\'s most accurate purchase order processing platform. Built for procurement teams that demand 100% accuracy.',
   ogImage = '/orderpilot-logo.png',
+  noindex = false,
   extraJsonLd = [],
 } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -69,6 +72,7 @@ const softwareApplicationSchema = {
     <meta name="theme-color" content="#FF6321" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
     <link rel="canonical" href={canonicalURL} />
 
     <!-- Icons -->
@@ -99,7 +103,9 @@ const softwareApplicationSchema = {
 
     <Analytics />
 
-    <!-- Google Analytics 4 — Consent Mode v2 (denied by default, granted on user accept) -->
+    <!-- Google Analytics 4 - Consent Mode v2 (denied by default, granted on user accept).
+         dataLayer + gtag shim are defined synchronously so any code that fires events
+         pre-hydration queues them; the gtag.js bundle itself is loaded lazily after LCP. -->
     {import.meta.env.PUBLIC_GA_MEASUREMENT_ID && (
       <script is:inline define:vars={{ gaMeasurementId: import.meta.env.PUBLIC_GA_MEASUREMENT_ID }}>
         window.dataLayer = window.dataLayer || [];
@@ -107,10 +113,28 @@ const softwareApplicationSchema = {
         window.gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', wait_for_update: 500 });
         window.gtag('js', new Date());
         window.gtag('config', gaMeasurementId);
+
+        function loadGtag() {
+          if (window.__gtagLoaded) return;
+          window.__gtagLoaded = true;
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaMeasurementId;
+          document.head.appendChild(s);
+        }
+
+        // Load gtag.js once the page is idle, or on first user interaction — whichever first.
+        var onInteract = function () { loadGtag(); };
+        var opts = { once: true, passive: true };
+        ['pointerdown','keydown','scroll','touchstart'].forEach(function(ev){
+          window.addEventListener(ev, onInteract, opts);
+        });
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(loadGtag, { timeout: 4000 });
+        } else {
+          setTimeout(loadGtag, 3000);
+        }
       </script>
-    )}
-    {import.meta.env.PUBLIC_GA_MEASUREMENT_ID && (
-      <script async src={`https://www.googletagmanager.com/gtag/js?id=${import.meta.env.PUBLIC_GA_MEASUREMENT_ID}`}></script>
     )}
     <!-- Fonts (non-blocking) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -137,26 +161,50 @@ const softwareApplicationSchema = {
       document.querySelectorAll('.fade-in').forEach((el) => observer.observe(el));
     </script>
 
-    <!-- PostHog (always init, opt-out by default, consent gates capturing) -->
+    <!-- PostHog init deferred to idle / first interaction so it doesn't compete
+         with LCP. Consent state still gates capturing. Once initialised, fires
+         a single site-wide seo_pageview event classified by referrer source +
+         page category for SEO dashboards. -->
     <script>
-      import posthog from 'posthog-js';
+      import type { PostHog } from 'posthog-js';
       import { getStoredConsent } from '../lib/cookieConsent';
+      import { fireSeoPageview } from '../lib/seo-events';
 
       const key = import.meta.env.PUBLIC_POSTHOG_KEY;
-      if (key) {
+      let started = false;
+
+      async function startPostHog(): Promise<void> {
+        if (started || !key) return;
+        started = true;
+        const { default: posthog } = await import('posthog-js');
         posthog.init(key, {
           api_host: import.meta.env.PUBLIC_POSTHOG_HOST || 'https://eu.i.posthog.com',
           debug: import.meta.env.PUBLIC_POSTHOG_DEBUG === 'true',
           opt_out_capturing_by_default: true,
-          loaded: (client) => {
+          loaded: (client: PostHog) => {
             const consent = getStoredConsent();
             if (consent?.analytics) client.opt_in_capturing();
+            // SEO pageview fires once per page load, after posthog is ready.
+            // The helper internally tolerates no-consent (posthog swallows
+            // captures while opt_out_capturing_by_default is true).
+            fireSeoPageview();
           },
           persistence: 'localStorage+cookie',
           cross_subdomain_cookie: false,
           secure_cookie: true,
           property_denylist: ['$initial_referrer', '$initial_referring_domain'],
         });
+      }
+
+      // Kick off on first user interaction, or when the browser is idle — whichever first.
+      const opts: AddEventListenerOptions = { once: true, passive: true };
+      (['pointerdown', 'keydown', 'scroll', 'touchstart'] as const).forEach((ev) => {
+        window.addEventListener(ev, () => void startPostHog(), opts);
+      });
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => void startPostHog(), { timeout: 4000 });
+      } else {
+        setTimeout(() => void startPostHog(), 3000);
       }
     </script>
   </body>

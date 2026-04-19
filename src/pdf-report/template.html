@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PO Processing Cost Analysis — {{companyName}}</title>
+<title>PO Processing Cost Analysis - {{companyName}}</title>
 <!-- External fonts removed for PDF reliability -->
 <style>
   :root {
@@ -203,15 +203,28 @@
   .table .highlight-row { background: var(--orange-light); }
   .table .highlight-row td { font-weight: 600; }
 
-  /* Meter */
+  /* Meter: green (top performers, left) to red (worst, right) so the marker
+     reads naturally: further right means higher cost per PO. */
   .meter {
     width: 100%;
     height: 10px;
-    background: linear-gradient(to right, var(--red), #F59E0B, var(--green));
+    background: linear-gradient(to right, var(--green), #F59E0B, var(--red));
     border-radius: 5px;
     position: relative;
     margin: 8px 0;
   }
+  .meter-legend {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--gray-500, #9CA3AF);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .meter-legend span:first-child { color: var(--green); }
+  .meter-legend span:last-child { color: var(--red); }
   .meter-marker {
     position: absolute;
     top: -4px;
@@ -408,7 +421,7 @@
     <p>Prepared for <strong>{{companyName}}</strong></p>
     <p style="margin-top: 4px;">{{reportDate}}</p>
   </div>
-  <div class="cover-footer">order-pilot.ai &mdash; AI-powered PO processing</div>
+  <div class="cover-footer">order-pilot.ai - AI-powered PO processing</div>
 </div>
 
 <!-- ==================== PAGE 2: EXECUTIVE SUMMARY ==================== -->
@@ -477,6 +490,9 @@
         <div class="bar-amount">{{errorCost}}</div>
       </div>
     </div>
+    <p class="tiny text-gray mt-4" style="font-size: 9px;">
+      Calculated from {{monthlyVolume}} POs/month × {{timePerPO}} min × €42 staff rate (labor); early-payment-discount loss on a €2,500 avg invoice (delays); 25% rework + 10% escalation rate (rework); {{errorRate}}% error rate × 20 min resolution (errors). See page 6 methodology for the full model.
+    </p>
   </div>
 
   <div class="savings-strip mt-20">
@@ -485,7 +501,7 @@
   </div>
 
   <div class="page-footer">
-    <span>Confidential &mdash; Prepared for {{companyName}}</span>
+    <span>Confidential - Prepared for {{companyName}}</span>
     <span>Page 1 of 6</span>
   </div>
 </div>
@@ -597,7 +613,7 @@
   </div>
 
   <div class="page-footer">
-    <span>Confidential &mdash; Prepared for {{companyName}}</span>
+    <span>Confidential - Prepared for {{companyName}}</span>
     <span>Page 2 of 6</span>
   </div>
 </div>
@@ -668,6 +684,9 @@
       <span>Industry average</span>
       <span>High-cost processors</span>
     </div>
+    <p class="tiny text-gray mt-4" style="font-size: 9px;">
+      Meter position derived from your cost-per-PO ({{costPerPO}}) placed on a €5–€60 range. Top performers ≈ €5–€8/PO; industry average ≈ €26/PO. See page 6 methodology.
+    </p>
   </div>
 
   <div class="card card--dark mt-20">
@@ -696,7 +715,7 @@
   </div>
 
   <div class="page-footer">
-    <span>Confidential &mdash; Prepared for {{companyName}}</span>
+    <span>Confidential - Prepared for {{companyName}}</span>
     <span>Page 3 of 6</span>
   </div>
 </div>
@@ -803,6 +822,9 @@
       <div class="stat-label">cumulative</div>
     </div>
   </div>
+  <p class="tiny text-gray mt-4" style="font-size: 9px;">
+    Projection assumes 90% cost reduction sustained, constant volume, and the OrderPilot subscription line held flat at €6,000/yr. See page 6 methodology.
+  </p>
 
   <div class="card card--orange mt-16">
     <div class="flex items-center gap-12">
@@ -815,7 +837,7 @@
   </div>
 
   <div class="page-footer">
-    <span>Confidential &mdash; Prepared for {{companyName}}</span>
+    <span>Confidential - Prepared for {{companyName}}</span>
     <span>Page 4 of 6</span>
   </div>
 </div>
@@ -899,7 +921,7 @@
   </div>
 
   <div class="page-footer">
-    <span>Confidential &mdash; Prepared for {{companyName}}</span>
+    <span>Confidential - Prepared for {{companyName}}</span>
     <span>Page 5 of 6</span>
   </div>
 </div>
@@ -956,7 +978,7 @@
   </div>
 
   <div class="page-footer">
-    <span>Confidential &mdash; Prepared for {{companyName}}</span>
+    <span>Confidential - Prepared for {{companyName}}</span>
     <span>Page 6 of 6</span>
   </div>
 </div>

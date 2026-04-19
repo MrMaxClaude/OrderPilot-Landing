@@ -1,0 +1,62 @@
+---
+title: "SAP S/4HANA integration: wiring OrderPilot to your PO objects"
+description: "Standard flow for pushing validated purchase orders from OrderPilot into SAP S/4HANA via the OData or BAPI interface. Covers field mapping, supplier matching, and idempotency."
+category: "integraties"
+tags: ["SAP", "S/4HANA", "ERP"]
+publishedAt: 2026-04-10
+updatedAt: 2026-04-17
+order: 1
+relatedArticles: ["afas-profit"]
+---
+
+OrderPilot ships with a certified SAP S/4HANA connector. You can be wired up in a sandbox system in under a day.
+
+## Choose your transport
+
+SAP S/4HANA exposes two paths for creating purchase orders:
+
+| Method | When to use |
+| --- | --- |
+| **OData (API_PURCHASEORDER_PROCESS_SRV)** | Default for most customers. REST-friendly, audit-logged, supports change tracking. |
+| **BAPI_PO_CREATE1 via RFC** | Required if your landscape still uses ECC-style extensions or custom field exits. |
+
+We recommend OData unless your Basis team has a strong reason otherwise.
+
+## Field mapping
+
+OrderPilot's canonical schema maps to SAP S/4HANA fields out of the box:
+
+- `supplier_id` → `Supplier` (LIFNR)
+- `po_number` → `PurchaseOrder` (EBELN)
+- `currency` → `DocumentCurrency` (WAERS)
+- `net_total` → `NetAmount` (NETWR)
+- Line items → `PurchaseOrderItem`
+
+Custom Z-fields: use the mapping screen under **Settings › ERP Integrations › SAP** to point specific OrderPilot fields to `ZZ*` columns. Changes propagate immediately - no redeploy.
+
+## Supplier matching
+
+Every SAP supplier has a unique `LIFNR`. OrderPilot keeps a mapping table from supplier email domains and VAT numbers to `LIFNR`. For your first 10 suppliers we pre-populate this from your SAP vendor master; after that, new suppliers go into the **Unmapped suppliers** tray for one-click approval.
+
+## Idempotency and retries
+
+Never double-post a PO. The connector includes:
+
+- A deterministic idempotency key based on `(supplier_id, po_number, issue_date)`
+- Automatic retry with exponential backoff on 5xx responses
+- A manual **Re-post to SAP** button on the PO detail page for disputed failures
+
+## Sandbox testing
+
+Point OrderPilot at your SAP development client for the first two weeks. Validated POs will post to SAP but stay in "Parked" state until your buyers release them - giving finance time to confirm the mapping is right before it touches production workflows.
+
+## Going live
+
+When you flip to production:
+
+1. Rotate the OAuth client credential
+2. Switch the base URL from `*-dev.s4hana.cloud.sap` to the production tenant
+3. Update the mapping in OrderPilot's ERP settings
+4. Run 5 real POs end-to-end as a smoke test
+
+Our integrations team does this walkthrough live on a call - book a slot when you reach this step.

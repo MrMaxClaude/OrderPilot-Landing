@@ -9,6 +9,7 @@ interface Props {
   title: string;
   description?: string;
   ogImage?: string;
+  noindex?: boolean;
   showNavbar?: boolean;
   showFooter?: boolean;
   showCalculatorCTA?: boolean;
@@ -19,6 +20,7 @@ const {
   title,
   description,
   ogImage,
+  noindex = false,
   showNavbar = true,
   showFooter = true,
   showCalculatorCTA = true,
@@ -26,7 +28,7 @@ const {
 } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} ogImage={ogImage} extraJsonLd={extraJsonLd}>
+<BaseLayout title={title} description={description} ogImage={ogImage} noindex={noindex} extraJsonLd={extraJsonLd}>
   {showNavbar && <Navbar />}
 
   <main>

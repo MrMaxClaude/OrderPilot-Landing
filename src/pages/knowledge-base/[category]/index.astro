@@ -1,0 +1,332 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../../layouts/PageLayout.astro';
+import KbBreadcrumbs from '../../../components/astro/KbBreadcrumbs.astro';
+import {
+  articleUrl,
+  articlesByCategory,
+  estimateReadingTime,
+  filterPublished,
+  getCategoryLabel,
+} from '../../../lib/kbHelpers';
+import type { KbCategorySlug } from '../../../lib/kbHelpers';
+import { KB_CATEGORIES } from '../../../content.config';
+import { stripHtmlToPlainText } from '../../../lib/geoFaqSchema';
+
+export async function getStaticPaths() {
+  return KB_CATEGORIES.map((c) => ({ params: { category: c.slug } }));
+}
+
+const { category } = Astro.params;
+const categorySlug = category as KbCategorySlug;
+const categoryLabel = getCategoryLabel(categorySlug);
+
+const allArticles = filterPublished(await getCollection('kb'));
+const byCategory = articlesByCategory(allArticles);
+const articles = byCategory.get(categorySlug) ?? [];
+
+// Group articles by their first tag if consistent; else single bucket labelled "Articles".
+const groups = new Map<string, typeof articles>();
+for (const a of articles) {
+  const tag = (a.data.tags[0] ?? 'Articles').trim();
+  const bucket = groups.get(tag) ?? [];
+  bucket.push(a);
+  groups.set(tag, bucket);
+}
+const groupEntries: Array<[string, typeof articles]> = Array.from(groups.entries());
+// If every article ended up in the same bucket, collapse the header.
+const singleGroup = groupEntries.length === 1;
+
+const searchIndex = articles.map((entry) => ({
+  id: entry.id,
+  title: entry.data.title,
+  description: entry.data.description,
+  tags: entry.data.tags,
+  url: articleUrl(entry),
+  bodyPreview: stripHtmlToPlainText(entry.body ?? '').slice(0, 1200),
+  readingTime: entry.data.readingTime ?? estimateReadingTime(entry.body ?? ''),
+}));
+
+const siteOrigin = Astro.site ? new URL(Astro.site).origin : 'https://order-pilot.ai';
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Knowledge base',
+      item: `${siteOrigin}/knowledge-base/`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: categoryLabel,
+      item: `${siteOrigin}/knowledge-base/${categorySlug}/`,
+    },
+  ],
+};
+
+const descriptions: Record<KbCategorySlug, string> = {
+  'getting-started': 'Onboard fast - set up OrderPilot, run your first PO, and hand-off to your team.',
+  'integraties': 'Connect OrderPilot to your ERP: SAP, AFAS, Exact, Microsoft Dynamics, NetSuite and more.',
+  'tips-best-practices': 'Playbooks from procurement and finance teams running OrderPilot in production.',
+  'faq': 'Quick answers on accuracy, security, pricing, integrations, and how we compare to other tools.',
+  'updates': 'Product changelog, new features, and improvements shipped month by month.',
+};
+
+const iconId: Record<KbCategorySlug, string> = {
+  'getting-started': 'rocket',
+  'integraties': 'plug',
+  'tips-best-practices': 'sparkles',
+  'faq': 'help',
+  'updates': 'calendar',
+};
+
+const iconChoice = iconId[categorySlug];
+---
+
+<PageLayout
+  title={`${categoryLabel} | OrderPilot Knowledge base`}
+  description={descriptions[categorySlug]}
+  extraJsonLd={[breadcrumbSchema]}
+>
+  <div class="bg-warm-bg" id="kb-category-root" data-category={categorySlug}>
+    <!-- Sticky search header - always visible -->
+    <section
+      class="relative border-b border-gray-100/80 bg-card-white"
+      aria-label="Search knowledge base"
+    >
+      <div
+        class="pointer-events-none absolute inset-0 opacity-[0.3]"
+        style="background-image: radial-gradient(circle at 1px 1px, rgb(20 20 20 / 0.06) 1px, transparent 0); background-size: 28px 28px;"
+        aria-hidden="true"
+      ></div>
+      <div class="relative max-w-3xl mx-auto px-4 sm:px-6 pt-28 pb-10">
+        <div
+          class="flex items-center gap-2 rounded-2xl bg-card-white p-2 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)] border border-gray-100"
+        >
+          <div class="pl-3 text-text-muted" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </div>
+          <label class="sr-only" for="kb-cat-search-input">Search articles in {categoryLabel}</label>
+          <input
+            id="kb-cat-search-input"
+            type="search"
+            autocomplete="off"
+            placeholder={`Search articles in ${categoryLabel}…`}
+            class="flex-1 min-w-0 rounded-xl px-3 py-3 text-sm text-text-primary placeholder:text-text-muted outline-none focus:ring-2 focus:ring-rb2-orange/25 bg-transparent"
+          />
+          <a
+            href="/knowledge-base/"
+            class="shrink-0 hidden sm:inline-flex items-center gap-1 text-xs font-semibold text-text-muted hover:text-rb2-orange transition-colors pr-3"
+          >
+            All categories
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Breadcrumbs -->
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 pt-8 pb-2">
+      <KbBreadcrumbs
+        crumbs={[
+          { label: 'Knowledge base', href: '/knowledge-base/' },
+          { label: categoryLabel },
+        ]}
+      />
+    </div>
+
+    <!-- Category header: icon + title + tagline + meta -->
+    <header class="max-w-3xl mx-auto px-4 sm:px-6 pt-6 pb-8">
+      <div class="w-12 h-12 rounded-xl bg-rb2-orange/10 text-rb2-orange flex items-center justify-center mb-5" aria-hidden="true">
+        {
+          iconChoice === 'rocket' && (
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+          )
+        }
+        {
+          iconChoice === 'plug' && (
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-5"/><path d="M9 7V2"/><path d="M15 7V2"/><path d="M6 13V8a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4Z"/></svg>
+          )
+        }
+        {
+          iconChoice === 'sparkles' && (
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M3 12h18"/><path d="m5.63 5.63 12.74 12.74"/><path d="m18.37 5.63L5.63 18.37"/></svg>
+          )
+        }
+        {
+          iconChoice === 'help' && (
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          )
+        }
+        {
+          iconChoice === 'calendar' && (
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+          )
+        }
+      </div>
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-text-primary tracking-tight mb-3">
+        {categoryLabel}
+      </h1>
+      <p class="text-base text-text-secondary leading-relaxed mb-4">
+        {descriptions[categorySlug]}
+      </p>
+      <p class="text-xs text-text-muted">
+        {articles.length} {articles.length === 1 ? 'article' : 'articles'}
+      </p>
+    </header>
+
+    <!-- Article list (Intercom-style) -->
+    <section
+      class="max-w-3xl mx-auto px-4 sm:px-6 pb-24"
+      aria-label={`${categoryLabel} articles`}
+      data-kb-default
+    >
+      {
+        articles.length === 0 ? (
+          <div class="rounded-2xl border border-dashed border-gray-200 bg-card-white p-10 text-center">
+            <p class="text-text-secondary">
+              No articles published in this category yet. Check back soon, or{' '}
+              <a href="/#contact" class="text-rb2-orange font-semibold hover:underline">
+                get in touch
+              </a>
+              {' '}if there's something specific you want covered.
+            </p>
+          </div>
+        ) : (
+          groupEntries.map(([groupName, items]) => (
+            <div class="rounded-2xl border border-gray-100 bg-card-white shadow-sm mb-6 overflow-hidden">
+              {!singleGroup && (
+                <div class="px-6 pt-5 pb-4 border-b border-gray-100">
+                  <h2 class="text-base font-black text-text-primary capitalize">
+                    {groupName}
+                  </h2>
+                </div>
+              )}
+              <ul class="divide-y divide-gray-100">
+                {items.map((a) => (
+                  <li>
+                    <a
+                      href={articleUrl(a)}
+                      class="group flex items-center justify-between gap-4 px-6 py-4 text-left hover:bg-warm-bg/60 transition-colors"
+                    >
+                      <span class="text-[15px] text-text-primary group-hover:text-rb2-orange transition-colors leading-snug">
+                        {a.data.title}
+                      </span>
+                      <svg
+                        class="w-4 h-4 text-text-muted shrink-0 group-hover:text-rb2-orange group-hover:translate-x-0.5 transition-all"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="m9 18 6-6-6-6" />
+                      </svg>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        )
+      }
+    </section>
+
+    <!-- Search results (hidden until input) -->
+    <section
+      id="kb-cat-search-results"
+      class="hidden max-w-3xl mx-auto px-4 sm:px-6 pb-24"
+      aria-live="polite"
+    >
+      <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-text-muted mb-4">
+        Results
+      </p>
+      <div class="rounded-2xl border border-gray-100 bg-card-white shadow-sm overflow-hidden">
+        <ul id="kb-cat-search-list" class="divide-y divide-gray-100"></ul>
+      </div>
+      <p
+        id="kb-cat-search-empty"
+        class="hidden rounded-xl border border-dashed border-gray-200 bg-warm-bg/40 px-5 py-6 text-center text-sm text-text-muted mt-4"
+      >
+        No matches in {categoryLabel}.
+        <a href="/knowledge-base/" class="text-rb2-orange font-semibold hover:underline">Search all categories</a>.
+      </p>
+    </section>
+  </div>
+</PageLayout>
+
+<script type="application/json" id="kb-cat-search-index" set:html={JSON.stringify(searchIndex)} />
+
+<script>
+  import Fuse from 'fuse.js';
+
+  type Item = {
+    id: string;
+    title: string;
+    description: string;
+    tags: string[];
+    url: string;
+    bodyPreview: string;
+    readingTime: number;
+  };
+
+  const indexEl = document.getElementById('kb-cat-search-index');
+  const input = document.getElementById('kb-cat-search-input') as HTMLInputElement | null;
+  const resultsBox = document.getElementById('kb-cat-search-results');
+  const resultsList = document.getElementById('kb-cat-search-list');
+  const empty = document.getElementById('kb-cat-search-empty');
+  const defaultSection = document.querySelector<HTMLElement>('[data-kb-default]');
+
+  if (indexEl && input && resultsBox && resultsList && empty && defaultSection) {
+    const data: Item[] = JSON.parse(indexEl.textContent || '[]');
+    const fuse = new Fuse(data, {
+      keys: ['title', 'description', 'tags', 'bodyPreview'],
+      threshold: 0.35,
+      ignoreLocation: true,
+      minMatchCharLength: 2,
+    });
+
+    function escape(s: string): string {
+      return s.replace(/[&<>"']/g, (c) =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] ?? c,
+      );
+    }
+
+    function render(items: Item[]) {
+      resultsList!.innerHTML = items
+        .map(
+          (it) => `
+          <li>
+            <a href="${escape(it.url)}" class="group flex items-center justify-between gap-4 px-6 py-4 text-left hover:bg-warm-bg/60 transition-colors">
+              <span class="text-[15px] text-text-primary group-hover:text-rb2-orange transition-colors leading-snug">${escape(it.title)}</span>
+              <svg class="w-4 h-4 text-text-muted shrink-0 group-hover:text-rb2-orange group-hover:translate-x-0.5 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+            </a>
+          </li>`,
+        )
+        .join('');
+    }
+
+    input.addEventListener('input', () => {
+      const q = input.value.trim();
+      if (q.length < 2) {
+        resultsBox.classList.add('hidden');
+        defaultSection.classList.remove('hidden');
+        return;
+      }
+      const hits = fuse.search(q).map((r) => r.item);
+      defaultSection.classList.add('hidden');
+      resultsBox.classList.remove('hidden');
+      if (hits.length === 0) {
+        resultsList.innerHTML = '';
+        empty.classList.remove('hidden');
+      } else {
+        empty.classList.add('hidden');
+        render(hits);
+      }
+    });
+  }
+</script>

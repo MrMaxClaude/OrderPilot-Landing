@@ -1,12 +1,26 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
+/**
+ * Optional per-entry SEO override. Any field left empty falls back to the
+ * entry's primary title / description / a default OG image.
+ */
+const seoOverrideSchema = z
+  .object({
+    metaTitle: z.string().optional(),
+    metaDescription: z.string().optional(),
+    ogImage: z.string().optional(),
+    noindex: z.boolean().default(false),
+  })
+  .optional();
+
 const pages = defineCollection({
   loader: glob({ pattern: '*.json', base: 'src/content/pages' }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
     ogImage: z.string().optional(),
+    noindex: z.boolean().default(false),
   }),
 });
 
@@ -165,12 +179,12 @@ const faqSchema = z.object({
 });
 
 const faqs = defineCollection({
-  loader: glob({ pattern: '*.md', base: 'src/content/faqs' }),
+  loader: glob({ pattern: '*.{md,mdx}', base: 'src/content/faqs' }),
   schema: faqSchema,
 });
 
 const pricingFaqs = defineCollection({
-  loader: glob({ pattern: '*.md', base: 'src/content/pricingFaqs' }),
+  loader: glob({ pattern: '*.{md,mdx}', base: 'src/content/pricingFaqs' }),
   schema: faqSchema,
 });
 
@@ -191,7 +205,7 @@ const plans = defineCollection({
 });
 
 const cases = defineCollection({
-  loader: glob({ pattern: '*.md', base: 'src/content/cases' }),
+  loader: glob({ pattern: '*.{md,mdx}', base: 'src/content/cases' }),
   schema: z.object({
     title: z.string(),
     subtitle: z.string(),
@@ -226,6 +240,71 @@ const cases = defineCollection({
       hourlyRate: z.number(),
     }),
     order: z.number().default(0),
+    seo: seoOverrideSchema,
+  }),
+});
+
+export const KB_CATEGORIES = [
+  { slug: 'getting-started', label: 'Getting Started' },
+  { slug: 'integraties', label: 'Integraties' },
+  { slug: 'tips-best-practices', label: 'Tips & Best Practices' },
+  { slug: 'faq', label: 'FAQ' },
+  { slug: 'updates', label: 'Updates' },
+] as const;
+
+export const KB_CATEGORY_SLUGS = KB_CATEGORIES.map((c) => c.slug) as readonly string[];
+
+const kb = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: 'src/content/kb' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    category: z.enum(['getting-started', 'integraties', 'tips-best-practices', 'faq', 'updates']),
+    draft: z.boolean().default(false),
+    tags: z.array(z.string()).default([]),
+    publishedAt: z.coerce.date(),
+    updatedAt: z.coerce.date().optional(),
+    readingTime: z.number().int().positive().optional(),
+    relatedArticles: z.array(z.string()).default([]),
+    order: z.number().default(0),
+    popular: z.boolean().default(false),
+    seo: seoOverrideSchema,
+  }),
+});
+
+const navigation = defineCollection({
+  loader: glob({ pattern: '*.json', base: 'src/content/navigation' }),
+  schema: z.object({
+    primaryLinks: z.array(
+      z.object({
+        text: z.string(),
+        href: z.string(),
+      }),
+    ),
+    cta: z.object({
+      text: z.string(),
+      href: z.string(),
+    }),
+  }),
+});
+
+const footer = defineCollection({
+  loader: glob({ pattern: '*.json', base: 'src/content/footer' }),
+  schema: z.object({
+    tagline: z.string(),
+    linkGroups: z.array(
+      z.object({
+        heading: z.string(),
+        links: z.array(
+          z.object({
+            text: z.string(),
+            href: z.string(),
+          }),
+        ),
+      }),
+    ),
+    copyright: z.string(),
+    complianceLabels: z.array(z.string()),
   }),
 });
 
@@ -241,4 +320,7 @@ export const collections = {
   pricingFaqs,
   plans,
   cases,
+  kb,
+  navigation,
+  footer,
 };

@@ -1,5 +1,5 @@
 /**
- * OrderPilot — PO Processing Cost Report Generator
+ * OrderPilot - PO Processing Cost Report Generator
  *
  * Calculation engine + Puppeteer PDF generation.
  * Takes user input from the Hidden Cost Calculator and produces
@@ -31,39 +31,42 @@ const ESCALATION_RATE = 0.10;
 const AUTOMATION_REDUCTION = 0.90; // 90% cost reduction with OrderPilot
 
 // ── Calculation Engine ───────────────────────────────────────
+// The raw math (labor/delay/rework/error/savings) lives in src/lib/cost-model.mjs
+// and is imported dynamically so the same formula powers both the client
+// calculator preview and this server-side PDF renderer. Only presentation +
+// benchmarks + ROI rounding live here.
 
-function calculateCosts(input) {
+async function calculateCosts(input) {
+  const { calculateCosts: canonicalCalculateCosts } = await import('../lib/cost-model.mjs');
+
   const {
     monthlyVolume = 225,
     timePerPO = 18,
     errorRate = 12,
+    delayDays,
     erpSystem = 'ERP',
     companyName = 'Your Company',
     reportDate = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
   } = input;
 
-  // Monthly errors
-  const monthlyErrors = Math.round(monthlyVolume * (errorRate / 100));
+  const model = canonicalCalculateCosts({
+    monthlyVolume,
+    timePerPoMin: timePerPO,
+    errorRate: errorRate / 100,
+    delayDays,
+  });
 
-  // 1. Direct Labor Cost
-  const laborCostRaw = monthlyVolume * (timePerPO / 60) * STAFF_HOURLY_COST * 12;
-
-  // 2. Processing Delays — lost early payment discounts
-  const delayFactor = Math.min(timePerPO * 2, 60); // delay correlates with processing time
-  const delayCostRaw = monthlyVolume * AVG_INVOICE_VALUE * EARLY_PAYMENT_DISCOUNT * (delayFactor / 100) * 12;
-
-  // 3. Rework & Escalation
-  const reworkVolume = monthlyVolume * REWORK_RATE;
-  const escalationVolume = monthlyVolume * ESCALATION_RATE;
-  const reworkCostRaw = (reworkVolume * (timePerPO / 60) * STAFF_HOURLY_COST + escalationVolume * (15 / 60) * MANAGER_HOURLY_COST) * 12;
-
-  // 4. Error Correction
-  const errorCostRaw = monthlyErrors * (ERROR_RESOLUTION_TIME_MIN / 60) * STAFF_HOURLY_COST * 12;
+  const monthlyErrors = Math.round(model.monthlyErrors);
+  const laborCostRaw = model.laborCost;
+  const delayCostRaw = model.delayCost;
+  const reworkCostRaw = model.reworkCost;
+  const errorCostRaw = model.errorCost;
+  const delayFactor = Math.round(model.delayFactor * 100); // percent, for legacy downstream
 
   // Totals
-  const totalAnnualCostRaw = laborCostRaw + delayCostRaw + reworkCostRaw + errorCostRaw;
-  const totalSavingsRaw = totalAnnualCostRaw * AUTOMATION_REDUCTION;
-  const annualSavingsRaw = totalSavingsRaw - ORDERPILOT_ANNUAL_COST;
+  const totalAnnualCostRaw = model.totalAnnualCost;
+  const totalSavingsRaw = model.grossSavings;
+  const annualSavingsRaw = model.netSavings;
   const totalAutomatedRaw = totalAnnualCostRaw - totalSavingsRaw;
 
   // Per-category automated costs
@@ -232,10 +235,10 @@ function renderTemplate(templateHtml, data) {
 
 // ── Preview Generation (no Puppeteer needed) ─────────────────
 
-function generatePreview(input, outputPath) {
+async function generatePreview(input, outputPath) {
   const templatePath = path.join(__dirname, 'template.html');
   const templateHtml = fs.readFileSync(templatePath, 'utf-8');
-  const data = calculateCosts(input);
+  const data = await calculateCosts(input);
   const renderedHtml = renderTemplate(templateHtml, data);
   fs.writeFileSync(outputPath, renderedHtml, 'utf-8');
   return { outputPath, data };
@@ -246,7 +249,7 @@ function generatePreview(input, outputPath) {
 async function generateReport(input) {
   const puppeteer = require('puppeteer');
 
-  const data = calculateCosts(input);
+  const data = await calculateCosts(input);
   const templatePath = path.join(__dirname, 'template.html');
   const templateHtml = fs.readFileSync(templatePath, 'utf-8');
   const renderedHtml = renderTemplate(templateHtml, data);

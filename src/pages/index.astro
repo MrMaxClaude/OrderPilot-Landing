@@ -50,6 +50,7 @@ const faqPageSchema = buildFaqPageSchema({
   title={pageMeta.data.title}
   description={pageMeta.data.description}
   ogImage={pageMeta.data.ogImage}
+  noindex={pageMeta.data.noindex}
   extraJsonLd={[faqPageSchema]}
 >
   <Hero {...hero.data} />

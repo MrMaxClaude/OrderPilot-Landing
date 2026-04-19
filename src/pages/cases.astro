@@ -3,21 +3,98 @@ import { getCollection, getEntry } from 'astro:content';
 import { getMarkdownProcessor } from '../lib/markdown';
 import PageLayout from '../layouts/PageLayout.astro';
 import CaseStudy from '../components/astro/CaseStudy.astro';
+import { stripHtmlToPlainText } from '../lib/geoFaqSchema';
 
 const pageMeta = await getEntry('pages', 'cases');
 
 const mdProcessor = await getMarkdownProcessor();
 const caseEntries = await getCollection('cases');
 const sortedCases = caseEntries.sort((a, b) => a.data.order - b.data.order);
+
+const siteOrigin = Astro.site ? new URL(Astro.site).origin : 'https://order-pilot.ai';
+
+// One Article + Review schema per case study. Uses the case's quote as the review
+// body + the customer-side author as the reviewer.
+const caseSchemas = sortedCases.flatMap((entry) => {
+  const titlePlain = stripHtmlToPlainText(entry.data.title);
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: titlePlain,
+    description: entry.data.subtitle,
+    about: {
+      '@type': 'Thing',
+      name: `${entry.data.company} — ${entry.data.industry}`,
+    },
+    author: {
+      '@type': 'Organization',
+      name: 'OrderPilot',
+      url: siteOrigin,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'OrderPilot',
+      url: siteOrigin,
+      logo: {
+        '@type': 'ImageObject',
+        url: `${siteOrigin}/orderpilot-logo.png`,
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${siteOrigin}/cases/`,
+    },
+  };
+  const reviewSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Review',
+    itemReviewed: {
+      '@type': 'SoftwareApplication',
+      name: 'OrderPilot',
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'Web',
+    },
+    reviewBody: entry.data.quote,
+    author: {
+      '@type': 'Person',
+      name: entry.data.quoteAuthor,
+      jobTitle: entry.data.quoteRole,
+      worksFor: { '@type': 'Organization', name: entry.data.company },
+    },
+  };
+  return [articleSchema, reviewSchema];
+});
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteOrigin}/` },
+    { '@type': 'ListItem', position: 2, name: 'Case studies', item: `${siteOrigin}/cases/` },
+  ],
+};
+
+const extraSchemas: Record<string, unknown>[] = [
+  breadcrumbSchema,
+  ...caseSchemas,
+];
 ---
 
-<PageLayout title={pageMeta.data.title} description={pageMeta.data.description} ogImage={pageMeta.data.ogImage} showFooter={false} showCalculatorCTA={false}>
+<PageLayout
+  title={pageMeta.data.title}
+  description={pageMeta.data.description}
+  ogImage={pageMeta.data.ogImage}
+  noindex={pageMeta.data.noindex}
+  extraJsonLd={extraSchemas}
+  showFooter={false}
+  showCalculatorCTA={false}
+>
   <div class="min-h-screen bg-warm-bg pt-24">
     <section class="px-6 mb-16">
       <div class="max-w-4xl mx-auto text-center">
         <span class="text-xs font-medium uppercase tracking-[0.2em] text-text-muted mb-4 block">/ CUSTOMER SUCCESS STORIES</span>
         <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-text-primary mb-6">
-          Real Results from <span class="font-serif italic text-rb2-orange">Real Companies</span>
+          Real results from <span class="font-serif italic text-rb2-orange-hover">real companies</span>
         </h1>
         <p class="text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed">
           See how leading companies are transforming their procurement operations with OrderPilot's AI-powered automation.

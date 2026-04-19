@@ -1,0 +1,97 @@
+---
+/**
+ * Renders a Table of Contents container. Populated client-side by scanning
+ * h2/h3 inside [data-kb-article-body]. IDs are added if missing.
+ */
+---
+
+<nav
+  aria-label="On this page"
+  class="hidden lg:block sticky top-24 self-start"
+  data-kb-toc
+>
+  <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-text-muted mb-3">
+    On this page
+  </p>
+  <ol
+    class="space-y-1.5 text-sm border-l-2 border-gray-100"
+    data-kb-toc-list
+  >
+    <li class="pl-3 text-text-muted italic">Loading…</li>
+  </ol>
+</nav>
+
+<script>
+  function slugify(text: string): string {
+    return text
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/\p{M}/gu, '')
+      .replace(/[^\w\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-');
+  }
+
+  function buildToc() {
+    const tocList = document.querySelector<HTMLOListElement>('[data-kb-toc-list]');
+    const article = document.querySelector<HTMLElement>('[data-kb-article-body]');
+    if (!tocList || !article) return;
+
+    const headings = Array.from(
+      article.querySelectorAll<HTMLHeadingElement>('h2, h3'),
+    );
+    if (headings.length === 0) {
+      const toc = document.querySelector('[data-kb-toc]') as HTMLElement | null;
+      if (toc) toc.classList.add('hidden');
+      return;
+    }
+
+    tocList.innerHTML = '';
+    for (const h of headings) {
+      if (!h.id) {
+        const text = h.textContent?.trim() ?? '';
+        if (text) h.id = slugify(text);
+      }
+      const li = document.createElement('li');
+      li.className = h.tagName === 'H3'
+        ? 'pl-6 border-l-2 border-transparent hover:border-rb2-orange/30 -ml-[2px] py-0.5'
+        : 'pl-3 border-l-2 border-transparent hover:border-rb2-orange/30 -ml-[2px] py-0.5';
+      const a = document.createElement('a');
+      a.href = `#${h.id}`;
+      a.textContent = h.textContent?.trim() ?? '';
+      a.className = h.tagName === 'H3'
+        ? 'text-text-muted hover:text-rb2-orange transition-colors block leading-snug'
+        : 'text-text-secondary hover:text-rb2-orange transition-colors font-medium block leading-snug';
+      a.dataset.tocLink = h.id;
+      li.appendChild(a);
+      tocList.appendChild(li);
+    }
+
+    // Scroll-spy: highlight current heading
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const id = entry.target.id;
+          const link = document.querySelector<HTMLAnchorElement>(
+            `[data-toc-link="${id}"]`,
+          );
+          if (!link) continue;
+          if (entry.isIntersecting) {
+            document
+              .querySelectorAll('[data-toc-link]')
+              .forEach((el) => el.classList.remove('text-rb2-orange', 'font-semibold'));
+            link.classList.add('text-rb2-orange', 'font-semibold');
+          }
+        }
+      },
+      { rootMargin: '-20% 0% -70% 0%', threshold: 0 },
+    );
+    for (const h of headings) observer.observe(h);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', buildToc);
+  } else {
+    buildToc();
+  }
+</script>

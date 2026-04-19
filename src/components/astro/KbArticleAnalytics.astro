@@ -1,0 +1,154 @@
+---
+interface Props {
+  /** Article slug (e.g. "quickstart"). */
+  slug: string;
+  /** Category slug (e.g. "getting-started"). */
+  category: string;
+  /** Tags from frontmatter. */
+  tags: string[];
+  /** Estimated reading time in minutes. */
+  readingTime: number;
+  /** Article publication date (ISO). */
+  publishedAt: string;
+}
+
+const { slug, category, tags, readingTime, publishedAt } = Astro.props;
+
+const payload = {
+  slug,
+  category,
+  tags,
+  readingTime,
+  publishedAt,
+};
+---
+
+<script
+  type="application/json"
+  data-kb-analytics-meta
+  set:html={JSON.stringify(payload)}
+/>
+
+<script>
+  import posthog from 'posthog-js';
+
+  const metaEl = document.querySelector<HTMLElement>('[data-kb-analytics-meta]');
+  if (metaEl && metaEl.textContent) {
+    const meta = JSON.parse(metaEl.textContent);
+    const articleEl = document.querySelector<HTMLElement>('[data-kb-article-body]');
+
+    // Base properties shared across every event fired on this page
+    const baseProps = {
+      article_slug: meta.slug,
+      article_category: meta.category,
+      article_tags: meta.tags,
+      article_reading_time_min: meta.readingTime,
+      article_published_at: meta.publishedAt,
+      article_url: window.location.pathname,
+    };
+
+    // --- view event ---
+    try {
+      posthog.capture('kb_article_viewed', baseProps);
+    } catch {
+      // posthog may not be initialised yet — deferred init handles itself later
+    }
+
+    // --- scroll depth 25/50/75/100 ---
+    const milestones = new Set<number>([25, 50, 75, 100]);
+    const firedMilestones = new Set<number>();
+
+    function onScroll() {
+      if (!articleEl) return;
+      const rect = articleEl.getBoundingClientRect();
+      const articleTop = rect.top + window.scrollY;
+      const articleHeight = articleEl.scrollHeight;
+      const scrolled = window.scrollY + window.innerHeight;
+      const pastStart = Math.max(0, scrolled - articleTop);
+      const pct = Math.max(0, Math.min(100, Math.round((pastStart / articleHeight) * 100)));
+      for (const m of milestones) {
+        if (pct >= m && !firedMilestones.has(m)) {
+          firedMilestones.add(m);
+          try {
+            posthog.capture('kb_article_scroll_depth', { ...baseProps, percent: m });
+          } catch {}
+        }
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    // Run once in case the page is short enough that all milestones are already visible
+    requestAnimationFrame(onScroll);
+
+    // --- dwell time + "read" event ---
+    let totalVisibleMs = 0;
+    let lastFocusAt = document.visibilityState === 'visible' ? Date.now() : 0;
+    let readFired = false;
+
+    function tickVisible() {
+      if (lastFocusAt > 0) {
+        totalVisibleMs += Date.now() - lastFocusAt;
+        lastFocusAt = Date.now();
+      }
+    }
+
+    function handleVisibility() {
+      if (document.visibilityState === 'visible') {
+        lastFocusAt = Date.now();
+      } else {
+        tickVisible();
+        lastFocusAt = 0;
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    // Read threshold: scrolled past 75% AND engaged for >= 15 s of visible time
+    const readCheckInterval = window.setInterval(() => {
+      if (readFired) {
+        clearInterval(readCheckInterval);
+        return;
+      }
+      tickVisible();
+      if (firedMilestones.has(75) && totalVisibleMs >= 15_000) {
+        readFired = true;
+        try {
+          posthog.capture('kb_article_read', {
+            ...baseProps,
+            dwell_seconds: Math.round(totalVisibleMs / 1000),
+          });
+        } catch {}
+        clearInterval(readCheckInterval);
+      }
+    }, 2_000);
+
+    // Final time-on-page on leave. Use pagehide for cross-browser reliability;
+    // beforeunload does not fire on iOS. sendBeacon would be ideal but posthog
+    // handles its own queue flush.
+    function onLeave() {
+      tickVisible();
+      try {
+        posthog.capture('kb_article_time_on_page', {
+          ...baseProps,
+          dwell_seconds: Math.round(totalVisibleMs / 1000),
+          max_scroll_percent: Math.max(0, ...firedMilestones, 0),
+          reached_read_threshold: readFired,
+        });
+      } catch {}
+    }
+    window.addEventListener('pagehide', onLeave);
+
+    // --- code-block copy tracking (nice-to-have, lets us see which articles
+    //     have actually-useful code examples) ---
+    document
+      .querySelectorAll<HTMLElement>('[data-kb-article-body] pre code')
+      .forEach((codeEl) => {
+        codeEl.addEventListener('copy', () => {
+          try {
+            posthog.capture('kb_article_code_copied', {
+              ...baseProps,
+              snippet_length: codeEl.textContent?.length ?? 0,
+            });
+          } catch {}
+        });
+      });
+  }
+</script>

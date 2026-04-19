@@ -17,13 +17,13 @@ const headlineLines = headline.split('\n');
 
 <section class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 fade-in">
   <div class="max-w-4xl mx-auto text-center">
-    <div class="inline-flex items-center bg-rb2-orange/10 text-rb2-orange text-xs font-semibold px-4 py-1.5 rounded-full mb-8">
+    <div class="inline-flex items-center bg-rb2-orange-hover text-white text-xs font-semibold px-4 py-1.5 rounded-full mb-8">
       {badge}
     </div>
 
     <h1 class="text-5xl md:text-6xl lg:text-7xl font-[800] tracking-tight text-text-primary mb-8 leading-[1.1]">
       {headlineLines[0]}<br />
-      {headlineLines[1]?.replace(/Right\.$/, '')} <span class="font-serif italic text-rb2-orange">Right.</span>
+      {headlineLines[1]?.replace(/right\.$/i, '')} <span class="font-serif italic text-rb2-orange">Right.</span>
     </h1>
 
     <p class="text-lg md:text-xl text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed">

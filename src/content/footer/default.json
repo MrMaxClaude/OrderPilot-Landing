@@ -1,0 +1,33 @@
+{
+  "tagline": "The world's most accurate purchase order processing platform. Built for procurement teams that demand 100% accuracy.",
+  "linkGroups": [
+    {
+      "heading": "Product",
+      "links": [
+        { "text": "Benefits", "href": "/#benefits" },
+        { "text": "How it Works", "href": "/#how-it-works" },
+        { "text": "Results", "href": "/#results" },
+        { "text": "Pricing", "href": "/pricing" },
+        { "text": "Knowledge base", "href": "/knowledge-base/" }
+      ]
+    },
+    {
+      "heading": "Industry solutions",
+      "links": [
+        { "text": "Manufacturing PO automation", "href": "/purchase-order-automation-manufacturing/" },
+        { "text": "Distribution & wholesale", "href": "/purchase-order-automation-distribution/" },
+        { "text": "SAP", "href": "/purchase-order-automation-sap/" },
+        { "text": "AFAS", "href": "/purchase-order-automation-afas/" },
+        { "text": "Mid-market PO software", "href": "/po-processing-software-mid-market/" }
+      ]
+    },
+    {
+      "heading": "Legal",
+      "links": [
+        { "text": "Privacy Policy", "href": "/privacy" }
+      ]
+    }
+  ],
+  "copyright": "© 2026 ORDERPILOT BY RB2. ALL RIGHTS RESERVED.",
+  "complianceLabels": ["ISO 27001 CERTIFIED", "GDPR COMPLIANT"]
+}

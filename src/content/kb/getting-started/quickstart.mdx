@@ -1,0 +1,51 @@
+---
+title: "Quickstart: your first 30 minutes with OrderPilot"
+description: "Walk through account setup, connecting a mailbox, and processing your first purchase order end-to-end - typically under 30 minutes."
+category: "getting-started"
+tags: ["onboarding", "setup"]
+publishedAt: 2026-04-15
+updatedAt: 2026-04-18
+order: 1
+popular: true
+relatedArticles: ["first-po-upload"]
+---
+
+OrderPilot is designed so you can go from sign-up to your first clean PO in one sitting. This guide covers the three things to get right on day one.
+
+## 1. Set up your workspace
+
+After the onboarding email, confirm your workspace name, timezone, and default currency. These propagate into the extracted JSON for every PO and can save you hours of re-mapping later.
+
+**Tips:**
+- Match your workspace currency to your ERP's base currency. If suppliers send mixed currencies, OrderPilot will convert at the capture date.
+- Invite your finance controller now - they'll want read-access to the validation queue.
+
+## 2. Connect an intake channel
+
+OrderPilot accepts POs from three channels:
+
+1. **Dedicated email** - we provision `yourcompany@intake.order-pilot.ai`. Forward or CC it on supplier emails.
+2. **API upload** - POST PDFs or scanned images to `/v1/documents`.
+3. **Drag-and-drop portal** - for teams still collecting POs from manual emails.
+
+For the fastest path to value, pick the dedicated email and start forwarding live POs today. You don't need to switch supplier communications.
+
+## 3. Run your first document
+
+Forward a real PO PDF (not a test file - real documents reveal the edge cases). Within ~30 seconds you'll see:
+
+- Extracted header fields (supplier, PO number, date, total)
+- Line items with SKU matching against your product catalog
+- A **confidence score** per field
+
+Anything under 95 % confidence lands in the validation queue. Review, correct once, and OrderPilot learns your preferences - subsequent POs from that supplier will skip the queue.
+
+## What to watch for in week one
+
+- **Supplier format drift** - if a supplier sends a new template, flag it in the queue. This is how accuracy improves.
+- **SKU mapping** - if your catalog uses supplier part numbers, upload the supplier ↔ SKU table under Settings › Catalog. Accuracy jumps from ~95 % to 99 %+.
+- **Approval routing** - by default POs over €10 000 go to finance. Adjust thresholds in Settings › Workflows.
+
+## Next
+
+Once you've run 20–50 POs, read [how to reduce PO errors systematically](/knowledge-base/tips-best-practices/reduce-po-errors/) and set up a monthly accuracy audit.
